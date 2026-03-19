@@ -9,7 +9,7 @@ export const revalidate = 60;
 export async function generateStaticParams() {
   try {
     await connectDB();
-    const projects = await Project.find({}, { slug: 1 }).lean<any[]>().exec();
+    const projects = await Project.find({}).select('slug').lean<any[]>().exec();
     return projects.map((project) => ({ slug: project.slug }));
   } catch (error) {
     console.error('Error generating static params:', error);
@@ -25,7 +25,7 @@ export async function generateMetadata({
   try {
     const { slug } = await params;
     await connectDB();
-    const project = await Project.findOne({ slug }).lean<any>();
+    const project = await Project.findOne({ slug: slug }).lean<any>();
     
     if (!project) {
       return { title: "Project Not Found" };
@@ -55,7 +55,7 @@ export default async function ProjectPage({
     const { slug } = await params;
 
     await connectDB();
-    const project = await Project.findOne({ slug }).lean<any>();
+    const project = await Project.findOne({ slug: slug }).lean<any>();
     
     if (!project) {
       notFound();

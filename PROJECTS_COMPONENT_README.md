@@ -138,7 +138,7 @@ className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
 
 Edit `src/components/Projects/ProjectCard.tsx`:
 ```tsx
-className="group relative h-[360px] overflow-hidden rounded-[16px]"
+className="group relative h-[360px] overflow-hidden rounded-2xl"
 //                              ^^^^^^
 //                           Change height
 ```

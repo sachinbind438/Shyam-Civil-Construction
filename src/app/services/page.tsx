@@ -1,9 +1,9 @@
 "use client";
 
-import ServiceGrid from "../../components/ServiceGrid";
-import ServiceDetail from "../../components/ServiceDetail";
+import ServiceGrid from "../../components/Service/ServiceGrid";
+import ServiceDetail from "../../components/Service/ServiceDetail";
 import { servicesData } from "../../data/services";
-import HowItsMade from "../../components/HowItsMade";
+
 export default function ServicesSection() {
   return (
     <main>
@@ -55,11 +55,7 @@ export default function ServicesSection() {
             features={service.features}
           />
         ))}
-        <div className="">
-          <HowItsMade />
-        </div>
       </section>
     </main>
   );
 }
-    

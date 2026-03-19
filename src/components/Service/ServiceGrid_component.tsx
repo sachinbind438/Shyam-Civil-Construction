@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Button from "./button/button";
+import Button from "../button/button";
 
 export default function ServiceGrid() {
   return (
@@ -175,7 +175,7 @@ export default function ServiceGrid() {
             </div>
             <Button
             className="self-start mt-20"
-            href="/testimonials"
+            href="/services"
             text="Find Out More"
             variant="dark"
             size="lg"

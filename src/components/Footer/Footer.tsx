@@ -30,7 +30,7 @@ export default function Footer() {
               className="object-contain"
             />
             <div className="hidden sm:block">
-              <h1 className="text-2xl font-medium text-white-700!">
+              <h1 className="text-2xl font-medium text-white-700! hover:text-white! transition-colors duration-200">
                 <Link href={"/"}>SHYAM CIVIL CONSTRUCTION</Link>
               </h1>
             </div>

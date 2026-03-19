@@ -1,5 +1,5 @@
-import Button from "./button/button";
-import ImageCard from "./Cards/ImageCard";
+import Button from "./../button/button";
+import ImageCard from "../Cards/ImageCard";
 
 const images = [
   "/assets/project-1.jpg",

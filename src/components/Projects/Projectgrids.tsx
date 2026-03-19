@@ -1,5 +1,5 @@
-import ImageCard from "./Cards/ImageCard";
-import Button from "./button/button";
+import ImageCard from "../Cards/ImageCard";
+import Button from "../button/button";  
 
 export default function ProjectImageGrid() {
   return (
@@ -25,7 +25,7 @@ export default function ProjectImageGrid() {
 
             <Button
               className="self-center"
-              href="/gallery"
+              href="/projects"
               text="View Our Project"
               variant="dark"
               size="lg"

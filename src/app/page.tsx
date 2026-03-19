@@ -1,15 +1,13 @@
 import Hero from "../components/Hero/Hero";
 import AboutCard from "../components/about/About_card";
-import Gallery from "../components/Gallery";
-import ProjectImageGrid from "../components/Projectgrids";
-import TestimonialsSection from "../components/testimonails_components";
-
-import ServiceGrid from "../components/ServiceGrid_component";
+import Gallery from "../components/Projects/Gallery";
+import ProjectImageGrid from "../components/Projects/Projectgrids";
+import ServiceGrid from "../components/Service/ServiceGrid_component";
 
 export default function Home() {
   return (
     <main>
-      <Hero
+      <Hero 
         title="Transforming Spaces,"
         subtitle="Creating Dreams"
         quote="Premium Renovation Services Tailored to Your Vision"
@@ -29,11 +27,7 @@ export default function Home() {
       <section>
         <ProjectImageGrid />
       </section>
-      {/*Services*/}
-
-      <section>
-        <TestimonialsSection />
-      </section>
+      {/*Services*/}    
       <section>
         <ServiceGrid />
       </section>

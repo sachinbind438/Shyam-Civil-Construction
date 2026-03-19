@@ -22,12 +22,12 @@ export default function ImageCard({
   showOverlay = true,
   imageClassName = "",
 }: ImageCardProps) {
-  const wrapperRounded = imageClassName || "rounded-tr-[72px] rounded-bl-[72px]";
+  const wrapperRounded = imageClassName || "rounded-tr-[72px] rounded-bl-[72px] group-hover:rounded-[72px]";
 
   const Card = (
     <div className={`group relative isolate cursor-pointer transition-all duration-300 ${className} transform-gpu`}>
       {/* Image wrapper: keep relative for next/image fill */}
-      <div className={`relative w-full h-full overflow-hidden ${wrapperRounded} z-0 transition-transform duration-300 transform-gpu`}>
+      <div className={`relative w-full h-full overflow-hidden ${wrapperRounded} z-0 transition-all duration-300 transform-gpu`}>
         <Image
           src={src}
           alt={alt}
@@ -39,7 +39,7 @@ export default function ImageCard({
 
       {/* Opacity-based overlay */}
       {showOverlay && (
-        <div className={`absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-shadow duration-300 ${wrapperRounded}`} />
+        <div className={`absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-all duration-300 ${wrapperRounded}`} />
       )}
 
       {/* Title overlay (centered) */}

@@ -1,13 +1,23 @@
-"use client";
-import Link from "next/link";
+// app/projects/page.tsx
+// ── SERVER COMPONENT — no "use client" ───────────────────────────────────────
+// Fetches all projects from MongoDB and passes them to the client component.
+
+import { connectDB } from "../../lib/mongodb";
+import Project from "../../models/Project";
+import { serialiseProject } from "../../data/projects";
 import { AllProjects } from "../../components/Projects/AllProjects";
 
+export const revalidate = 60; // ISR — re-fetch from DB every 60 seconds
 
+export default async function ProjectsPage() {
+  await connectDB();
 
-export default function ProjectPage() {
+  const raw = await Project.find({}).sort({ createdAt: -1 }).lean<any[]>();
+  const projects = raw.map(serialiseProject);
+
   return (
-    <div className="pt-16">
-      <AllProjects />
-    </div>
+    <section className="px-6 pt-48">
+      <AllProjects projects={projects}/>
+    </section>
   );
 }

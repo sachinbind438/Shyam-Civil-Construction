@@ -1,4 +1,3 @@
-import Button from "./button/button";
 import TestimonialCard from "./Cards/TestimonialCard";
 
 export default function TestimonialsSection() {
@@ -27,14 +26,6 @@ export default function TestimonialsSection() {
             />
           </div>
         </div>
-        <Button
-          className="self-center"
-          href="/testimonials"
-          text="Read More Reviews"
-          variant="dark"
-          size="lg"
-          
-        />
       </div>
     </div>
   );

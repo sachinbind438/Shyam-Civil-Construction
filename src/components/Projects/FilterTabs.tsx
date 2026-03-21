@@ -17,7 +17,7 @@ export const FilterTabs = ({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="flex flex-wrap gap-4 md:gap-8 border-b border-gray-200 pb-6"
+      className="flex flex-wrap gap-4 md:gap-8  pb-6"
     >
       {filterCategories.map((category) => {
         const isActive = activeFilter === category;

@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import "./globals.css";
@@ -21,10 +22,63 @@ const montserrat = Montserrat({
   variable: "--font-montserrat",
 });
 
-export const metadata = {
-  title: "Shyam Civil Construction",
-  description: "Professional construction services",
-};
+export const metadata: Metadata = {
+  title: {
+    default:  "Shyam Civil Construction",
+    template: "%s | Shyam Civil Construction",
+  },
+  description: "Premium Renovation Services Tailored to Your Vision",
+  keywords: ["civil construction", "renovation", "interior design", 
+             "residential", "commercial", "Mumbai"],
+  authors:  [{ name: "Shyam Civil Construction" }],
+  creator:  "Shyam Civil Construction",
+  
+  icons: {
+    icon: [
+      {
+        url:   "/favicon/fav_dark.avif",
+        type:  "image/avif",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url:   "/favicon/fav_light.webp",
+        type:  "image/webp",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url:   "/favicon/fav_dark.avif",
+        type:  "image/avif",
+        // fallback — no media query
+      },
+    ],
+    apple:    [{ url: "/favicon/fav_dark.avif", type: "image/avif" }],
+    shortcut: "/favicon/fav_dark.avif",
+  },
+
+  openGraph: {
+    type:        "website",
+    locale:      "en_IN",
+    url:         "https://shyamcivilconstruction.com",
+    siteName:    "Shyam Civil Construction",
+    title:       "Shyam Civil Construction",
+    description: "Premium Renovation Services Tailored to Your Vision",
+    images: [
+      {
+        url:    "/og-image.jpg",
+        width:  1200,
+        height: 630,
+        alt:    "Shyam Civil Construction",
+      },
+    ],
+  },
+
+  twitter: {
+    card:        "summary_large_image",
+    title:       "Shyam Civil Construction",
+    description: "Premium Renovation Services Tailored to Your Vision",
+    images:      ["/og-image.jpg"],
+  },
+}
 
 export default function RootLayout({
   children,

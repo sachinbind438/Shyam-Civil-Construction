@@ -39,7 +39,7 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
       </section>
 
       {/* Project Info Section */}
-      <section className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
+      <section className="max-w-6xl mx-auto p-10">
         <motion.div {...fadeInUp} className="mb-12">
           <Link
             href="/projects"
@@ -83,8 +83,8 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
       {/* Image Gallery Section */}
       {project.images && project.images.length > 1 && (
-        <section className="bg-gray-50 py-16 md:py-24">
-          <div className="max-w-7xl mx-auto px-6 md:px-8">
+        <section className="bg-gray-50 p-10">
+          <div className="max-w-7xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -120,7 +120,7 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
 
       {/* Video Section */}
       {project.video && (
-        <section className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
+        <section className="max-w-6xl mx-auto p-5">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -151,7 +151,7 @@ export const ProjectDetail = ({ project }: ProjectDetailProps) => {
       )}
 
       {/* CTA Section */}
-      <section className="max-w-6xl mx-auto px-6 md:px-8 py-16 md:py-24">
+      <section className="max-w-6xl mx-auto p-5">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

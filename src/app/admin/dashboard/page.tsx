@@ -1,19 +1,11 @@
 import { connectDB } from "@/lib/mongodb";
-import Project from "@/models/Project";
+import { Project } from "@/backend/db/models/Project";
+import { Message } from "@/backend/db/models/Message";
 import mongoose from "mongoose";
 import Link from "next/link";
 import { verifyAdminToken } from "@/lib/jwt-auth";
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret';
-
-// Inline message model
-// src/app/admin/dashboard/page.tsx
-
-const MessageSchema = new mongoose.Schema(
-  { name: String, email: String, message: String, read: { type: Boolean, default: false } },
-  { timestamps: true }
-);
-const Message = mongoose.models.message ?? mongoose.model("message", MessageSchema);
 
 export default async function AdminDashboard() {
   // Verify JWT token
@@ -24,16 +16,16 @@ export default async function AdminDashboard() {
   const [totalProjects, interiorCount, residentialCount, commercialCount, unreadMessages, recentProjects] =
     await Promise.all([
       Project.countDocuments(),
-      Project.countDocuments({ category: "interior" } as any),
-      Project.countDocuments({ category: "residential" } as any),
-      Project.countDocuments({ category: "commercial" } as any),
+      Project.countDocuments({ category: "Interior" } as any),
+      Project.countDocuments({ category: "Residential" } as any),
+      Project.countDocuments({ category: "Commercial" } as any),
       Message.countDocuments({ read: false } as any),
       Project.find({}).sort({ createdAt: -1 }).limit(5).lean<any[]>().exec(),
     ]);
 
   const stats = [
     { label: "Total Projects",  value: totalProjects,    color: "#C9A96E", href: "/admin/projects" },
-    { label: "Interior Design", value: interiorCount,    color: "#4A7C59", href: "/admin/projects" },
+    { label: "Interior", value: interiorCount,    color: "#4A7C59", href: "/admin/projects" },
     { label: "Residential",     value: residentialCount, color: "#1B3A5C", href: "/admin/projects" },
     { label: "Commercial",      value: commercialCount,  color: "#8B9467", href: "/admin/projects" },
     { label: "Unread Messages", value: unreadMessages,   color: "#8B3A3A", href: "/admin/messages" },

@@ -29,7 +29,7 @@ export default async function AdminLayout({
     <div className="min-h-screen p-10 pt-40" style={{ background: "" }}>
       <div className="flex rounded-3xl overflow-hidden" style={{ background: "#0a1520" }}>
         <AdminSidebar />
-        <main className="flex-1 overflow-auto min-h-[600px]">
+        <main className="flex-1 overflow-auto min-h-[80vh]">
           {children}
         </main>
       </div>

@@ -38,32 +38,29 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a1520] flex items-center justify-center px-4">
+    <div className="p-8 bg-[#0a1520] flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-[#0a1520] font-bold text-sm">SC</span>
-            </div>
-            <span className="text-white font-semibold tracking-widest uppercase text-sm">
-              Shyam Civil
-            </span>
-          </div>
           <h1 className="text-2xl font-bold text-white mt-4">Admin Panel</h1>
-          <p className="text-white/40 text-sm mt-1">Sign in with Google to manage your projects</p>
+          <p className="text-white/40 text-sm mt-1">
+            Sign in to manage your projects
+          </p>
         </div>
 
         {/* Card */}
         <div
           className="rounded-2xl p-8"
-          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+          style={{
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.08)",
+          }}
         >
           {/* Error */}
           {error && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm mb-6">
-              {error === "AccessDenied" 
-                ? "Access denied. Your email is not authorized." 
+              {error === "AccessDenied"
+                ? "Access denied. Your email is not authorized."
                 : "Sign in failed. Please try again."}
             </div>
           )}
@@ -79,9 +76,12 @@ export default function AdminLoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="admin@shyamcivil.com"
+                placeholder="Email"
                 className="w-full px-4 py-3 rounded-xl text-white text-sm outline-none"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               />
             </div>
 
@@ -96,7 +96,10 @@ export default function AdminLoginPage() {
                 required
                 placeholder="•••••••••"
                 className="w-full px-4 py-3 rounded-xl text-white text-sm outline-none"
-                style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+                style={{
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
               />
             </div>
 

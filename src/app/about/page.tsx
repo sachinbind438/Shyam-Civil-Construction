@@ -2,7 +2,7 @@ import Image from "next/image";
 import Button from "../../components/button/button";
 import { Raleway } from "next/font/google";
 import OurAproach from "../../components/about/our_approach";
-import TestimonialComponent from "../../components/TestimonialComponent";
+import TestimonialComponent from "../../components/Testimonial/TestimonialComponent";
 import WhoWeAre from "../../components/about/Whoweare";
 import TeamSection from "../../components/about/team";
 

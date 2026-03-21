@@ -5,20 +5,25 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
-      // ── Backblaze B2 direct URL ───────────────────────────────────────────
+      // ── Cloudflare R2 CDN ───────────────────────────────────────────────────
+      {
+        protocol: "https",
+        hostname: "pub-166fdf4fe2e540989f5e719d254cab65.r2.dev",
+        pathname: "/**",
+      },
+      // ── Cloudflare R2 endpoint (for direct access) ─────────────────────────
+      {
+        protocol: "https",
+        hostname: "*.r2.cloudflarestorage.com",
+        pathname: "/**",
+      },
+      // ── Backblaze B2 (for existing images) ───────────────────────────────
       {
         protocol: "https",
         hostname: "f005.backblazeb2.com",
         pathname: "/file/**",
       },
-      // ── Cloudflare CDN (add after connecting your domain) ─────────────────
-      // Replace cdn.shyamcivil.com with your actual subdomain
-      {
-        protocol: "https",
-        hostname: "cdn.shyamcivil.com",
-        pathname: "/**",
-      },
-      // ── Keep Cloudinary for existing images already in MongoDB ────────────
+      // ── Cloudinary (keep for existing images already in MongoDB) ────────────
       {
         protocol: "https",
         hostname: "res.cloudinary.com",

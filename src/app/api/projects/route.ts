@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Project from '@/models/Project';
+import { Project } from '@/backend/db/models/Project';
 import cloudinary from '@/lib/cloudinary';
 import { auth } from '@/auth';
 
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const limit    = parseInt(searchParams.get('limit') || '10');
 
     const query: any = {};
-    if (category && category !== 'all') {
+    if (category && category !== 'all' && category !== 'All') {
       query.category = category;
     }
 
@@ -76,63 +76,49 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // ── Dynamically import Cloudinary (prevents querySelector error) ──────────
-    const cloudinary = (await import('cloudinary')).v2;
-    cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-      api_key:    process.env.CLOUDINARY_API_KEY,
-      api_secret: process.env.CLOUDINARY_API_SECRET,
-    });
-
-    // ── Upload cover image ────────────────────────────────────────────────────
+    // Handle cover image upload
     const coverImageFile = formData.get('coverImage') as File | null;
     let coverImageUrl = '';
 
     if (coverImageFile && coverImageFile.size > 0) {
-      const buffer = Buffer.from(await coverImageFile.arrayBuffer());
-      const result = await new Promise<any>((resolve, reject) => {
-        cloudinary.uploader.upload_stream(
-          {
-            resource_type:  'image',
-            folder:         'shyam-civil/cover',
-            transformation: [
-              { width: 1200, height: 800, crop: 'fill', quality: 'auto', fetch_format: 'auto' },
-            ],
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        ).end(buffer);
+      // Call B2 upload API instead of Cloudinary
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', coverImageFile);
+      
+      const uploadResponse = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: uploadFormData,
       });
-      // ✅ cleanUrl strips any \n that Cloudinary might return
-      coverImageUrl = cleanUrl(result.secure_url);
+      
+      const uploadData = await uploadResponse.json();
+      if (!uploadData.success) {
+        throw new Error(uploadData.error || 'Upload failed');
+      }
+      
+      coverImageUrl = uploadData.url;
     }
 
-    // ── Upload gallery images ─────────────────────────────────────────────────
+    // Handle gallery images upload
     const galleryFiles = formData.getAll('gallery') as File[];
     const galleryUrls: string[] = [];
 
     for (const file of galleryFiles) {
       if (file.size > 0) {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const result = await new Promise<any>((resolve, reject) => {
-          cloudinary.uploader.upload_stream(
-            {
-              resource_type:  'image',
-              folder:         'shyam-civil/gallery',
-              transformation: [
-                { width: 1200, height: 800, crop: 'fill', quality: 'auto', fetch_format: 'auto' },
-              ],
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          ).end(buffer);
+        // Call B2 upload API for each gallery image
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', file);
+        
+        const uploadResponse = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: uploadFormData,
         });
-        // ✅ cleanUrl strips any \n
-        galleryUrls.push(cleanUrl(result.secure_url));
+        
+        const uploadData = await uploadResponse.json();
+        if (!uploadData.success) {
+          throw new Error(uploadData.error || 'Upload failed');
+        }
+        
+        galleryUrls.push(uploadData.url);
       }
     }
 

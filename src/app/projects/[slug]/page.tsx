@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { connectDB } from "@/lib/mongodb";
-import Project from "@/models/Project";
+import { Project } from "@/backend/db/models/Project";
 import { ProjectDetail } from "@/components/Projects/ProjectDetail";
 import { serialiseProject } from "@/data/projects";
 

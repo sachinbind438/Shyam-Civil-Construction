@@ -7,7 +7,7 @@ interface Section {
   id:      string;
   heading: string;
   body:    string;
-  images:  string; // newline-separated in the textarea
+  images:  string[]; // Changed from string to array
 }
 
 interface ProjectFormProps {
@@ -20,31 +20,24 @@ interface ProjectFormProps {
     description:     string;
     fullDescription: string;
     thumbnail:       string;
-    images:          string; // newline-separated
+    images:          string[]; // Changed from string to array
     video:           string;
     featured:        boolean;
     sections:        Section[];
   };
 }
 
-const EMPTY_SECTION: Section = { id: "", heading: "", body: "", images: "" };
+const EMPTY_SECTION: Section = { id: "", heading: "", body: "", images: [] }; // Changed from "" to []
 
 const defaultInitial = {
   title: "", slug: "", category: "Interior Design",
   description: "", fullDescription: "", thumbnail: "",
-  images: "", video: "", featured: false, sections: [],
+  images: [], video: "", featured: false, sections: [],
 };
 
 // ✅ Strips ALL whitespace including \n \r \t from a URL
 const cleanUrl = (url: string): string =>
   url.replace(/[\n\r\t]/g, "").trim();
-
-// ✅ Splits a textarea value into clean URL array
-const splitUrls = (text: string): string[] =>
-  text
-    .split("\n")
-    .map(cleanUrl)
-    .filter(Boolean);
 
 export default function ProjectForm({
   mode,
@@ -58,58 +51,129 @@ export default function ProjectForm({
   const [loading,  setLoading]  = useState(false);
   const [error,    setError]    = useState("");
 
-  // ── Upload a single file to Cloudinary via API ──────────────────────────────
-  const uploadImage = async (file: File): Promise<string> => {
+  // Upload states
+  const [uploadingThumb, setUploadingThumb] = useState(false);
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [thumbProgress, setThumbProgress] = useState(0);
+  const [galleryProgress, setGalleryProgress] = useState(0);
+  const [videoProgress, setVideoProgress] = useState(0);
+
+  // Video mode: "url" or "upload"
+  const [videoMode, setVideoMode] = useState<"url" | "upload">("url");
+
+  // ── Upload a single file to B2 via API ──────────────────────────────
+  const uploadFile = async (file: File, onProgress?: (percent: number) => void): Promise<string> => {
     const formData = new FormData();
     formData.append("file", file);
 
-    const res  = await fetch("/api/admin/upload", { method: "POST", body: formData });
-    const data = await res.json();
+    const xhr = new XMLHttpRequest();
+    
+    return new Promise((resolve, reject) => {
+      xhr.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable && onProgress) {
+          const percent = Math.round((e.loaded / e.total) * 100);
+          onProgress(percent);
+        }
+      });
 
-    if (!res.ok) throw new Error(data.error ?? "Upload failed");
+      xhr.addEventListener("load", () => {
+        if (xhr.status === 200) {
+          const data = JSON.parse(xhr.responseText);
+          if (data.success) {
+            resolve(cleanUrl(data.url));
+          } else {
+            reject(new Error(data.error || "Upload failed"));
+          }
+        } else {
+          reject(new Error(`Upload failed: ${xhr.status}`));
+        }
+      });
 
-    // ✅ cleanUrl ensures no \n in the returned Cloudinary URL
-    return cleanUrl(data.url);
+      xhr.addEventListener("error", () => {
+        reject(new Error("Upload failed"));
+      });
+
+      xhr.open("POST", "/api/admin/upload");
+      xhr.send(formData);
+    });
   };
 
   // ── Handle thumbnail file pick ──────────────────────────────────────────────
   const handleThumbnailFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    setLoading(true);
+    
+    setUploadingThumb(true);
+    setThumbProgress(0);
     try {
-      const url = await uploadImage(file);
+      const url = await uploadFile(file, (percent) => setThumbProgress(percent));
       setForm((f) => ({ ...f, thumbnail: url }));
     } catch (err: any) {
       setError(err.message);
     }
-    setLoading(false);
+    setUploadingThumb(false);
+    setThumbProgress(0);
   };
 
   // ── Handle gallery files pick ───────────────────────────────────────────────
   const handleGalleryFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
-    setLoading(true);
+    
+    setUploadingGallery(true);
+    setGalleryProgress(0);
     try {
-      const urls = await Promise.all(files.map(uploadImage));
+      const urls = await Promise.all(files.map((file, index) => 
+        uploadFile(file, (percent) => setGalleryProgress(Math.round((percent / files.length) + (100 / files.length) * index)))
+      ));
       // Append new URLs to existing ones
-      const existing = splitUrls(form.images);
-      setForm((f) => ({ ...f, images: [...existing, ...urls].join("\n") }));
+      const existing = form.images || [];
+      setForm((f) => ({ ...f, images: [...existing, ...urls] }));
     } catch (err: any) {
       setError(err.message);
     }
-    setLoading(false);
+    setUploadingGallery(false);
+    setGalleryProgress(0);
   };
 
-  // ── Slug auto-generation ────────────────────────────────────────────────────
+  // ── Handle video file upload ───────────────────────────────────────────────
+  const handleVideoFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    // Check file size (50MB max)
+    if (file.size > 50 * 1024 * 1024) {
+      setError("Video file must be less than 50MB");
+      return;
+    }
+    
+    setUploadingVideo(true);
+    setVideoProgress(0);
+    try {
+      const url = await uploadFile(file, (percent) => setVideoProgress(percent));
+      setForm((f) => ({ ...f, video: url }));
+    } catch (err: any) {
+      setError(err.message);
+    }
+    setUploadingVideo(false);
+    setVideoProgress(0);
+  };
+
+  // ── Remove gallery image ─────────────────────────────────────────────────────
+  const removeGalleryImage = (index: number) => {
+    const existing = form.images || [];
+    const newImages = existing.filter((_, i) => i !== index);
+    setForm((f) => ({ ...f, images: newImages }));
+  };
+
   const handleTitleChange = (val: string) => {
     const slug = val.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
     setForm((f) => ({ ...f, title: val, slug }));
   };
 
-  // ── Section helpers ─────────────────────────────────────────────────────────
-  const handleSectionChange = (i: number, field: keyof Section, val: string) =>
+  // ── Slug auto-generation ────────────────────────────────────────────────────
+  const handleSectionChange = (i: number, field: keyof Section, val: string | string[]) =>
     setSections((prev) => prev.map((s, idx) => idx === i ? { ...s, [field]: val } : s));
 
   const addSection = () =>
@@ -126,11 +190,11 @@ export default function ProjectForm({
 
     const payload = {
       ...form,
-      // ✅ splitUrls strips \n before saving to MongoDB
-      images:   splitUrls(form.images),
+      // ✅ images is already an array, no split needed
+      images:   form.images || [],
       sections: sections.map((s) => ({
         ...s,
-        images: splitUrls(s.images),
+        images: s.images || [],
       })),
     };
 
@@ -229,14 +293,21 @@ export default function ProjectForm({
         <div>
           <label className={labelClass}>Thumbnail / Hero Image *</label>
           <div className="space-y-2">
-            <input type="file" accept="image/*" onChange={handleThumbnailFile}
-              className="w-full text-white/50 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:cursor-pointer"
-              style={{ ...inputStyle } as any} />
-            {/* Also allow manual URL entry */}
+            <div className="relative">
+              <input type="file" accept="image/*" onChange={handleThumbnailFile}
+                className="w-full text-white/50 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:cursor-pointer"
+                style={{ ...inputStyle } as any} disabled={uploadingThumb} />
+              {uploadingThumb && (
+                <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                  <span className="text-white text-sm">{thumbProgress}%</span>
+                </div>
+              )}
+            </div>
+            {/* Manual URL entry */}
             <input className={inputClass} style={inputStyle}
               value={form.thumbnail}
               onChange={(e) => setForm((f) => ({ ...f, thumbnail: cleanUrl(e.target.value) }))}
-              placeholder="Or paste Cloudinary URL..." />
+              placeholder="Or paste image URL..." />
             {form.thumbnail && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={form.thumbnail} alt="preview"
@@ -245,26 +316,100 @@ export default function ProjectForm({
           </div>
         </div>
 
-        {/* Gallery — file upload */}
+        {/* Gallery */}
         <div>
           <label className={labelClass}>Gallery Images</label>
           <div className="space-y-2">
-            <input type="file" accept="image/*" multiple onChange={handleGalleryFiles}
-              className="w-full text-white/50 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:cursor-pointer"
-              style={{ ...inputStyle } as any} />
-            {/* Also allow manual URL entry */}
-            <textarea className={inputClass} style={inputStyle} rows={4}
-              value={form.images}
-              onChange={(e) => setForm((f) => ({ ...f, images: e.target.value }))}
-              placeholder={"Or paste URLs, one per line..."} />
+            <div className="relative">
+              <input type="file" accept="image/*" multiple onChange={handleGalleryFiles}
+                className="w-full text-white/50 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:cursor-pointer"
+                style={{ ...inputStyle } as any} disabled={uploadingGallery} />
+              {uploadingGallery && (
+                <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                  <span className="text-white text-sm">{galleryProgress}%</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Gallery preview grid */}
+            {(form.images || []).length > 0 && (
+              <div className="grid grid-cols-4 gap-2 mt-4">
+                {(form.images || []).map((url, index) => (
+                  <div key={index} className="relative group">
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={url} alt={`Gallery ${index + 1}`}
+                      className="w-full h-20 object-cover rounded-lg opacity-80" />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
+        {/* Video */}
         <div>
-          <label className={labelClass}>Video URL (YouTube embed)</label>
-          <input className={inputClass} style={inputStyle}
-            value={form.video} onChange={(e) => setForm((f) => ({ ...f, video: e.target.value }))}
-            placeholder="https://www.youtube.com/embed/..." />
+          <label className={labelClass}>Video</label>
+          <div className="space-y-2">
+            {/* Mode toggle */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setVideoMode("url")}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  videoMode === "url"
+                    ? "bg-[#C9A96E] text-[#0a1520]"
+                    : "bg-white/10 text-white/60"
+                }`}
+              >
+                YouTube/Vimeo URL
+              </button>
+              <button
+                type="button"
+                onClick={() => setVideoMode("upload")}
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  videoMode === "upload"
+                    ? "bg-[#C9A96E] text-[#0a1520]"
+                    : "bg-white/10 text-white/60"
+                }`}
+              >
+                Upload Video
+              </button>
+            </div>
+
+            {videoMode === "url" ? (
+              <input className={inputClass} style={inputStyle}
+                value={form.video} onChange={(e) => setForm((f) => ({ ...f, video: cleanUrl(e.target.value) }))}
+                placeholder="https://www.youtube.com/embed/..." />
+            ) : (
+              <div className="space-y-2">
+                <div className="relative">
+                  <input type="file" accept="video/*" onChange={handleVideoFile}
+                    className="w-full text-white/50 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-medium file:cursor-pointer"
+                    style={{ ...inputStyle } as any} disabled={uploadingVideo} />
+                  {uploadingVideo && (
+                    <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                      <span className="text-white text-sm">{videoProgress}%</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-white/40 text-xs">Max file size: 50MB</p>
+                {form.video && form.video.includes('backblazeb2.com') && (
+                  <video
+                    src={form.video}
+                    controls
+                    className="w-full h-32 rounded-lg mt-2"
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -305,9 +450,10 @@ export default function ProjectForm({
             </div>
             <div>
               <label className={labelClass}>Section Images (one URL per line)</label>
-              <textarea className={inputClass} style={inputStyle} rows={2} value={s.images}
-                onChange={(e) => handleSectionChange(i, "images", e.target.value)}
-                placeholder="https://res.cloudinary.com/..." />
+              <textarea className={inputClass} style={inputStyle} rows={2} 
+                value={(s.images || []).join("\n")}
+                onChange={(e) => handleSectionChange(i, "images", e.target.value.split("\n").filter(Boolean))}
+                placeholder="One image URL per line..." />
             </div>
           </div>
         ))}

@@ -1,5 +1,5 @@
 import { connectDB } from "@/lib/mongodb";
-import Project from "@/models/Project";
+import { Project } from "@/backend/db/models/Project";
 import { redirect } from "next/navigation";
 import { verifyAdminToken } from "@/lib/jwt-auth";
 import Link from "next/link"

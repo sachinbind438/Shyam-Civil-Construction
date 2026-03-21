@@ -1,6 +1,6 @@
 import { connectDB } from "@/lib/mongodb";
 import { verifyAdminToken } from "@/lib/jwt-auth";
-import Message from "@/models/Message";
+import { Message } from "@/backend/db/models/Message";
 import Link from "next/link";
 
 export default async function AdminMessagesPage() {

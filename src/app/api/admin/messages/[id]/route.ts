@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Message from '@/models/Message';
+import { Message } from '@/backend/db/models/Message';
 
 // DELETE single message
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     await connectDB();
     
-    const message = await Message.findById(params.id).exec();
+    const message = await Message.findById(id).exec();
     if (!message) {
       return NextResponse.json(
         { success: false, error: 'Message not found' },
@@ -18,7 +19,7 @@ export async function DELETE(
       );
     }
     
-    await Message.findByIdAndDelete(params.id).exec();
+    await Message.findByIdAndDelete(id).exec();
     
     return NextResponse.json({
       success: true,

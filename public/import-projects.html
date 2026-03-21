@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import Projects from Framer</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+        .project-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .project-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .project-item:last-child {
+            border-bottom: none;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 10px 10px 0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #c82333;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📥 Import Projects from Framer</h1>
+        
+        <div class="info">
+            <strong>ℹ️ What this does:</strong><br>
+            • Imports 10 projects from your Framer website<br>
+            • Uses placeholder images from Unsplash<br>
+            • Replaces all existing projects<br>
+            • Categories: Kitchen, Bathroom, Bedroom, Living, Dining
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ IMPORTANT:</strong><br>
+            • This will DELETE all existing projects first<br>
+            • Uses placeholder images (you'll need to upload real ones)<br>
+            • All project data comes from your Framer site
+        </div>
+
+        <h3>Projects to be imported:</h3>
+        <div class="project-list">
+            <div class="project-item">🏺 Artistic Vessel Sink (Bathroom)</div>
+            <div class="project-item">🍽️ Sleek & Bright Kitchen Design (Kitchen)</div>
+            <div class="project-item">🪶 Textured Rustic Wash Basin (Bathroom)</div>
+            <div class="project-item">🌿 ModernMint Kitchen (Kitchen)</div>
+            <div class="project-item">🍽️ Cozy Dining Lounge (Dining)</div>
+            <div class="project-item">🚿 Glass-Shower Serenity (Bathroom)</div>
+            <div class="project-item">🛏️ Minimalist Bedroom (Bedroom)</div>
+            <div class="project-item">🛋️ Luxe Marble Living Room (Living)</div>
+            <div class="project-item">🏠 Marbled Modern Kitchen (Kitchen)</div>
+            <div class="project-item">📚 Modern Kitchen with Open Shelves (Kitchen)</div>
+        </div>
+
+        <button class="btn btn-success" onclick="importProjects()">Import All Projects</button>
+        <a href="/admin/projects" class="btn btn-secondary">Cancel</a>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function importProjects() {
+            if (!confirm('This will replace all existing projects. Continue?')) {
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result loading';
+            resultDiv.innerHTML = '📥 Importing projects from Framer...';
+
+            try {
+                const response = await fetch('/api/admin/import-projects', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `
+                        <strong>✅ Success!</strong><br>
+                        ${data.message}<br><br>
+                        <strong>Next Steps:</strong><br>
+                        1. Go to <a href="/admin/projects">Admin Projects</a><br>
+                        2. Edit each project to upload real images via R2<br>
+                        3. Update any additional details as needed<br><br>
+                        <a href="/admin/projects" class="btn btn-success">Manage Projects</a>
+                        <a href="/projects" class="btn btn-secondary">View Projects</a>
+                    `;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.innerHTML = `<strong>❌ Error:</strong> ${data.error}`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.innerHTML = `<strong>❌ Error:</strong> ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

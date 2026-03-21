@@ -55,7 +55,7 @@ export default function ContactPage() {
     return (
       <section className="px-6 lg:px-18 pt-48 pb-6 text-center">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-8xl lg:text-7xl font-medium mb-8 text-green-600">
+          <h1 className="text-8xl lg:text-7xl font-medium mb-8 text-black!">
             Message Sent Successfully!
           </h1>
           <p className="text-lg font-medium text-gray-600 mb-8">
@@ -84,7 +84,7 @@ export default function ContactPage() {
           Write to us by completing the form. We will get back to you as soon as
           possible!
         </p>
-        <p className="text-red-600 font-medium text-[18px]">
+        <p className="text-red-600! font-medium text-[18px]">
           Accepting projects only in Mumbai Region
         </p>
       </div>
@@ -100,11 +100,11 @@ export default function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-[600px_1fr] gap-24">
         {/* LEFT — Sticky Contact Details */}
         <div className="sticky top-24 self-start font-medium">
-          <h2 className="text-5xl text-start font-medium mb-8">
+          <h2 className="text-4xl text-start! font-medium mb-8">
             Contact Details
           </h2>
           <div className="mb-8">
-            <p className="text-black text-2xl mb-4">Address:</p>
+            <p className="text-black! text-2xl! mb-4">Address:</p>
             <p className="text-gray-700 leading-relaxed text-[20px] mb-8">
               D1, First Floor, Akurli Samata CHS LTD,
               <br />
@@ -114,11 +114,11 @@ export default function ContactPage() {
             </p>
           </div>
           <div className="mb-8">
-            <p className="text-black text-2xl">Email:</p>
+            <p className="text-black! text-2xl! mb-4">Email:</p>
             <p className="text-[20px]">Shyamcivilconstruction@gmail.com</p>
           </div>
           <div className="mb-8">
-            <p className="text-black text-2xl">Phone:</p>
+            <p className="text-black! text-2xl! mb-4">Phone:</p>
             <p className="mb-8 text-[20px] font-medium">
               +91 9324508485 <br />
               +91 9324455382 <br />
@@ -154,7 +154,7 @@ export default function ContactPage() {
             </span>
           </Link>
 
-          <p className="text-sm mb-4">Find Us On:</p>
+          <p className="text-sm text-black! mb-4">Find Us On:</p>
           <div className="flex gap-6 text-sm text-gray-500">
             <Link
               href="https://www.facebook.com/shyamcivilconstruction"
@@ -179,14 +179,14 @@ export default function ContactPage() {
 
         {/* RIGHT — Scrollable Inquiry Form */}
         <div>
-          <h2 className="text-4xl font-medium text-start mb-12">
+          <h2 className="text-4xl font-medium text-start! mb-12">
             Inquiry Form
           </h2>
 
           <form onSubmit={handleSubmit}>
             {/* PERSONAL INFO */}
             <div className="mb-14">
-              <h4 className="text-sm font-medium text-start mb-6">
+              <h4 className="text-sm font-medium text-start! mb-6">
                 PERSONAL INFO
               </h4>
 
@@ -232,7 +232,7 @@ export default function ContactPage() {
 
             {/* MESSAGE */}
             <div className="mb-14">
-              <h4 className="text-sm font-medium text-start mb-6">
+              <h4 className="text-sm font-medium text-start!   mb-6">
                 YOUR MESSAGE
               </h4>
               <textarea

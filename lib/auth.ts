@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";  
-import { connectDB } from "./src/lib/mongodb";
+import { connectDB } from "@/lib/mongodb";
 
 // Admin schema
 const AdminSchema = new mongoose.Schema({

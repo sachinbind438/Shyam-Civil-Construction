@@ -79,9 +79,8 @@ async function uploadBufferToB2(
       "Content-Length":    String(buffer.length),
       "X-Bz-Content-Sha1": sha1,
     },
-    // @ts-expect-error - Node fetch supports Buffer as body
-    body:   buffer as any,
-    duplex: "half",
+    // Node fetch supports Buffer as body
+    body: buffer as any,
   });
 
   if (!res.ok) {
@@ -201,7 +200,7 @@ async function run() {
     }
 
     if (changed) {
-      await Project.findByIdAndUpdate(p._id, u);
+      await Project.findByIdAndUpdate(p._id, u, {});
       migratedCount++;
       console.log(`  💾 Saved to MongoDB`);
     } else {

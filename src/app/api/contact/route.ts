@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Message from '@/models/Message';
+import { Message } from '@/backend/db/models/Message';
 
 // POST save contact message
 export async function POST(request: NextRequest) {

@@ -8,6 +8,11 @@ export function middleware(request: NextRequest) {
   
   // Check if the path is admin-related
   if (pathname.startsWith('/admin')) {
+    // ✅ FIXED: Allow API routes to bypass middleware (they handle their own auth)
+    if (pathname.startsWith('/api/admin')) {
+      return NextResponse.next();
+    }
+    
     // Allow access to login page
     if (pathname === '/admin/login') {
       return NextResponse.next();

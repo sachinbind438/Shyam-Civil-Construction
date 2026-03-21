@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
-import Message from '@/models/Message';
+import { Message } from '@/backend/db/models/Message';
 
 // GET all messages (admin only)
 export async function GET(request: NextRequest) {

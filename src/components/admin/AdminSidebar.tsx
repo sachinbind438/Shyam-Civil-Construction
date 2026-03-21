@@ -69,10 +69,10 @@ export default function AdminSidebar() {
       <div className="px-6 py-7 border-b items-center" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
         <div className="flex flex-col items-center ">      
           
-            <p className="text-[#4d4d4d]! text-2xl! font-bold leading-tight cursor-pointer hover:text-[#ffffff]! transition-colors duration-200">Shyam Civil</p>
-            <p className="text-[#4d4d4d]! text-base! leading-tight cursor-pointer hover:text-[#ffffff]! transition-colors duration-200">Admin Panel</p>
+            <p className="text-white text-2xl! font-bold leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">Shyam Civil</p>
+            <p className="text-white text-base! leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">Admin Panel</p>
           </div>
-        </div>
+        </div>  
       
 
       {/* Nav links */}
@@ -86,11 +86,11 @@ export default function AdminSidebar() {
               className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200"
               style={{
                 background: active ? "rgba(201,169,110,0.12)" : "transparent",
-                color:      active ? "#C9A96E" : "rgba(255,255,255,0.45)",
+                color:      active ? "#rgba(255,255,255,0.3)" : "white",
                 fontWeight: active ? 500 : 400,
               }}
             >
-              <span style={{ color: active ? "#C9A96E" : "rgba(255,255,255,0.3)" }}>
+              <span style={{ color: active ? "#rgba(255,255,255,0.3)" : "white" }}>
                 {item.icon}
               </span>
               {item.label}
@@ -100,13 +100,13 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Bottom links */}
-      <div className="px-3 pb-6 space-y-1 border-t pt-4"
+      <div className="px-3 pb-6 space-y-1 border-t pt-4 "
         style={{ borderColor: "rgba(255,255,255,0.07)" }}>
         <a
           href="/"
           target="_blank"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all"
-          style={{ color: "rgba(255,255,255,0.35)" }}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all hover:cursor-pointer hover:scale-105 hover:bg-white/10"
+          style={{ color: "white" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
@@ -118,8 +118,8 @@ export default function AdminSidebar() {
 
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left"
-          style={{ color: "rgba(255,255,255,0.35)" }}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left hover:cursor-pointer hover:scale-105 hover:bg-white/10"
+          style={{ color: "white" }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>

@@ -34,8 +34,8 @@ export default async function AdminDashboard() {
   return (
     <div className="p-8">
       <div className="mb-10">
-        <h1 className="text-2xl font-bold text-white mb-1">Dashboard</h1>
-        <p className="text-white/40 text-sm">Welcome back.</p>
+        <h1 className="text-4xl! font-bold text-white mb-1">Dashboard</h1>
+        <p className="text-white/80 text-lg">Welcome back.</p>
       </div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
@@ -43,8 +43,8 @@ export default async function AdminDashboard() {
           <Link key={s.label} href={s.href}
             className="rounded-2xl p-5 transition-all hover:scale-[1.02]"
             style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-            <p className="text-white/40 text-xs uppercase tracking-wider mb-3">{s.label}</p>
-            <p className="text-4xl font-bold" style={{ color: s.color }}>{s.value}</p>
+            <p className="text-white/40 text-xs! uppercase tracking-wider mb-3">{s.label}</p>
+            <p className="text-2xl! font-bold" style={{ color: s.color }}>{s.value}</p>
           </Link>
         ))}
       </div>
@@ -52,10 +52,10 @@ export default async function AdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 rounded-2xl p-6"
           style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-white font-semibold">Recent Projects</h2>
+          <div className="flex items-center justify-between mb-6 ">
+            <h2 className="text-white text-4xl! font-semibold">Recent Projects</h2>
             <Link href="/admin/projects/new"
-              className="text-xs px-3 py-1.5 rounded-full font-medium"
+              className="text-sm px-3 py-1.5 rounded-full font-medium hover:scale-[1.02] transition-all hover:cursor-pointer"
               style={{ background: "#C9A96E", color: "#0a1520" }}>+ Add New</Link>
           </div>
           <div className="space-y-3">
@@ -64,25 +64,25 @@ export default async function AdminDashboard() {
                 className="flex items-center justify-between py-3 border-b"
                 style={{ borderColor: "rgba(255,255,255,0.05)" }}>
                 <div>
-                  <p className="text-white text-sm font-medium">{p.title}</p>
-                  <p className="text-white/35 text-xs mt-0.5">{p.category}</p>
+                  <p className="text-white/60 text-md font-medium">{p.title}</p>
+                  <p className="text-white/40 text-sm mt-0.5">{p.category}</p>
                 </div>
                 <div className="flex gap-2">
-                  <Link href={`/admin/projects/${p._id}`}
-                    className="text-xs px-3 py-1 rounded-full"
-                    style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>Edit</Link>
+                  <Link href={`/admin/projects/${p._id}`} 
+                    className="px-3 py-1.5 rounded-lg text-xs bg-[#9f96968d] text-[#ffffff] font-medium transition-colors hover:scale-105 hover:shadow-lg hover:shadow-white/20 hover:bg-[#C9A96E] hover:text-black hover:cursor-pointer hover:transition-all"
+                   >Edit</Link>
                   <Link href={`/projects/${p.slug}`} target="_blank"
-                    className="text-xs px-3 py-1 rounded-full"
-                    style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}>View ↗</Link>
+                    className="text-sm rounded-lg px-3 py-1 bg-[#ffffff1a] text-[rgba(255,255,255,0.6)] hover:scale-105 hover:shadow-lg hover:shadow-white/20 transition-all hover:cursor-pointer hover:transition-all"
+                    >View ↗</Link>
                 </div>
               </div>
-            ))}
+            ))} 
           </div>
         </div>
 
         <div className="rounded-2xl p-6"
           style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-          <h2 className="text-white font-semibold mb-6">Quick Actions</h2>
+          <h2 className="text-white text-4xl! font-semibold mb-6">Quick Actions</h2>
           <div className="space-y-3">
             {[
               { label: "Add New Project",   href: "/admin/projects/new", bg: "#C9A96E",                  fg: "#0a1520"                  },
@@ -91,7 +91,7 @@ export default async function AdminDashboard() {
               { label: "View Live Site",    href: "/",                   bg: "rgba(255,255,255,0.08)",   fg: "rgba(255,255,255,0.6)"    },
             ].map((a) => (
               <Link key={a.label} href={a.href}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm hover:opacity-90"
+                className="flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm hover:opacity-50 hover:scale-105 transition-all "
                 style={{ background: a.bg, color: a.fg }}>
                 {a.label} <span>→</span>
               </Link>

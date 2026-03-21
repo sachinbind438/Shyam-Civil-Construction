@@ -15,7 +15,7 @@ export default async function AdminMessagesPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white mb-1">Messages</h1>
+        <h1 className="text-4xl! font-bold text-white mb-1">Messages</h1>
         <p className="text-white/40 text-sm">
           {unread > 0 ? (
             <span><span style={{ color: "#C9A96E" }}>{unread} unread</span> · {messages.length} total</span>
@@ -46,22 +46,22 @@ export default async function AdminMessagesPage() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <p className="text-white font-medium text-sm">{m.name}</p>
+                    <p className="text-white font-medium text-md">{m.name}</p>
                     {!m.read && (
                       <span
-                        className="text-xs px-2 py-0.5 rounded-full"
+                        className="text-sm px-2 py-0.5 rounded-full"
                         style={{ background: "rgba(201,169,110,0.2)", color: "#C9A96E" }}
                       >
                         New
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-4 mb-3 text-xs text-white/30">
-                    <a href={`mailto:${m.email}`} className="hover:text-white/60 transition-colors">
+                  <div className="flex items-center gap-4 mb-3 text-[15px]! text-white/30">
+                    <a href={`mailto:${m.email}`} className="hover:text-white/80 transition-colors">
                       {m.email}
                     </a>
                     {m.phone && (
-                      <a href={`tel:${m.phone}`} className="hover:text-white/60 transition-colors">
+                      <a href={`tel:${m.phone}`} className="hover:text-white/80 transition-colors">
                         {m.phone}
                       </a>
                     )}
@@ -72,13 +72,12 @@ export default async function AdminMessagesPage() {
                       })}
                     </span>
                   </div>
-                  <p className="text-white/60 text-sm leading-relaxed">{m.message}</p>
+                  <p className="text-white/30 text-[15px]! leading-relaxed">{m.message}</p>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <a
                     href={`mailto:${m.email}`}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-                    style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}
+                    className="px-3 py-1.5 rounded-lg text-[15px]! bg-[#9f96968d] text-[#ffffff] font-medium transition-colors hover:scale-105 hover:shadow-lg hover:shadow-white/20 hover:bg-[#C9A96E] hover:text-black"
                   >
                     Reply ↗
                   </a>

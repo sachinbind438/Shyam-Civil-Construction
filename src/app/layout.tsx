@@ -2,24 +2,22 @@ import type { Metadata } from "next"
 import Navbar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer/Footer";
 import "./globals.css";
-import { Inter, Raleway, Montserrat } from "next/font/google";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 
-const inter = Inter({
+const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
-  variable: "--font-inter",
-  display : "swap",
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
+  variable: "--font-cormorant",
+  display: "swap",
 });
 
-const raleway = Raleway({
+const jost = Jost({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-raleway",
-});
-
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "700", "900"],
-  variable: "--font-montserrat",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal"],
+  variable: "--font-jost",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -84,7 +82,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${raleway.variable} ${montserrat.variable}`}>
+    <html lang="en" className={`${cormorant.variable} ${jost.variable}`}>
       <body className="bg-white text-black min-h-screen" cz-shortcut-listen="true">
         <Navbar />
         <main>

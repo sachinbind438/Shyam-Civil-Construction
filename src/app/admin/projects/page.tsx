@@ -17,13 +17,12 @@ export default async function AdminProjectsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Projects</h1>
-          <p className="text-white/40 text-sm">{projects.length} total projects</p>
+          <h1 className="text-4xl! font-bold text-white mb-1">Projects</h1>
+          <p className="text-white/60 text-md">{projects.length} total projects</p>
         </div>
         <Link
           href="/admin/projects/new"
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-90"
-          style={{ background: "#C9A96E", color: "#0a1520" }}
+          className="flex items-center bg-[#C9A96E] gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all hover:opacity-80 hover:scale-105 hover:shadow-lg hover:shadow-white/20 hover:text-black "
         >
           <span>+</span> Add Project
         </Link>
@@ -36,10 +35,10 @@ export default async function AdminProjectsPage() {
       >
         {/* Table header */}
         <div
-          className="grid grid-cols-12 px-6 py-3 text-xs uppercase tracking-wider"
+          className="grid grid-cols-12 px-6 py-3 text-sm uppercase tracking-wider"
           style={{
             background: "rgba(255,255,255,0.04)",
-            color: "rgba(255,255,255,0.35)",
+            color: "white",
             borderBottom: "1px solid rgba(255,255,255,0.07)",
           }}
         >
@@ -117,8 +116,7 @@ export default async function AdminProjectsPage() {
                 </Link>
                 <Link
                   href={`/admin/projects/${p._id}`}
-                  className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
-                  style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.6)" }}
+                  className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-white/20 hover:bg-[#C9A96E] hover:text-black"
                 >
                   Edit
                 </Link>

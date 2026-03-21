@@ -39,7 +39,7 @@ export default function Hero({
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center text-wrap ">
-        <h1 className="text-white text-[120px] font-Raleway! font-medium leading-tight">
+        <h1 className="text-white text-[120px]!  font-medium leading-tight">
           {title}
           <br />
           {subtitle}

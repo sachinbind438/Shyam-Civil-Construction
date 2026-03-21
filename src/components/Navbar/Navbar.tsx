@@ -63,12 +63,12 @@ export default function Navbar() {
             <Image
               src="/logo.avif"
               alt="Shyam Civil Construction Logo"
-              width={60}
-              height={60}
-              className="object-contain"
+              width={80}
+              height={80}
+              className="object-contain overflow-hidden rounded-full"
             />
             <div className="hidden sm:block">
-              <h1 className=" text-2xl font-montserrat! font-medium text-gray-900">
+              <h1 className=" text-3xl! font-montserrat! font-extrabold! text-gray-900">
                 <Link href="/"> SHYAM CIVIL CONSTRUCTION</Link>
               </h1>
             </div>

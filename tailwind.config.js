@@ -8,10 +8,11 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
-        inter: ["var(--font-inter)", "sans-serif"],
-        raleway: ["var(--font-raleway)", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
-        montserrat: ["var(--font-montserrat)", "ui-sans-serif", "system-ui", "-apple-system", "\"Segoe UI\"", "Roboto", "\"Helvetica Neue\"", "Arial"],
+        cormorant: ["var(--font-cormorant)", "serif"],
+        jost: ["var(--font-jost)", "sans-serif"],
+        display: ["var(--font-cormorant)", "serif"],
+        sans: ["var(--font-jost)", "sans-serif"],
+        body: ["var(--font-jost)", "sans-serif"],
       },
     },
   },

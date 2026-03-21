@@ -25,12 +25,12 @@ export default function Footer() {
             <Image
               src="/assets/logo.png"
               alt="Shyam Civil Construction Logo"
-              width={57}
-              height={66}
+              width={80}
+              height={80}
               className="object-contain"
             />
             <div className="hidden sm:block">
-              <h1 className="text-2xl font-medium text-white-700! hover:text-white! transition-colors duration-200">
+              <h1 className="text-3xl! font-extrabold text-white-700! hover:text-white! transition-colors duration-200">
                 <Link href={"/"}>SHYAM CIVIL CONSTRUCTION</Link>
               </h1>
             </div>

@@ -7,8 +7,8 @@ export default function ServiceGrid() {
   return (
     <div>
       <div className="px-20 py-6 gap-6 flex flex-col">
-        <h4 className="text-start! text-7xl font-raleway!">Services</h4>
-        <p className="text-base  text-[#4d4d4d] leading-relaxed max-w-[620px]">
+        <h4 className="text-start! text-7xl ">Services</h4>
+        <p className="  text-[#4d4d4d] leading-relaxed max-w-[620px]">
           From concept to completion, we design spaces that are as unique as you
           are, mixing modern aesthetics with thoughtful functionality, ensuring
           each project is perfectly tailored to your needs.
@@ -43,7 +43,7 @@ export default function ServiceGrid() {
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-start">
                 <h2 className="text-5xl font-semibold">Complete Remodeling</h2>
-                <span className="text-gray-400">[ 1 ]</span>
+                <span className="text-gray-400">[1]</span>
               </div>
               <p className="  max-w-[750px]    ">
                 From outdated to outstanding—our complete home remodeling
@@ -90,7 +90,7 @@ export default function ServiceGrid() {
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-start">
                 <h2 className="text-5xl font-semibold">Bathroom Remodeling</h2>
-                <span className="text-gray-400">[ 2 ]</span>
+                <span className="text-gray-400">[2]</span>
               </div>
               <p className="  max-w-[750px]    ">
                 Turn your bathroom into a luxurious sanctuary where comfort
@@ -135,7 +135,7 @@ export default function ServiceGrid() {
             <div className="flex flex-col gap-6">
               <div className="flex justify-between items-start">
                 <h2 className="text-5xl font-semibold">Kitchen Remodeling</h2>
-                <span className="text-gray-400">[ 3 ]</span>
+                <span className="text-gray-400">[3]</span>
               </div>
               <p className="  max-w-[750px]    ">
                 Elevate your cooking experience with a kitchen remodel that

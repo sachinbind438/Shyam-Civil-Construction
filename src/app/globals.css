@@ -5,48 +5,33 @@
 @layer base {
   body {
     font-family: var(--font-inter), ui-sans-serif, system-ui;
-    font-size: 16px;
+    font-size: 18px;
     color: #4d4d4d;
     background-color: #ffffff;
     hyphens: none;
+    letter-spacing: 0.02em;
+    line-height: 1.6;
   }
 }
 
-p,
-li,
-ul {
-  hyphens: none !important;
-  -webkit-hyphens: none !important;
-  -ms-hyphens: none !important;
-  word-break: normal;
-  overflow-wrap: normal;
+/* ── Typography System ─────────────────────────────────── */
+
+body {
+  font-family: var(--font-jost), sans-serif;
 }
 
-/* Apply to all text elements except headings */
-p,
-li,
-blockquote,
-label,
-input,
-textarea {
-  font-size: 16px;
-  line-height: 1.6;
-  color: #4d4d4d;
-  text-align: ;
-  hyphens: auto;
-  letter-spacing: -0.015em;
-}
-/* HEADINGS (Raleway only) */
-
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: var(--font-raleway), ui-sans-serif;
-  color: #000000;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
-  text-align: center;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-cormorant), serif;
   font-weight: 500;
+  font-size: 80px;
+}
+
+/* Display text — large editorial headings */
+.font-display {
+  font-family: var(--font-cormorant), serif;
+}
+
+/* UI text — buttons, labels, nav, captions */
+.font-ui {
+  font-family: var(--font-jost), sans-serif;
 }

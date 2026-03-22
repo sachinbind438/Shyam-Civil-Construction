@@ -41,6 +41,7 @@ export default async function Gallery() {
               href={`/gallery`}
               showOverlay={false}
               imageClassName="rounded-4xl"
+              overlayClassName="rounded-4xl!"
             />  
           </div>
         ))}

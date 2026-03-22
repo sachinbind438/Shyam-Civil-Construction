@@ -10,6 +10,7 @@ type ImageCardProps = {
   showArrow?: boolean; // Show circular arrow action on hover
   showOverlay?: boolean; // Show dark overlay and title on hover
   imageClassName?: string; // optional class applied to image wrapper and image
+  overlayClassName?: string; // optional class applied to overlay
 };
 
 export default function ImageCard({
@@ -20,9 +21,12 @@ export default function ImageCard({
   title = "",
   showArrow = true,
   showOverlay = true,
+  overlayClassName = "",
   imageClassName = "",
-}: ImageCardProps) {
-  const wrapperRounded = imageClassName || "rounded-tr-[72px] rounded-bl-[72px] group-hover:rounded-[72px]";
+  }: ImageCardProps) {
+  const defaultRounded = "rounded-tr-[72px] rounded-bl-[72px]";
+  const hoverRounded = "group-hover:rounded-[72px]";
+  const wrapperRounded = imageClassName || `${defaultRounded} ${hoverRounded}`;
 
   const Card = (
     <div className={`group relative isolate cursor-pointer transition-all duration-300 ${className} transform-gpu`}>
@@ -38,30 +42,14 @@ export default function ImageCard({
       </div>
 
       {/* Opacity-based overlay */}
-    <div className="absolute inset-0 bg-black/25 rounded-4xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                  <svg 
-                    className="w-6 h-6 text-white" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    viewBox="0 0 24 24"
-                  >
-                    <path 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round" 
-                      strokeWidth={2} 
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" 
-                    />
-                  </svg>
-                </div>
-              </div>
-
+    <div className={`absolute inset-0 bg-black/25 rounded-[74px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center ${overlayClassName}`}>
       {/* Title overlay (centered) */}
       {showOverlay && title && (
         <div className="absolute inset-0 flex items-center justify-center text-white text-lg md:text-xl font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 text-center">
           {title}
         </div>
       )}
+    </div>
 
       {/* Circular action (bottom-right). Render as non-interactive element to avoid nested anchors when wrapped by Link. */}
       {showArrow && (

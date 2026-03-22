@@ -1,10 +1,8 @@
 @import "tailwindcss";
 
-@tailwind utilities;
-
 @layer base {
   body {
-    font-family: var(--font-inter), ui-sans-serif, system-ui;
+    font-family: var(--font-jost), sans-serif;
     font-size: 18px;
     color: #4d4d4d;
     background-color: #ffffff;
@@ -15,10 +13,6 @@
 }
 
 /* ── Typography System ─────────────────────────────────── */
-
-body {
-  font-family: var(--font-jost), sans-serif;
-}
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-cormorant), serif;

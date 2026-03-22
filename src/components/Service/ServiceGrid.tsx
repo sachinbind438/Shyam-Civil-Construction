@@ -74,7 +74,7 @@ function TextRow({ title }: { title: string }) {
   return (
     <div className="relative px-6 py-3.5 flex items-center">
       {/* TEXT — ALWAYS LEFT */}
-      <h1 className="text-2xl!  md:text-3xl font-medium!  text-black">
+      <h1 className="text-2xl!  md:text-3xl font-semibold!  text-black">
         {title}
       </h1>
 

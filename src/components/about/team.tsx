@@ -176,12 +176,12 @@ export default function TeamSection() {
 
   return (
     <>
-      <section className="bg-white p-10">
+      <section className="bg-white p-6">
         <div className="">
           {/* ── HEADER ── */}
           <div
             ref={headingRef}
-            className="mb-5"
+            className=""
             style={{
               opacity: headingInView ? 1 : 0,
               transform: headingInView ? "translateY(0)" : "translateY(22px)",
@@ -189,9 +189,10 @@ export default function TeamSection() {
             }}
           >
             {/* Headline + sub — split on desktop */}
+            <div className="w-full p-12">
             <div className="flex flex-row justify-between gap-10">
               <h2 className="text-[80px]  font-raleway font-bold leading-tight text-[#111]">
-                The team behind
+                <em>The team behind</em>
                 <div className="">
                   <em className="pl-11">every masterpiece</em>
                 </div>
@@ -214,7 +215,10 @@ export default function TeamSection() {
             </div>
 
             {/* Divider */}
-            <div className="mt-10 h-px" style={{ background: "#f0ece6" }} />
+            <div
+            className="flex flex-col sm:flex-row items-center justify-between"
+            style={{ borderTop: "1px solid #f0ece6" }}
+          ></div>
           </div>
 
           {/* ── CARDS ROW ── */}
@@ -229,7 +233,7 @@ export default function TeamSection() {
             └──────────┴──────────┴──────────┴──────────┘
           */}
           <div
-            className="flex gap-4 md:gap-5 items-start p-10" >
+            className="flex gap-4 md:gap-5 items-start pb-10 px-10" >
             {TEAM.map((member, i) => (
               <TeamCard key={member.id} member={member} index={i} />
             ))}
@@ -237,9 +241,10 @@ export default function TeamSection() {
 
           {/* ── FOOTER ROW ── */}
           <div
-            className="flex flex-col sm:flex-row items-center justify-between  pt-2"
+            className="flex flex-col sm:flex-row items-center justify-between"
             style={{ borderTop: "1px solid #f0ece6" }}
           ></div>
+        </div>
         </div>
       </section>
     </>

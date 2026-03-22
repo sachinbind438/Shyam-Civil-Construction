@@ -117,55 +117,7 @@ export default function Navbar() {
 
             <Button text="Get In Touch" href="/contact" variant="dark" />
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden flex flex-col space-y-1 focus:outline-none"
-            aria-label="Toggle menu"
-          >
-            <span
-              className={`w-6 h-0.5 bg-gray-700 transition-transform ${
-                isOpen ? "rotate-45 translate-y-2" : ""
-              }`}
-            />
-            <span
-              className={`w-6 h-0.5 bg-gray-700 transition-opacity ${
-                isOpen ? "opacity-0" : ""
-              }`}
-            />
-            <span
-              className={`w-6 h-0.5 bg-gray-700 transition-transform ${
-                isOpen ? "-rotate-45 -translate-y-2" : ""
-              }`}
-            />
-          </button>
         </div>
-
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="md:hidden pb-4">
-            <div className="flex flex-col space-y-3">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="text-gray-700 font-medium hover:text-blue-600 transition-colors duration-200 py-2"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-              <Link
-                href="/contact"
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200 text-center"
-                onClick={() => setIsOpen(false)}
-              >
-                Get In Touch
-              </Link>
-            </div>
-          </div>
-        )}
       </div>
     </nav>
   );

@@ -39,7 +39,7 @@ export default function ProjectImageGrid() {
         src="/assets/projects-1.jpg"
         className="h-[375px] w-[375px]"
         title="Artistic Vessel Sink"
-        href="/projects/project-1"
+        href="/projects/artistic-vessel-sink"
         showArrow
       />
 
@@ -48,7 +48,7 @@ export default function ProjectImageGrid() {
         src="/assets/projects-2.jpg"
         className="h-[375px] w-[375px]"
         title="Modern Kitchen"
-        href="/projects/project-2"
+        href="/projects/modern-kitchen"
         showArrow
       />
 
@@ -57,7 +57,7 @@ export default function ProjectImageGrid() {
         src="/assets/projects-3.jpg"
         className="h-[375px] w-[375px]"
         title="Rustic Faucet"
-        href="/projects/project-3"
+        href="/projects/rustic-faucet"
         showArrow
       />
 
@@ -66,7 +66,7 @@ export default function ProjectImageGrid() {
         src="/assets/projects-4.jpg"
         className="h-[375px] w-[375px]"
         title="Bathroom Mosaic"
-        href="/projects/project-4"
+        href="/projects/bathroom-mosaic"
         showArrow
       />
     </div>

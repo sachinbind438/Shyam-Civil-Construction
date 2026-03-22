@@ -39,13 +39,13 @@ export default function Hero({
 
       {/* Content */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center text-wrap ">
-        <h1 className="text-white text-[120px]!  font-medium leading-tight">
+        <h1 className="text-white text-[130px]!  font-medium leading-tight">
           {title}
           <br />
           {subtitle}
         </h1>
 
-        <p className="mt-6 text-base md:text-lg  text-[#E6E6E6]!">{quote}</p>
+        <p className="mt-6 text-xl! md:text-lg  text-[#E6E6E6]!">{quote}</p>
 
         <div className="mt-10 flex justify-center">
           <Button text={ctaText} href={ctaHref} variant="light" size="lg"></Button>

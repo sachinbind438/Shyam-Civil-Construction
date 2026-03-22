@@ -8,10 +8,10 @@ import Button from "../button/button";
 
 const navLinks = [
   { href: "/", label: "Home" },
-   { href: "/about", label: "About" },
+  { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/projects", label: "Projects" },
- 
+  { href: "/gallery", label: "Gallery" },
 ];
 
 export default function Footer() {
@@ -44,33 +44,39 @@ export default function Footer() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`group flex items-center pb-1 font-medium transition-all duration-200 ${
+                  className={`group flex text-[16px] items-center pb-1 font-medium transition-all duration-200 ${
                     isActive
                       ? "text-[#b3b3b3]!"
                       : "text-[#b3b3b3]! border-transparent hover:text-white! hover:border-white!"
                   }`}
                 >
-                  {/* Animated arrow */}
-                  {!isActive && (
-                    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        className="w-5 h-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 12h14m-6-6l6 6-6 6"
-                        />
-                      </svg>
-                    </span>
-                  )}
+                  {/* Animated arrow — ALWAYS in DOM, never conditionally removed */}
+                  {/* active:   opacity-0 always (no hover effect)               */}
+                  {/* inactive: original hover animation unchanged                */}
+                  <span
+                    className={`-translate-x-2 group-hover:translate-x-0 transition-all duration-300 flex pointer-events-none ${
+                      isActive
+                        ? "opacity-0"
+                        : "opacity-0 group-hover:opacity-100"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      className="w-5 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 12h14m-6-6l6 6-6 6"
+                      />
+                    </svg>
+                  </span>
 
-                  {/* Text slides right */}
+                  {/* Text slides right — UNCHANGED */}
                   <span
                     className={
                       !isActive
@@ -168,24 +174,24 @@ export default function Footer() {
             <div className="flex gap-6 text-gray-400! text-sm md:flex-row flex-col md:justify-between">
               <Link
                 href="#cookies"
-                className="hover:text-white! transition-colors duration-200"
+                className="hover:text-white transition-colors duration-200"
               >
                 Cookie Policy
               </Link>
               <Link
                 href="#privacy"
-                className="hover:text-white! transition-colors duration-200"
+                className="hover:text-white transition-colors duration-200"
               >
                 Privacy Policy
               </Link>
               <Link
                 href="#terms"
-                className="hover:text-white! transition-colors duration-200"
+                className="hover:text-white transition-colors duration-200"
               >
                 Terms & Conditions
               </Link>
             </div>
-            <p className="text-gray-400! text-sm">
+            <p className="hover:text-white! text-gray-400! text-sm">
               © 2025 Shyam civil construction - All Rights Reserved
             </p>
           </div>

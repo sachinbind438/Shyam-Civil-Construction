@@ -43,7 +43,7 @@ export const ProjectCard = ({ project, index = 0 }: ProjectCardProps) => {
       />
 
       {/* Title & description centered */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-white! text-lg md:text-xl  opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 text-center">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-white! font-semibold text-lg md:text-xl  opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 text-center">
         {project.title}
        
       </div>

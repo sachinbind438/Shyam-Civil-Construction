@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         id: admin._id.toString()
       },
       JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '30m' }
     );
 
     // Set HTTP-only JWT cookie
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60, // 7 days
+      maxAge: 30 * 60, // 30 minutes
       path: '/',
     });
 

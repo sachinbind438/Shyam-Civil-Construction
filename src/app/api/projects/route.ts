@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Project } from '@/backend/db/models/Project';
-import cloudinary from '@/lib/cloudinary';
 import { auth } from '@/auth';
 
 // ── Helper: strip \n \r \t from URLs ─────────────────────────────────────────

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Message } from '@/backend/db/models/Message';
+import { sendContactEmail } from '@/backend/services/emailService';
 
 // POST save contact message
 export async function POST(request: NextRequest) {
@@ -9,12 +10,12 @@ export async function POST(request: NextRequest) {
     
     const body = await request.json();
     
-    const { name, email, phone, message } = body;
+    const { name, email, phone, subject, message } = body;
     
     // Validate required fields
-    if (!name || !email || !phone || !message) {
+    if (!name || !email || !message) {
       return NextResponse.json(
-        { success: false, error: 'All fields are required' },
+        { success: false, error: "Name, email and message are required" },
         { status: 400 }
       );
     }
@@ -23,28 +24,33 @@ export async function POST(request: NextRequest) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { success: false, error: 'Invalid email format' },
+        { success: false, error: "Invalid email address" },
         { status: 400 }
       );
     }
     
-    // Create message
-    const newMessage = await Message.create({
-      name,
-      email,
-      phone,
-      message
-    });
-    
+    // Save to MongoDB
+    await Message.create({ name, email, phone, subject, message });
+
+    // ── NEW: Send email notification ──────────────────────────
+    // Wrapped in try-catch so email failure does NOT break form
+    // Message is still saved to DB even if email fails
+    try {
+      await sendContactEmail({ name, email, phone, subject, message });
+    } catch (emailError) {
+      console.error("Email send failed:", emailError);
+      // Continue — do not return error to user
+    }
+
     return NextResponse.json({
       success: true,
-      data: newMessage,
-      message: 'Message sent successfully'
+      message: "Message sent successfully! We will get back to you soon.",
     });
-  } catch (error) {
-    console.error('Error saving message:', error);
+
+  } catch (error: any) {
+    console.error("Contact form error:", error);
     return NextResponse.json(
-      { success: false, error: 'Failed to send message' },
+      { success: false, error: "Failed to send message. Please try again." },
       { status: 500 }
     );
   }

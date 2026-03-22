@@ -144,6 +144,7 @@ async function uploadToR2(
 // ── POST handler ───────────────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
   try {
+    
     // Verify JWT token
     const auth = await verifyToken(request);
     if (!auth.success) {
@@ -176,25 +177,14 @@ export async function POST(request: NextRequest) {
     const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { success: false, error: "File too large. Maximum size: 50MB" },
+        { success: false, error: "File too large. Maximum size is 50MB" },
         { status: 400 }
       );
     }
 
-    // Convert File to Buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Generate safe unique filename
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const safeName = file.name
-      .toLowerCase()
-      .replace(/[^a-z0-9.]+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
-    const fileName = `${year}/${month}/${Date.now()}-${safeName}`;
+    const buffer = await file.arrayBuffer();
+    const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
+    const fileName = `${Date.now()}.${fileExt}`;
 
     // Upload to R2
     const endpoint = process.env.R2_ENDPOINT!;

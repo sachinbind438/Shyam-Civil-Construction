@@ -15,12 +15,12 @@ export default async function AdminDashboard() {
 
   const [totalProjects, interiorCount, residentialCount, commercialCount, unreadMessages, recentProjects] =
     await Promise.all([
-      Project.countDocuments(),
-      Project.countDocuments({ category: "Interior" } as any),
-      Project.countDocuments({ category: "Residential" } as any),
-      Project.countDocuments({ category: "Commercial" } as any),
-      Message.countDocuments({ read: false } as any),
-      Project.find({}).sort({ createdAt: -1 }).limit(5).lean<any[]>().exec(),
+      Project.countDocuments({}),
+      Project.countDocuments({ category: "Interior" }),
+      Project.countDocuments({ category: "Residential" }),
+      Project.countDocuments({ category: "Commercial" }),
+      Message.countDocuments({ read: false }),
+      Project.find({}).sort({ createdAt: -1 }).limit(5).lean<any[]>(),
     ]);
 
   const stats = [

@@ -6,8 +6,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Button from "../button/button";
 
-
-
 export default function Navbar() {
   const pathname = usePathname();
 
@@ -18,17 +16,11 @@ export default function Navbar() {
     { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
     { href: "/projects", label: "Projects" },
-    
+    { href: "/gallery", label: "Gallery" },
   ];
 
   const [showNavbar, setShowNavbar] = useState(true);
   const lastScrollY = useRef(0);
-  const ticking = useRef(false);
-  const lastToggleTime = useRef(0);
-
-  // thresholds to avoid instant toggles on small movements
-  const SCROLL_THRESHOLD = 100; // require 40px movement to consider toggling
-  const MIN_TOGGLE_INTERVAL_MS = 250; // minimum ms between show/hide toggles
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -36,10 +28,8 @@ export default function Navbar() {
     const handleScroll = () => {
       const currentY = window.scrollY;
       if (currentY > lastScrollY) {
-        // scrolling down
         setShowNavbar(false);
       } else {
-        // scrolling up
         setShowNavbar(true);
       }
       lastScrollY = currentY;
@@ -54,7 +44,6 @@ export default function Navbar() {
       className={` bg-white shadow-lg fixed left-12 top-12 right-12 rounded-full z-50 transition-transform duration-150 ease-out ${
         showNavbar ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
       }`}
-    
     >
       <div className="  mx-6 ">
         <div className="flex justify-between  items-center h-20">
@@ -75,7 +64,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center  space-x-8">
+          <div className="hidden md:flex items-center  space-x-6">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
 
@@ -83,33 +72,36 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`group flex items-center pb-1 font-medium transition-all duration-200 ${
+                  className={`group flex text-[16px] items-center pb-1 font-medium transition-all duration-200 ${
                     isActive
                       ? "text-black!"
                       : "text-[#4d4d4d] border-transparent hover:text-black hover:border-black"
                   }`}
                 >
-                  {/* Animated arrow */}
-                  {!isActive && (
-                    <span className="opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 flex">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        className="w-5 h-4"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 12h14m-6-6l6 6-6 6"
-                        />
-                      </svg>
-                    </span>
-                  )}
+                  <span
+                    className={`-translate-x-2 group-hover:translate-x-0 transition-all duration-300 flex ${
+                      isActive
+                        ? "opacity-0"
+                        : "opacity-0 group-hover:opacity-100"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      className="w-5 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 12h14m-6-6l6 6-6 6"
+                      />
+                    </svg>
+                  </span>
 
-                  {/* Text slides right */}
+                  {/* Text slides right — UNCHANGED */}
                   <span
                     className={
                       !isActive
@@ -123,7 +115,7 @@ export default function Navbar() {
               );
             })}
 
-            <Button text="Get In Touch" href="/contact" variant="dark" />            
+            <Button text="Get In Touch" href="/contact" variant="dark" />
           </div>
 
           {/* Mobile Menu Button */}

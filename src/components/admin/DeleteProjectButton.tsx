@@ -19,7 +19,7 @@ export default function DeleteProjectButton({ id }: { id: string }) {
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors disabled:opacity-40"
+      className="px-3 py-1.5 rounded-lg text-xs! font-medium transition-colors disabled:opacity-40"
       style={{ background: "rgba(139,58,58,0.15)", color: "#e57373" }}
     >
       {loading ? "..." : "Delete"}

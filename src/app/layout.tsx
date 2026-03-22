@@ -4,6 +4,7 @@ import Footer from "../components/Footer/Footer";
 import "./globals.css";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
+
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -20,7 +21,16 @@ const jost = Jost({
   display: "swap",
 });
 
+
 export const metadata: Metadata = {
+
+  // ✅ metadataBase now INSIDE the metadata object — fixes the warning
+  metadataBase: new URL(
+    process.env.NODE_ENV === "production"
+      ? "https://shyamcivilconstruction.com"
+      : "http://localhost:3000"
+  ),
+  
   title: {
     default:  "Shyam Civil Construction",
     template: "%s | Shyam Civil Construction",

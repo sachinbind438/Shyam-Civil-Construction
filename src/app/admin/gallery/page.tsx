@@ -132,7 +132,7 @@ export default function AdminGalleryPage() {
     <div className="p-8">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 px-6">
         <div>
           <h1 className="text-2xl font-bold text-white mb-1">Gallery</h1>
           <p className="text-white/40 text-sm">{images.length} images</p>
@@ -140,8 +140,7 @@ export default function AdminGalleryPage() {
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm
-                     font-semibold disabled:opacity-50 hover:opacity-90"
+          className="text-sm px-5 py-2 rounded-full hover:scale-[1.05] transition-all hover:cursor-pointer font-semibold disabled:opacity-50 hover:opacity-90 hover:bg-[#C9A96E]/80 hover:shadow-lg shadow-[#C9A96E]/50"
           style={{ background: "#C9A96E", color: "#0a1520" }}
         >
           {uploading ? progress : "+ Upload Images"}
@@ -150,7 +149,7 @@ export default function AdminGalleryPage() {
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          multiple
+          multiple    
           className="hidden"
           onChange={handleUpload}
         />

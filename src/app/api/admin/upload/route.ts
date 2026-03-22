@@ -182,7 +182,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const buffer = await file.arrayBuffer();
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
     const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
     const fileName = `${Date.now()}.${fileExt}`;
 

@@ -8,13 +8,13 @@ export default async function ProjectImageGrid() {
 
   // Fetch last 4 projects for the grid
   const projects = await Project.find({})
-    .sort({ _id: +1 })
-    .limit(4)
+    .sort({ _id: 1 })
+    .limit(4) 
     .lean<any[]>();
 
   return (
-    <div className="flex flex-row py-24 px-0">
-      <div className="flex flex-col pl-[72px] w-[50%] pr-6 gap-12">
+    <div className="flex flex-row py-16 ">
+      <div className="flex flex-col pl-[72px] w-[50%] pr-6 pt-12 gap-12">
         <div className="space-y-5">
           <div className=" text-7xl font-raleway justify-items-start! ">
             <h4>Projects</h4>
@@ -41,7 +41,7 @@ export default async function ProjectImageGrid() {
           size="lg"
         />
       </div>
-      <div className="w-[55%] pr-6">
+      <div className="w-[55%] pr-6 pt-12 ">
         <div className="grid grid-cols-2 gap-6">
           {projects.map((project, index) => (
             <ImageCard

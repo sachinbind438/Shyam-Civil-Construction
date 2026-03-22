@@ -3,7 +3,7 @@ import Button from "../button/button";
 
 export default function AboutCard() {
   return (
- <div className="py-12 px-6 flex flex-col  gap-20 ">
+ <div className="py-12 px-6 flex flex-col  gap-15 ">
           <h4 className="text-center text-7xl font-raleway ">About Us</h4>
           <div className="text-justify   ">
             <p className="px-12 ">

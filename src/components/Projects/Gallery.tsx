@@ -15,7 +15,7 @@ async function getGalleryImages() {
     }
     
     const data = await res.json();
-    return data.success ? data.data.slice(0, 21) : []; // Limit to 20 images
+    return data.success ? data.data.slice(0, 15) : []; // Limit to 20 images
   } catch (error) {
     console.error("Gallery fetch error:", error);
     return [];
@@ -26,7 +26,7 @@ export default async function Gallery() {
   const images = await getGalleryImages();
 
   return (
-    <div className="py-6 px-6">
+    <div className="flex flex-col py-10 px-6 gap-5">
       <div className="text-center text-7xl font-raleway mb-8">
         <h4>Our Gallery</h4>
       </div>

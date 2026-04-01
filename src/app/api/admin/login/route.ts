@@ -1,19 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
 import { connectDB } from '@/lib/mongodb';
+import { Admin } from '@/backend/db/models/Admin';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret';
-
-// Admin schema
-const AdminSchema = new mongoose.Schema({
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  name: { type: String, default: "Admin" },
-});
-
-const Admin = mongoose.models.Admin || mongoose.model("Admin", AdminSchema);
 
 export async function POST(request: NextRequest) {
   try {

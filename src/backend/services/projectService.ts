@@ -64,3 +64,53 @@ export async function createProject(data: any): Promise<any> {
 
   return { ...project.toObject(), id: project._id.toString() };
 }
+
+// ── Get project by ID ───────────────────────────────────────────────────
+export async function getProjectById(id: string): Promise<any> {
+  await connectDB();
+  
+  const project = await Project.findById(id);
+  
+  if (!project) {
+    throw new Error("Project not found");
+  }
+  
+  return project;
+}
+
+// ── Update project ───────────────────────────────────────────────────────
+export async function updateProject(id: string, data: any): Promise<any> {
+  await connectDB();
+  
+  const project = await Project.findById(id);
+  
+  if (!project) {
+    throw new Error("Project not found");
+  }
+  
+  // Update fields
+  if (data.title) project.title = data.title;
+  if (data.slug) project.slug = data.slug;
+  if (data.category) project.category = data.category;
+  if (data.description) project.description = data.description;
+  if (data.coverImage) project.coverImage = data.coverImage;
+  if (data.video) project.video = cleanUrl(data.video);
+  if (data.gallery) project.gallery = data.gallery;
+  
+  await project.save();
+  
+  return { ...project.toObject(), id: project._id.toString() };
+}
+
+// ── Delete project ───────────────────────────────────────────────────────
+export async function deleteProject(id: string): Promise<void> {
+  await connectDB();
+  
+  const project = await Project.findById(id);
+  
+  if (!project) {
+    throw new Error("Project not found");
+  }
+  
+  await Project.findByIdAndDelete(id);
+}

@@ -26,9 +26,11 @@ export const metadata: Metadata = {
 
   // ✅ metadataBase now INSIDE the metadata object — fixes the warning
   metadataBase: new URL(
-    process.env.NODE_ENV === "production"
-      ? "https://shyamcivilconstruction.com"
-      : "http://localhost:3000"
+    process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NODE_ENV === "production"
+        ? "https://shyamcivilconstruction.com"
+        : "http://localhost:3000"
   ),
   
   title: {

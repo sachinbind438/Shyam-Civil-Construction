@@ -6,7 +6,7 @@ export default async function AdminMessagesPage() {
   await verifyAdminToken();
   await connectDB();
 
-  const messages = await Message.find({}).sort({ createdAt: -1 }).lean().exec();
+  const messages = await (Message as any).find({}).sort({ createdAt: -1 }).lean().exec();
 
   const unread = messages.filter((m) => !m.read).length;
 

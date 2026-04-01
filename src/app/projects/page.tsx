@@ -10,7 +10,7 @@ export const revalidate = 60;
 export default async function ProjectsPage() {
   await connectDB();
 
-  const raw = await Project.find({}).sort({ createdAt: -1 }).lean<any[]>();
+  const raw = await (Project as any).find({}).sort({ createdAt: -1 }).lean() as any[];
 
   const projects = raw.map(serialiseProject);
 

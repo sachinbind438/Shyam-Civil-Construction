@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "../../../../lib/mongodb";
-import Project from "../../../../Model/projects";
+import { connectDB } from "@/lib/mongodb";
+import Project from "@/backend/db/models/Project";
 import slugify from "slugify";
 
 export async function POST(req: Request) {

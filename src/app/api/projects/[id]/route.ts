@@ -20,7 +20,7 @@ export async function PATCH(
     const projectId = id;
     
     // Find existing project
-    const project = await Project.findById(projectId);
+    const project = await (Project as any).findById(projectId);
     if (!project) {
       return NextResponse.json(
         { success: false, error: 'Project not found' },
@@ -119,7 +119,7 @@ export async function DELETE(
     const { id } = await params;
     await connectDB();
     
-    const project = await Project.findById(id);
+    const project = await (Project as any).findById(id);
     if (!project) {
       return NextResponse.json(
         { success: false, error: 'Project not found' },
@@ -178,7 +178,7 @@ export async function DELETE(
       }
     }
     // Delete project from database
-    await Project.findByIdAndDelete(id);
+    await (Project as any).findByIdAndDelete(id);
     
     return NextResponse.json({
       success: true,

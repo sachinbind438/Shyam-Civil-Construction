@@ -11,14 +11,15 @@ export async function GET() {
     await connectDB();
 
     // Get raw projects from DB
-    const rawProjects = await Project.find({}).sort({ createdAt: -1 }).lean<any[]>();
+    // @ts-ignore
+    const rawProjects = await (Project as any).find({}).sort({ createdAt: -1 }).lean<any[]>();
     
     // Get serialized projects
-    const serializedProjects = rawProjects.map(serialiseProject);
+    const serializedProjects = rawProjects.map((doc: any) => serialiseProject(doc));
     
     // Count categories
     const categoryCounts: Record<string, number> = {};
-    rawProjects.forEach(project => {
+    rawProjects.forEach((project: any) => {
       const cat = project.category || 'undefined';
       categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     });

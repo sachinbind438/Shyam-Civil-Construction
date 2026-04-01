@@ -38,7 +38,7 @@ export async function DELETE(
     const { id } = await params
     
     await connectDB()
-    await GalleryImage.findByIdAndDelete(id)
+    await (GalleryImage as any).findByIdAndDelete(id)
     
     return NextResponse.json({
       success: true

@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
     <div
       className="
       bg-[#0a1520]
-      
+      min-h-screen
       flex items-center justify-center
       px-4
     "
@@ -57,75 +57,63 @@ export default function AdminLoginPage() {
           </p>
         </div>
 
-        {/* Card */}
-        <div
-          className="rounded-2xl p-5 sm:p-8"
-          style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-          }}
-        >
-          {/* Error */}
+        {/* Login form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email field */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="admin@example.com"
+              required
+            />
+          </div>
+
+          {/* Password field */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="••••••••"
+              required
+            />
+          </div>
+
+          {/* Error message */}
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-xs sm:text-sm mb-5 sm:mb-6">
-              {error === "AccessDenied"
-                ? "Access denied. Your email is not authorized."
-                : "Sign in failed. Please try again."}
+            <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-lg">
+              {error}
             </div>
           )}
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-white/40 uppercase tracking-wider mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Email"
-                className="w-full px-4 py-3 rounded-xl text-white text-sm outline-none"
-                style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-white/40 uppercase tracking-wider mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="•••••••••"
-                className="w-full px-4 py-3 rounded-xl text-white text-sm outline-none"
-                style={{
-                  background: "rgba(255,255,255,0.06)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                }}
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:opacity-90 hover:scale-[1.01] active:scale-[0.99]"
-              style={{ background: "#C9A96E", color: "#0a1520" }}
-            >
-              {loading ? "Signing in..." : "Sign In"}
-            </button>
-          </form>
-
-          <p className="text-white/30 text-xs text-center mt-5 sm:mt-6">
-            Only authorized email and password can access the admin panel.
-          </p>
-        </div>
+          {/* Submit button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? (
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-t-2 border-white mr-2"></div>
+                Signing in...
+              </div>
+            ) : (
+              "Sign in"
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -21,7 +21,7 @@ export default async function AdminDashboard() {
     Project.countDocuments({ category: "Residential" }),
     Project.countDocuments({ category: "Commercial" }),
     Message.countDocuments({ read: false }),
-    Project.find({}).sort({ createdAt: -1 }).limit(5).lean().exec() as Promise<
+    (Project as any).find({}).sort({ createdAt: -1 }).limit(5).lean().exec() as Promise<
       any[]
     >,
   ]);

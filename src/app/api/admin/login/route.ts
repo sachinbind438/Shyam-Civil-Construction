@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
 
-    const admin = await Admin.findOne({ email: email.toLowerCase().trim() }).lean();
+    const admin = await (Admin as any).findOne({ email: email.toLowerCase().trim() }).lean();
     if (!admin) {
       return NextResponse.json(
         { error: "Invalid email or password" },

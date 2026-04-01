@@ -23,7 +23,7 @@ export async function createProject(data: any): Promise<any> {
   const slug = data.slug ? data.slug : generateSlug(data.title);
   
   // Check for duplicate project by title or slug
-  const existingProject = await Project.findOne({
+  const existingProject = await (Project as any).findOne({
     $or: [
       { title: data.title },
       { slug: slug }
@@ -39,14 +39,14 @@ export async function createProject(data: any): Promise<any> {
   const galleryImages = (data.gallery ?? []).map(cleanUrl).filter(Boolean);
   
   if (coverImage) {
-    const existingGalleryImage = await GalleryImage.findOne({ url: coverImage });
+    const existingGalleryImage = await (GalleryImage as any).findOne({ url: coverImage });
     if (existingGalleryImage) {
       throw new Error("The cover image already exists in the gallery");
     }
   }
 
   for (const galleryImage of galleryImages) {
-    const existingGalleryImage = await GalleryImage.findOne({ url: galleryImage });
+    const existingGalleryImage = await (GalleryImage as any).findOne({ url: galleryImage });
     if (existingGalleryImage) {
       throw new Error(`An image already exists in the gallery: ${galleryImage}`);
     }
@@ -69,7 +69,7 @@ export async function createProject(data: any): Promise<any> {
 export async function getProjectById(id: string): Promise<any> {
   await connectDB();
   
-  const project = await Project.findById(id);
+  const project = await (Project as any).findById(id);
   
   if (!project) {
     throw new Error("Project not found");
@@ -82,7 +82,7 @@ export async function getProjectById(id: string): Promise<any> {
 export async function updateProject(id: string, data: any): Promise<any> {
   await connectDB();
   
-  const project = await Project.findById(id);
+  const project = await (Project as any).findById(id);
   
   if (!project) {
     throw new Error("Project not found");
@@ -106,11 +106,11 @@ export async function updateProject(id: string, data: any): Promise<any> {
 export async function deleteProject(id: string): Promise<void> {
   await connectDB();
   
-  const project = await Project.findById(id);
+  const project = await (Project as any).findById(id);
   
   if (!project) {
     throw new Error("Project not found");
   }
   
-  await Project.findByIdAndDelete(id);
+  await (Project as any).findByIdAndDelete(id);
 }

@@ -40,11 +40,11 @@ export async function GET(request: NextRequest) {
     await connectDB()
     
     // Use lean() and limit for better performance
-    const images = await GalleryImage.find({})
+    const images = await (GalleryImage as any).find({})
       .sort({ createdAt: -1 })
       .limit(limit)
       .skip((page - 1) * limit)
-      .lean<any[]>()
+      .lean() as any[]
     
     // Get total count for pagination
     const total = await GalleryImage.countDocuments()
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
     await connectDB()
     
     // Check for duplicate image in gallery
-    const existingGalleryImage = await GalleryImage.findOne({ url: cleanedUrl })
+    const existingGalleryImage = await (GalleryImage as any).findOne({ url: cleanedUrl })
     if (existingGalleryImage) {
       return NextResponse.json(
         { success: false, error: "This image already exists in the gallery" },
@@ -107,7 +107,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Check for duplicate image in projects (coverImage or gallery)
-    const existingProjectImage = await Project.findOne({
+    const existingProjectImage = await (Project as any).findOne({
       $or: [
         { coverImage: cleanedUrl },
         { gallery: cleanedUrl }

@@ -6,10 +6,10 @@ import { Project } from "@/backend/db/models/Project";
 export default async function ProjectImageGrid() {
   await connectDB();
 
-  const projects = await Project.find({})
+  const projects = await (Project as any).find({})
     .sort({ _id: 1 })
     .limit(4)
-    .lean<any[]>();
+    .lean() as any[];
 
   return (
     <div className="flex flex-col lg:flex-row py-5 px-4 md:py-16 gap-10">

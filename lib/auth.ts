@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
-import { connectDB } from "@/lib/mongodb";
+import { connectDB } from "@/backend/db/connection";
+import mongoose from "mongoose";
 import { Admin } from "@/backend/db/models/Admin";
 
 export async function verifyAdmin(email: string, password: string) {
@@ -9,7 +10,7 @@ export async function verifyAdmin(email: string, password: string) {
     await connectDB();
     console.log("✅ DB connected");
 
-    const admin = await Admin.findOne({
+    const admin = await (Admin as any).findOne({
       email: email.toLowerCase().trim(),
     }).lean();
     

@@ -6,11 +6,12 @@ import { GalleryImage } from "@/backend/db/models/GalleryImage"
 export async function GET(request: NextRequest) {
   try {
     await connectDB()
-    const images = await GalleryImage.find({}).sort({ createdAt: -1 }).lean<any[]>()
+    // @ts-ignore
+    const images = await (GalleryImage as any).find({}).sort({ createdAt: -1 }).lean<any[]>()
     
     // Clean all URLs before returning:
     const clean = (url: string) => (url ?? "").replace(/[\n\r\t]/g, "").trim()
-    const cleanedImages = images.map(img => ({ 
+    const cleanedImages = images.map((img: any) => ({ 
       ...img, 
       id: img._id.toString(), 
       url: clean(img.url) 

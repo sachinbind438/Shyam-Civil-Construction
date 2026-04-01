@@ -11,7 +11,7 @@ export async function DELETE(
     const { id } = await params;
     await connectDB();
     
-    const message = await Message.findById(id).exec();
+    const message = await (Message as any).findById(id).exec();
     if (!message) {
       return NextResponse.json(
         { success: false, error: 'Message not found' },
@@ -19,7 +19,7 @@ export async function DELETE(
       );
     }
     
-    await Message.findByIdAndDelete(id).exec();
+    await (Message as any).findByIdAndDelete(id).exec();
     
     return NextResponse.json({
       success: true,

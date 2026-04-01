@@ -8,7 +8,7 @@ export default async function AdminProjectsPage() {
   await verifyAdminToken();
 
   await connectDB();
-  const projects = await Project.find({}).sort({ createdAt: -1 }).lean<any[]>();
+  const projects = await (Project as any).find({}).sort({ createdAt: -1 }).lean() as any[];
 
   return (
     <div className="p-4 sm:p-6 md:p-8 lg:p-12">

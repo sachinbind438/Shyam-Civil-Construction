@@ -9,7 +9,7 @@ const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret';
 export async function getAdminByEmail(email: string): Promise<any> {
   await connectDB();
   
-  const admin = await Admin.findOne({ email: email.toLowerCase() }).lean();
+  const admin = await (Admin as any).findOne({ email: email.toLowerCase() }).lean();
   if (!admin) return null;
   
   return {

@@ -64,7 +64,7 @@ export async function createMessage(data: {
 export async function markMessageRead(id: string): Promise<any> {
   await connectDB();
 
-  const message = await Message.findByIdAndUpdate(
+  const message = await (Message as any).findByIdAndUpdate(
     id,
     { read: true },
     { new: true }
@@ -81,7 +81,7 @@ export async function markMessageRead(id: string): Promise<any> {
 // ── Delete message ───────────────────────────────────────────────────────────
 export async function deleteMessage(id: string): Promise<void> {
   await connectDB();
-  await Message.findByIdAndDelete(id);
+  await (Message as any).findByIdAndDelete(id);
 }
 
 // ── Get message statistics ─────────────────────────────────────────────────────

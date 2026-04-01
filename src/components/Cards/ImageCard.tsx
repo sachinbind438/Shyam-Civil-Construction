@@ -42,7 +42,7 @@ export default function ImageCard({
       </div>
 
       {/* Opacity-based overlay */}
-    <div className={`absolute inset-0 bg-black/25 rounded-[74px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center ${overlayClassName}`}>
+    <div className={`absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center ${overlayClassName}`}>
       {/* Title overlay (centered) */}
       {showOverlay && title && (
         <div className="absolute inset-0 flex items-center justify-center text-white text-lg md:text-xl font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 px-4 text-center">

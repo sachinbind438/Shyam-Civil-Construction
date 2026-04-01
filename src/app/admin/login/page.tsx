@@ -38,19 +38,28 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="p-8 bg-[#0a1520] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-10">
-          <h1 className="text-2xl font-bold text-white mt-4">Admin Panel</h1>
-          <p className="text-white/40 text-sm mt-1">
+    <div
+      className="
+      bg-[#0a1520]
+      
+      flex items-center justify-center
+      px-4
+    "
+    >
+      <div className="w-full max-w-md flex-1 flex flex-col justify-center">
+        {/* Logo / heading */}
+        <div className="text-center mb-8 sm:mb-10">
+          <h1 className="text-3xl sm:text-2xl md:text-4xl lg:text-5xl xl:text-5xl font-bold text-white mt-4">
+            Admin Panel
+          </h1>
+          <p className="text-white/40 text-xs sm:text-sm mt-1">
             Sign in to manage your projects
           </p>
         </div>
 
         {/* Card */}
         <div
-          className="rounded-2xl p-8"
+          className="rounded-2xl p-5 sm:p-8"
           style={{
             background: "rgba(255,255,255,0.04)",
             border: "1px solid rgba(255,255,255,0.08)",
@@ -58,14 +67,14 @@ export default function AdminLoginPage() {
         >
           {/* Error */}
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm mb-6">
+            <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-xs sm:text-sm mb-5 sm:mb-6">
               {error === "AccessDenied"
                 ? "Access denied. Your email is not authorized."
                 : "Sign in failed. Please try again."}
             </div>
           )}
 
-          {/* Email/Password Form */}
+          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-white/40 uppercase tracking-wider mb-2">
@@ -106,14 +115,14 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50"
+              className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 disabled:opacity-50 hover:opacity-90 hover:scale-[1.01] active:scale-[0.99]"
               style={{ background: "#C9A96E", color: "#0a1520" }}
             >
               {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
-          <p className="text-white/30 text-xs text-center mt-6">
+          <p className="text-white/30 text-xs text-center mt-5 sm:mt-6">
             Only authorized email and password can access the admin panel.
           </p>
         </div>

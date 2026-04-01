@@ -16,27 +16,33 @@ const navLinks = [
 
 export default function Footer() {
   const pathname = usePathname();
+
   return (
-    <footer className="p-6">
-      <div className="bg-black text-[#b3b3b3]! rounded-[72px] p-12">
-        {/* Top  Section - Navbar and button */}
-        <div className="flex items-center justify-between ">
-          <div className="flex items-center cursor-pointer">
+    <footer className="p-4 md:p-6">
+      <div className="bg-black text-[#b3b3b3] rounded-3xl md:rounded-[72px] p-6 md:p-12">
+
+        {/* Top Section */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          
+          {/* Logo */}
+          <div className="flex items-center gap-2">
             <Image
               src="/assets/logo.png"
               alt="Shyam Civil Construction Logo"
-              width={80}
-              height={80}
-              className="object-contain"
+              width={60}
+              height={60}
+              className="object-contain md:w-[80px] md:h-[80px]"
             />
-            <div className="hidden sm:block">
-              <h1 className="text-3xl! font-extrabold text-white-700! hover:text-white! transition-colors duration-200">
-                <Link href={"/"}>SHYAM CIVIL CONSTRUCTION</Link>
+
+            <div className="">
+              <h1 className="text-2xl md:text-2xl lg:text-3xl text-center pr-10 text- font-extrabold text-[#b3b3b3] hover:text-white transition-colors duration-200">
+                <Link href="/">SHYAM CIVIL CONSTRUCTION</Link>
               </h1>
             </div>
           </div>
-          {/* Desktop Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
+
+          {/* Desktop Nav */}
+          <div className="hidden xl:flex items-center space-x-6">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
 
@@ -46,15 +52,12 @@ export default function Footer() {
                   href={link.href}
                   className={`group flex text-[16px] items-center pb-1 font-medium transition-all duration-200 ${
                     isActive
-                      ? "text-[#b3b3b3]!"
-                      : "text-[#b3b3b3]! border-transparent hover:text-white! hover:border-white!"
+                      ? "text-[#b3b3b3]"
+                      : "text-[#b3b3b3] hover:text-white"
                   }`}
                 >
-                  {/* Animated arrow — ALWAYS in DOM, never conditionally removed */}
-                  {/* active:   opacity-0 always (no hover effect)               */}
-                  {/* inactive: original hover animation unchanged                */}
                   <span
-                    className={`-translate-x-2 group-hover:translate-x-0 transition-all duration-300 flex pointer-events-none ${
+                    className={`-translate-x-2 group-hover:translate-x-0 transition-all duration-300 flex ${
                       isActive
                         ? "opacity-0"
                         : "opacity-0 group-hover:opacity-100"
@@ -76,7 +79,6 @@ export default function Footer() {
                     </svg>
                   </span>
 
-                  {/* Text slides right — UNCHANGED */}
                   <span
                     className={
                       !isActive
@@ -94,107 +96,66 @@ export default function Footer() {
           </div>
         </div>
 
-        {/*Address and CTA */}
-        <div className="pt-10">
-          <div className="space-y-8 flex justify-between md:flex-row  md:flex">
-            <div className="space-y-2 text-gray-300!">
-              <p className=" text-lg text-gray-300!">
+        {/* Address */}
+        <div className="pt-8 md:pt-10">
+          <div className="flex flex-col gap-6 md:flex-row md:justify-between">
+            <div className="space-y-2 text-gray-300">
+              <p className="text-sm md:text-lg">
                 D1, First Floor, Akurli Samata CHS LTD,
               </p>
-              <p className="text-gray-300! text-lg">
+              <p className="text-sm md:text-lg">
                 Road No RSC 1, Akurli Road, Near Fast Food
               </p>
-              <p className="text-gray-300! text-lg">
+              <p className="text-sm md:text-lg">
                 Center, Kandivali (E)- Mumbai 400101
               </p>
             </div>
-          
           </div>
         </div>
 
-        {/* Social Links  */}
-        <div className=" md:text-right flex flex-row justify-between pt-10">
-          <div className="flex flex-col space-y-10 md:items-start text-5xl">
-            <Link href="/contact" className="group relative inline-flex items-center">
-              <span
-                className="absolute -left-8 top-1/2 -translate-y-1/2 -translate-x-2 opacity-0 group-hover:translate-x-5 group-hover:opacity-100 transition-all duration-200"
-                aria-hidden
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6l6 6-6 6" />
-                </svg>
-              </span>
+        {/* CTA + Social */}
+        <div className="pt-8 md:pt-10 flex flex-col gap-10 md:flex-row md:justify-between">
 
-              <span className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
+          {/* CTA */}
+          <div className="flex flex-col space-y-6 md:space-y-10 text-2xl md:text-5xl">
+            <Link href="/contact" className="group relative inline-flex items-center">
+              <h2 className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
                 Send a Email
-              </span>
+              </h2>
             </Link>
 
             <Link href="/contact" className="group relative inline-flex items-center">
-              <span
-                className="absolute -left-8 top-1/2 -translate-y-1/2 -translate-x-2 opacity-0 group-hover:translate-x-5 group-hover:opacity-100 transition-all duration-200"
-                aria-hidden
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14m-6-6l6 6-6 6" />
-                </svg>
-              </span>
-
-              <span className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
+              <h2 className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
                 Book a Call
-              </span>
+              </h2>
             </Link>
           </div>
 
-            <div className="pt-10">
-              <p className="text-gray-300! text-sm mb-4  flex justify-start">
-                Find Us On:
-              </p>
-              <Footersocial />
-              
-            </div>
-        </div>
-        {/*Copyright */}
-        <div className="pt-12">
-          <div className="flex flex-row gap-2 md:items-between justify-between ">
-            <div className="flex gap-6 text-gray-400! text-sm md:flex-row flex-col md:justify-between">
-              <Link
-                href="#cookies"
-                className="hover:text-white transition-colors duration-200"
-              >
-                Cookie Policy
-              </Link>
-              <Link
-                href="#privacy"
-                className="hover:text-white transition-colors duration-200"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="#terms"
-                className="hover:text-white transition-colors duration-200"
-              >
-                Terms & Conditions
-              </Link>
-            </div>
-            <p className="hover:text-white! text-gray-400! text-sm">
-              © 2025 Shyam civil construction - All Rights Reserved
-            </p>
+          {/* Social */}
+          <div className="md:text-right">
+            <p className="text-gray-300 text-sm mb-4">Find Us On:</p>
+            <Footersocial />
           </div>
+        </div>
+
+        {/* Bottom */}
+        <div className="pt-10 md:pt-12 flex flex-col gap-6 md:flex-row md:justify-between md:items-center">
+
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-gray-400 text-sm">
+            <Link href="#cookies" className="hover:text-white transition">
+              Cookie Policy
+            </Link>
+            <Link href="#privacy" className="hover:text-white transition">
+              Privacy Policy
+            </Link>
+            <Link href="#terms" className="hover:text-white transition">
+              Terms & Conditions
+            </Link>
+          </div>
+
+          <p className="text-gray-400! text-sm hover:text-white!">
+            © 2025 Shyam civil construction - All Rights Reserved
+          </p>
         </div>
       </div>
     </footer>

@@ -56,7 +56,7 @@ export const CTAButton = ({
     >
       {/* Background gradient on hover */}
       <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-gray-900 to-black rounded-full"
+        className="absolute inset-0 bg-linear-to-r from-gray-900 to-black rounded-full"
         initial={{ opacity: 0 }}
         whileHover={{ opacity: 1 }}
         transition={{ duration: 0.3 }}

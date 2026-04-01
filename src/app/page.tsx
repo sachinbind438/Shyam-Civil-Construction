@@ -7,7 +7,8 @@ import ServiceGrid from "../components/Service/ServiceGrid_component";
 export default function Home() {
   return (
     <main>
-      <Hero 
+      <section>
+      <Hero  
         title="Transforming Spaces,"
         subtitle="Creating Dreams"
         quote="Premium Renovation Services Tailored to Your Vision"
@@ -15,6 +16,7 @@ export default function Home() {
         ctaHref="/contact"
         ctaText="Get a Free Estimate"
       />
+      </section>
       {/**  About Us Section **/}
       <section>
         <AboutCard />

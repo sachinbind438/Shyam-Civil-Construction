@@ -1,37 +1,30 @@
-import { verifyAdminToken } from "@/lib/jwt-auth";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 
-// src/app/admin/layout.tsx
-// ── SERVER COMPONENT — no "use client" ───────────────────────────────────────
-// Auth check happens in each page individually.
-// This layout ONLY controls the visual shell.
-
-
-
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // Check if this is the login page - don't show sidebar
-  const isLoginPage = children?.toString().includes('AdminLoginPage');
-
-  if (isLoginPage) {
-    return (
-      <div className="min-h-screen" style={{ background: "#0a1520" }}>
-        {children}
-      </div>
-    );
-  }
-
-  // For authenticated admin pages, show full layout with sidebar
   return (
-    <div className="min-h-screen p-10 pt-40" style={{ background: "" }}>
-      <div className="flex rounded-3xl overflow-hidden" style={{ background: "#0a1520" }}>
-        <AdminSidebar />
-        <main className="flex-1 overflow-auto min-h-[80vh]">
-          {children}
-        </main>
+    <div className=" p-4 pt-14  md:pt-20 lg:pt-40 lg:p-12">
+      
+      <div
+        className="rounded-2xl overflow-hidden "
+        style={{
+          border: "1px solid rgba(255,255,255,0.07)",
+        }}
+      >
+        <div className="flex flex-col lg:flex-row">
+          
+          {/* SIDEBAR */}
+          <AdminSidebar />
+
+          {/* CONTENT */}
+          <main className="flex-1 overflow-hidden rounded-2xl lg:rounded-none p-6 md:p-8 bg-[#0a1520]">
+            {children}
+          </main>
+
+        </div>
       </div>
     </div>
   );

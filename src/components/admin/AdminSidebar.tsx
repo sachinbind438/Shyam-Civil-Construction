@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 
 const NAV = [
   {
@@ -51,14 +50,11 @@ const NAV = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
+  const router   = useRouter();
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("/api/admin/logout", {
-        method: "POST",
-      });
-
+      const response = await fetch("/api/admin/logout", { method: "POST" });
       if (response.ok) {
         router.push("/admin/login");
         router.refresh();
@@ -69,77 +65,128 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside
-      className="w-60 shrink-0 flex flex-col min-h-[600px]"
-      style={{
-        background:   "rgba(255,255,255,0.03)",
-        borderRight:  "1px solid rgba(255,255,255,0.07)",
-      }}
-    >
-      {/* Logo */}
-      <div className="px-6 py-7 border-b items-center" style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-        <div className="flex flex-col items-center ">      
-          
-            <p className="text-white text-2xl! font-bold leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">Shyam Civil</p>
-            <p className="text-white text-base! leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">Admin Panel</p>
+    <>
+      {/* ── DESKTOP SIDEBAR (md+) ── */}
+      <aside
+        className="hidden lg:flex w-60 shrink-0 flex-col  bg-[#0a1520]"
+        style={{
+          borderRight: "1px solid rgba(255,255,255,0.07)",
+        }}
+      >
+        {/* Logo */}
+        <div
+          className="px-6 py-7 border-b"
+          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+        >
+          <div className="flex flex-col items-center">
+            <p className="text-white text-2xl font-bold leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">
+              Shyam Civil
+            </p>
+            <p className="text-white text-base leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">
+              Admin Panel
+            </p>
           </div>
-        </div>  
-      
+        </div>
 
-      {/* Nav links */}
-      <nav className="flex-1 px-3 py-5 space-y-1">
+        {/* Nav links */}
+        <nav className="flex-1 px-3 py-5 space-y-1">
+          {NAV.map((item) => {
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200"
+                style={{
+                  background: active ? "rgba(201,169,110,0.12)" : "transparent",
+                  color:      active ? "#C9A96E" : "white",
+                  fontWeight: active ? 500 : 400,
+                }}
+              >
+                <span style={{ color: active ? "#C9A96E" : "white" }}>
+                  {item.icon}
+                </span>
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Bottom links */}
+        <div
+          className="px-3 pb-6 space-y-1 border-t pt-4"
+          style={{ borderColor: "rgba(255,255,255,0.07)" }}
+        >
+          <a
+            href="/"
+            target="_blank"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all hover:cursor-pointer hover:scale-105 hover:bg-white/10"
+            style={{ color: "white" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+              <polyline points="15 3 21 3 21 9"/>
+              <line x1="10" y1="14" x2="21" y2="3"/>
+            </svg>
+            View Site
+          </a>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left hover:cursor-pointer hover:scale-105 hover:bg-white/10"
+            style={{ color: "white" }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sign Out
+          </button>
+        </div>
+      </aside>
+
+      {/* ── MOBILE BOTTOM NAV (below md) ── */}
+      <nav
+        className="lg:hidden p-4 fixed bottom-0 left-0 right-0 z-50 flex items-center justify-around px-2 py-2"
+        style={{
+          background:  "rgba(10,21,32,0.97)",
+          borderTop:   "1px solid rgba(255,255,255,0.07)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
         {NAV.map((item) => {
           const active = pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200"
-              style={{
-                background: active ? "rgba(201,169,110,0.12)" : "transparent",
-                color:      active ? "#rgba(255,255,255,0.3)" : "white",
-                fontWeight: active ? 500 : 400,
-              }}
+              className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all duration-200"
+              style={{ color: active ? "#C9A96E" : "rgba(255,255,255,0.4)" }}
             >
-              <span style={{ color: active ? "#rgba(255,255,255,0.3)" : "white" }}>
-                {item.icon}
-              </span>
-              {item.label}
+              <span>{item.icon}</span>
+              <span className="text-[10px] font-medium">{item.label}</span>
             </Link>
           );
         })}
-      </nav>
 
-      {/* Bottom links */}
-      <div className="px-3 pb-6 space-y-1 border-t pt-4 "
-        style={{ borderColor: "rgba(255,255,255,0.07)" }}>
-        <a
-          href="/"
-          target="_blank"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all hover:cursor-pointer hover:scale-105 hover:bg-white/10"
-          style={{ color: "white" }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-            <polyline points="15 3 21 3 21 9"/>
-            <line x1="10" y1="14" x2="21" y2="3"/>
-          </svg>
-          View Site
-        </a>
-
+        {/* Sign out */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all text-left hover:cursor-pointer hover:scale-105 hover:bg-white/10"
-          style={{ color: "white" }}
+          className="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl transition-all duration-200"
+          style={{ color: "rgba(255,255,255,0.4)" }}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
             <polyline points="16 17 21 12 16 7"/>
             <line x1="21" y1="12" x2="9" y2="12"/>
           </svg>
-          Sign Out
+          <span className="text-[10px] font-medium">Sign Out</span>
         </button>
-      </div>
-    </aside>
+      </nav>
+
+      {/* Spacer so page content isn't hidden behind bottom nav on mobile */}
+      <div className="lg:hidden h-16" />
+    </>
   );
 }

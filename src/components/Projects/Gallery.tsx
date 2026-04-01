@@ -6,16 +6,16 @@ async function getGalleryImages() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "http://localhost:3000";
     const res = await fetch(`${baseUrl}/api/gallery`, {
-      next: { revalidate: 60 }
+      next: { revalidate: 60 },
     });
-    
+
     if (!res.ok) {
       console.error("Failed to fetch gallery:", res.status);
       return [];
     }
-    
+
     const data = await res.json();
-    return data.success ? data.data.slice(0, 15) : []; // Limit to 20 images
+    return data.success ? data.data.slice(0, 15) : [];
   } catch (error) {
     console.error("Gallery fetch error:", error);
     return [];
@@ -26,34 +26,38 @@ export default async function Gallery() {
   const images = await getGalleryImages();
 
   return (
-    <div className="flex flex-col py-10 px-6 gap-5">
-      <div className="text-center text-7xl font-raleway mb-8">
-        <h4>Our Gallery</h4>
+    <div className="flex flex-col py-8 md:py-10 px-4 md:px-6 gap-6">
+      {/* Heading */}
+      <div className="text-center mb-6 md:mb-8">
+        <h4 className="font-raleway text-5xl sm:text-4xl md:text-5xl lg:text-7xl">
+          Our Gallery
+        </h4>
       </div>
 
-      {/* Masonry-like gallery using CSS columns */}
-      <div className="prose-0 columns-1 sm:columns-2 lg:columns-3 gap-6">
+      {/* Masonry Layout */}
+      <div className="columns-1 p-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6">
         {images.map((img) => (
-          <div key={img.id} className="break-inside-avoid mb-6">
+          <div key={img.id} className="break-inside-avoid mb-4 md:mb-6">
             <ImageCard
               src={img.url}
-              className="w-full h-[280px]"
+              className="w-full h-[240px] sm:h-[240px] md:h-[260px] lg:h-[280px]"
               href={`/gallery`}
               showOverlay={false}
-              imageClassName="rounded-4xl"
-              overlayClassName="rounded-4xl!"
-            />  
+              imageClassName="rounded-4xl md:rounded-4xl"
+              overlayClassName="rounded-4xl md:rounded-4xl"
+            />
           </div>
         ))}
       </div>
 
-      <div className="mt-8 text-center">
+      {/* CTA */}
+      <div className="mt-4 md:mt-8 text-center">
         <Button
           className="self-center"
           href="/gallery"
           text="View More"
           variant="dark"
-          size="lg"
+          size="md"
         />
       </div>
     </div>

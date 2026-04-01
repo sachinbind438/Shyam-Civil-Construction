@@ -9,48 +9,34 @@ const raleway = Raleway({
 
 export default function OurApproach() {
   return (
-<section className="pl-6 ">
-        <div className="flex flex-row items-start justify-between gap-24">
-          <div className="py-48 pl-12 pr-6  w-[45%]">
-            <header className="flex flex-col gap-6">
-              <h2 className="text-[80px] font-raleway font-bold text-start!">
-                Our Approach
-              </h2>
+<section className="px-4 md:px-6 lg:px-12 py-10 md:py-16">
+  <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
 
-              <p className="text-[#4d4d4d] leading-relaxed max-w-xl">
-                Designing your space is a journey that we embark on together.
-                Our process is rooted in collaboration, creativity, and clarity.
-                Here’s how we work:
-              </p>
+    {/* TEXT */}
+    <div className="hidden lg:block w-full lg:w-[50%] flex-col justify-center">
+      <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px] mb-6">
+        Our Approach
+      </h2>
 
-              <div>
-                <ul className="list-decimal list-inside text-[#4d4d4d] space-y-3 text-lg leading-relaxed">
-                  <li>
-                    Initial Consultation: Understanding your needs, style, and
-                    goals.
-                  </li>
-                  <li>
-                    Design Concept: Crafting a vision that aligns with your
-                    space.
-                  </li>
-                  <li>
-                    Implementation: Bringing the design to life with quality
-                    craftsmanship.
-                  </li>
-                  <li>
-                    Final Reveal: Unveiling a space that reflects your vision
-                    and exceeds expectations.
-                  </li>
-                </ul>
-              </div>
-            </header>
-          </div>
-          <div className="w-[42%] flex items-center relative p-6">
-            <div>
-            <ImageStack />
-            </div>
-          </div>
-        </div>
-      </section>
+      <p className="text-[#4d4d4d] mb-6 max-w-xl">
+        Designing your space is a journey that we embark on together.
+        Our process is rooted in collaboration, creativity, and clarity.
+      </p>
+
+      <ul className="space-y-3 text-base md:text-lg text-[#4d4d4d]">
+        <li>1. Initial Consultation: Understanding your needs, style, and goals.</li>
+        <li>2. Design Concept: Crafting a vision that aligns with your space.</li>
+        <li>3. Implementation: Bringing the design to life with quality craftsmanship.</li>
+        <li>4. Final Reveal: Unveiling a space that reflects your vision and exceeds expectations.</li>
+      </ul>
+    </div>
+
+    {/* IMAGE STACK */}
+    <div className="w-full lg:w-[50%] flex justify-center items-center">
+      <ImageStack />
+    </div>
+
+  </div>
+</section>
     );  
 }

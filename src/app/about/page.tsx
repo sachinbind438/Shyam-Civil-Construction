@@ -5,7 +5,7 @@ import OurAproach from "../../components/about/our_approach";
 import TestimonialComponent from "../../components/Testimonial/TestimonialComponent";
 import WhoWeAre from "../../components/about/Whoweare";
 import TeamSection from "../../components/about/team";
-
+import CTA from "../../components/about/CTA";
 
 const raleway = Raleway({
   subsets: ["latin"],
@@ -15,19 +15,12 @@ const raleway = Raleway({
 
 export default function About() {
   return (
-    <main className="">
+    <main className="pt-10">
       <WhoWeAre />
       <TeamSection />
       <OurAproach />
       <TestimonialComponent />
-      <section className="text-center p-10 gap-5  flex flex-col items-center">
-        <h2 className="text-7xl!  m-6!">Ready to Transform Your Space?</h2>
-        <p className="text-2xl! mb-8!">Contact us today for a free consultation and let’s bring your vision to life!</p>
-        <Button href="/contact" 
-        text="Get a Free Estimate"
-        size="lg"
-        />
-      </section>
+      <CTA />
     </main>
   );
 }

@@ -26,11 +26,27 @@ export default function Button({
 }: ButtonProps) {
   const isDark = variant === "dark";
 
-  const sizeMap = {
-    sm: { pill: "px-7 py-1 text-xs", arrow: "w-7 h-7", svg: "w-3 h-3" },
-    md: { pill: "px-8 py-2 text-sm", arrow: "w-9 h-9", svg: "w-3 h-3" },
-    lg: { pill: "px-11 py-3 text-base", arrow: "w-12 h-12 group-hover:-translate-x-7!", svg: "w-4 h-4" },
-  } as const;
+const sizeMap = {
+  sm: {
+    pill: "px-7 py-1 text-xs",
+    arrow: "w-7 h-7",
+    svg: "w-3 h-3",
+  },
+
+  // 💎 THIS IS THE MAGIC ONE
+  md: {
+    // md for mobile → lg for desktop
+    pill: "px-8 py-2 text-sm lg:px-11 lg:py-3 lg:text-base",
+    arrow: "w-9 h-9 lg:w-12 lg:h-12 lg:group-hover:-translate-x-7!",
+    svg: "w-3 h-3 lg:w-4 lg:h-4",
+  },
+
+  lg: {
+    pill: "px-11 py-3 text-base",
+    arrow: "w-12 h-12 group-hover:-translate-x-7!",
+    svg: "w-4 h-4",
+  },
+} as const;
 
   const sz = sizeMap[size];
 

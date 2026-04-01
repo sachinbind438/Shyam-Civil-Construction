@@ -3,18 +3,17 @@
 import { useState, useEffect, useRef, ChangeEvent } from "react"
 
 export default function AdminGalleryPage() {
-  const [images,    setImages]    = useState<any[]>([])
-  const [uploading, setUploading] = useState(false)
-  const [progress,  setProgress]  = useState("")
-  const [loading,   setLoading]   = useState(true)
-  const [error,     setError]     = useState("")
-  const [page,      setPage]      = useState(1)
-  const [hasMore,   setHasMore]   = useState(true)
-  const [deleteId,  setDeleteId]      = useState<string | null>(null)
+  const [images,        setImages]        = useState<any[]>([])
+  const [uploading,     setUploading]     = useState(false)
+  const [progress,      setProgress]      = useState("")
+  const [loading,       setLoading]       = useState(true)
+  const [error,         setError]         = useState("")
+  const [page,          setPage]          = useState(1)
+  const [hasMore,       setHasMore]       = useState(true)
+  const [deleteId,      setDeleteId]      = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Fetch images on mount:
   useEffect(() => {
     fetch("/api/admin/gallery")
       .then(r => r.json())
@@ -22,7 +21,6 @@ export default function AdminGalleryPage() {
       .catch(() => { setError("Failed to load images"); setLoading(false) })
   }, [])
 
-  // Upload handler:
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
     if (!files.length) return
@@ -31,36 +29,23 @@ export default function AdminGalleryPage() {
     try {
       for (let i = 0; i < files.length; i++) {
         setProgress(`Uploading ${i + 1} of ${files.length}...`)
-
-        // Step 1: upload file to R2/B2
         const fd = new FormData()
         fd.append("file", files[i])
         const uploadRes  = await fetch("/api/admin/upload", { method: "POST", body: fd })
         const uploadData = await uploadRes.json()
-        if (!uploadData.success && !uploadData.url) {
-          throw new Error(uploadData.error ?? "Upload failed")
-        }
+        if (!uploadData.success && !uploadData.url) throw new Error(uploadData.error ?? "Upload failed")
         const url = (uploadData.url ?? "").replace(/[\n\r\t]/g, "").trim()
         const key = uploadData.key ?? uploadData.fileName ?? ""
-
-        // Step 2: save URL to database
         const saveRes  = await fetch("/api/admin/gallery", {
           method:  "POST",
           headers: { "Content-Type": "application/json" },
           body:    JSON.stringify({ url, key }),
         })
         const saveData = await saveRes.json()
-        
         if (!saveData.success) {
-          // Check if it's a duplicate error
-          if (saveRes.status === 409) {
-            // Duplicate image skipped
-            continue // Skip this file and continue with others
-          }
+          if (saveRes.status === 409) continue
           throw new Error(saveData.error ?? "Save failed")
         }
-
-        // Step 3: add to state immediately
         setImages(prev => [saveData.data, ...prev])
       }
     } catch (err: any) {
@@ -72,25 +57,17 @@ export default function AdminGalleryPage() {
     }
   }
 
-  // Delete handler:
-  const confirmDelete = (id: string) => {
-    setDeleteId(id)
-  }
+  const confirmDelete = (id: string) => setDeleteId(id)
+  const cancelDelete  = () => setDeleteId(null)
 
   const handleDelete = async () => {
     if (!deleteId) return
     setDeleteLoading(true)
     try {
-      const res  = await fetch(`/api/admin/gallery/${deleteId}`, {
-        method: "DELETE",
-        })
+      const res  = await fetch(`/api/admin/gallery/${deleteId}`, { method: "DELETE" })
       const data = await res.json()
       if (!data.success) throw new Error("Delete failed")
-      setImages(prev =>
-        prev.filter(img =>
-          img._id?.toString() !== deleteId && img.id !== deleteId
-        )
-      )
+      setImages(prev => prev.filter(img => img._id?.toString() !== deleteId && img.id !== deleteId))
       setDeleteId(null)
     } catch (err: any) {
       setError(err.message)
@@ -100,13 +77,9 @@ export default function AdminGalleryPage() {
     }
   }
 
-  const cancelDelete = () => {
-    setDeleteId(null)
-  }
-
   const fetchImages = async (page = 1, limit = 50) => {
     try {
-      const res = await fetch(`/api/admin/gallery?page=${page}&limit=${limit}`)
+      const res  = await fetch(`/api/admin/gallery?page=${page}&limit=${limit}`)
       const data = await res.json()
       if (page === 1) {
         setImages(data.data ?? [])
@@ -129,27 +102,27 @@ export default function AdminGalleryPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8 lg:p-12">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 px-6">
+      <div className="flex items-center justify-between mb-6 sm:mb-8 px-2 sm:px-4 md:px-6">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-1">Gallery</h1>
-          <p className="text-white/40 text-sm">{images.length} images</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-1">Gallery</h1>
+          <p className="text-white/40 text-xs sm:text-sm">{images.length} images</p>
         </div>
         <button
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="text-sm px-5 py-2 rounded-full hover:scale-[1.05] transition-all hover:cursor-pointer font-semibold disabled:opacity-50 hover:opacity-90 hover:bg-[#C9A96E]/80 hover:shadow-lg shadow-[#C9A96E]/50"
+          className="text-xs sm:text-sm px-3 sm:px-5 py-2 rounded-full hover:scale-[1.05] transition-all hover:cursor-pointer font-semibold disabled:opacity-50 hover:opacity-90 hover:bg-[#C9A96E]/80 hover:shadow-lg shadow-[#C9A96E]/50 shrink-0"
           style={{ background: "#C9A96E", color: "#0a1520" }}
         >
-          {uploading ? progress : "+ Upload Images"}
+          {uploading ? progress : "+ Upload"}
         </button>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          multiple    
+          multiple
           className="hidden"
           onChange={handleUpload}
         />
@@ -157,113 +130,105 @@ export default function AdminGalleryPage() {
 
       {/* Error */}
       {error && (
-        <div className="mb-6 bg-red-500/10 border border-red-500/20
-                          rounded-xl px-4 py-3 text-red-400 text-sm">
+        <div className="mb-4 sm:mb-6 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-xs sm:text-sm">
           {error}
         </div>
       )}
 
-      {/* Upload zone — shown when no images yet */}
-      {!loading && images.length === 0 && (
+      {/* Upload progress */}
+      {uploading && (
         <div
-          onClick={() => fileInputRef.current?.click()}
-          className="cursor-pointer rounded-2xl flex flex-col items-center
-                     justify-center gap-3 py-24"
-          style={{
-            border:     "2px dashed rgba(255,255,255,0.12)",
-            background: "rgba(255,255,255,0.02)",
-          }}
+          className="mb-4 sm:mb-6 rounded-xl px-4 py-3 text-xs sm:text-sm flex items-center gap-3"
+          style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)" }}
         >
-          {/* Upload icon */}
-          <div
-            className="w-16 h-16 rounded-full flex items-center justify-center"
-            style={{ background: "rgba(201,169,110,0.1)" }}
-          >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-              stroke="#C9A96E" strokeWidth="1.8">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-          </div>
-          <p className="text-white/50 text-sm">
-            Click to upload images
-          </p>
-          <p className="text-white/25 text-xs">
-            JPG, PNG, WEBP — select multiple at once
-          </p>
+          <div className="w-4 h-4 rounded-full border-2 border-[#C9A96E]/30 border-t-[#C9A96E] animate-spin shrink-0" />
+          <span style={{ color: "#C9A96E" }}>{progress}</span>
         </div>
       )}
 
       {/* Loading spinner */}
       {loading && (
         <div className="flex items-center justify-center py-24">
-          <div className="w-8 h-8 rounded-full border-2 border-white/10
-                          border-t-[#C9A96E] animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-[#C9A96E] animate-spin" />
         </div>
       )}
 
-      {/* Upload progress overlay */}
-      {uploading && (
-        <div className="mb-6 rounded-xl px-4 py-3 text-sm flex items-center gap-3"
-          style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)" }}>
-          <div className="w-4 h-4 rounded-full border-2 border-[#C9A96E]/30
-                          border-t-[#C9A96E] animate-spin shrink-0" />
-          <span style={{ color: "#C9A96E" }}>{progress}</span>
+      {/* Empty upload zone */}
+      {!loading && images.length === 0 && (
+        <div
+          onClick={() => fileInputRef.current?.click()}
+          className="cursor-pointer rounded-2xl flex flex-col items-center justify-center gap-3 py-16 sm:py-24"
+          style={{ border: "2px dashed rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.02)" }}
+        >
+          <div
+            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center"
+            style={{ background: "rgba(201,169,110,0.1)" }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="1.8">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+          <p className="text-white/50 text-xs sm:text-sm">Click to upload images</p>
+          <p className="text-white/25 text-xs">JPG, PNG, WEBP — select multiple at once</p>
         </div>
       )}
 
       {/* Image grid */}
       {!loading && images.length > 0 && (
         <>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
             {images.map((img: any) => {
               const id = img._id?.toString() ?? img.id
               return (
-              <div
-                key={id}
-                className="relative group aspect-square overflow-hidden rounded-lg
-                           transition-all duration-200 hover:shadow-lg hover:scale-[1.02]"
-              >
-                {/* Image */}
-                <img
-                  src={img.url}
-                  alt=""
-                  className="w-full h-full object-cover transition-transform
-                             duration-200 group-hover:scale-105 cursor-pointer"
-                  loading="lazy"
-                />
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-black/40 opacity-0 
-                           group-hover:opacity-100 transition-opacity duration-200" />
-
-                {/* Delete button */}
-                <button
-                  onClick={() => confirmDelete(id)}
-                  className="absolute top-2 right-2 w-8 h-8 bg-red-500 text-white
-                             rounded-full flex items-center justify-center
-                             opacity-0 group-hover:opacity-100 transition-all duration-200
-                             hover:bg-red-600 transform scale-75 group-hover:scale-100"
+                <div
+                  key={id}
+                  className="relative group aspect-square overflow-hidden rounded-lg transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M3 6h18"/>
-                    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/>
-                    <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                  </svg>
-                </button>
-              </div>
+                  <img
+                    src={img.url}
+                    alt=""
+                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                    loading="lazy"
+                    decoding="async"
+                  />
+
+                  {/* Hover overlay */}
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+                  {/* Delete button — always visible on mobile (no hover), hover-only on desktop */}
+                  <button
+                    onClick={() => confirmDelete(id)}
+                    className="
+                      absolute top-1.5 right-1.5 sm:top-2 sm:right-2
+                      w-7 h-7 sm:w-8 sm:h-8
+                      bg-red-500 text-white rounded-full
+                      flex items-center justify-center
+                      transition-all duration-200
+                      hover:bg-red-600
+                      opacity-100 scale-100
+                      sm:opacity-0 sm:scale-75
+                      sm:group-hover:opacity-100 sm:group-hover:scale-100
+                    "
+                  >
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 6h18"/>
+                      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+                      <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                    </svg>
+                  </button>
+                </div>
               )
             })}
           </div>
 
-          {/* Load More Button */}
+          {/* Load More */}
           {hasMore && (
-            <div className="text-center mt-6">
+            <div className="text-center mt-4 sm:mt-6">
               <button
                 onClick={loadMore}
-                className="px-6 py-2 bg-[#C9A96E] text-white rounded-lg
-                           hover:bg-[#B8945C] transition-colors duration-200"
+                className="px-5 sm:px-6 py-2 bg-[#C9A96E] text-white rounded-lg text-sm hover:bg-[#B8945C] transition-colors duration-200"
               >
                 Load More Images
               </button>
@@ -272,7 +237,7 @@ export default function AdminGalleryPage() {
         </>
       )}
 
-      {/* ── Delete Confirmation Modal ── */}
+      {/* Delete Confirmation Modal */}
       {deleteId && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -280,21 +245,20 @@ export default function AdminGalleryPage() {
           onClick={cancelDelete}
         >
           <div
-            className="relative w-full max-w-sm rounded-2xl p-8 flex flex-col items-center gap-6"
+            className="relative w-full max-w-sm rounded-2xl p-6 sm:p-8 flex flex-col items-center gap-5 sm:gap-6"
             style={{
-              background:   "linear-gradient(135deg, #0f1e2e 0%, #0a1520 100%)",
-              border:       "1px solid rgba(201,169,110,0.2)",
-              boxShadow:    "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
+              background: "linear-gradient(135deg, #0f1e2e 0%, #0a1520 100%)",
+              border:     "1px solid rgba(201,169,110,0.2)",
+              boxShadow:  "0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)",
             }}
             onClick={e => e.stopPropagation()}
           >
-            {/* Gold warning icon */}
+            {/* Icon */}
             <div
-              className="w-16 h-16 rounded-full flex items-center justify-center"
+              className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center"
               style={{ background: "rgba(201,169,110,0.1)", border: "1px solid rgba(201,169,110,0.2)" }}
             >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                stroke="#C9A96E" strokeWidth="1.5">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="1.5">
                 <polyline points="3 6 5 6 21 6"/>
                 <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
                 <path d="M10 11v6M14 11v6"/>
@@ -305,12 +269,12 @@ export default function AdminGalleryPage() {
             {/* Text */}
             <div className="text-center space-y-2">
               <h3
-                className="text-xl font-semibold"
+                className="text-lg sm:text-xl font-semibold"
                 style={{ color: "rgba(255,255,255,0.92)", fontFamily: "var(--font-cormorant, serif)" }}
               >
                 Delete Image
               </h3>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <p className="text-xs sm:text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
                 This action cannot be undone.
                 The image will be permanently removed.
               </p>
@@ -321,14 +285,11 @@ export default function AdminGalleryPage() {
 
             {/* Buttons */}
             <div className="flex items-center gap-3 w-full">
-
-              {/* Cancel */}
               <button
                 type="button"
                 onClick={cancelDelete}
                 disabled={deleteLoading}
-                className="flex-1 py-3 rounded-xl text-sm font-medium
-                           transition-all hover:opacity-80 disabled:opacity-40"
+                className="flex-1 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-medium transition-all hover:opacity-80 disabled:opacity-40"
                 style={{
                   background: "rgba(255,255,255,0.06)",
                   color:      "rgba(255,255,255,0.6)",
@@ -338,14 +299,11 @@ export default function AdminGalleryPage() {
                 Cancel
               </button>
 
-              {/* Delete */}
               <button
                 type="button"
                 onClick={handleDelete}
                 disabled={deleteLoading}
-                className="flex-1 py-3 rounded-xl text-sm font-semibold
-                           transition-all hover:opacity-90 disabled:opacity-50
-                           flex items-center justify-center gap-2"
+                className="flex-1 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-semibold transition-all hover:opacity-90 disabled:opacity-50 flex items-center justify-center gap-2"
                 style={{
                   background: "linear-gradient(135deg, #c0392b 0%, #96281b 100%)",
                   color:      "white",
@@ -355,14 +313,12 @@ export default function AdminGalleryPage() {
               >
                 {deleteLoading ? (
                   <>
-                    <div className="w-4 h-4 rounded-full border-2 border-white/30
-                                    border-t-white animate-spin" />
+                    <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                     Deleting...
                   </>
                 ) : (
                   <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-                      stroke="currentColor" strokeWidth="2">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <polyline points="3 6 5 6 21 6"/>
                       <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
                       <path d="M10 11v6M14 11v6"/>
@@ -372,12 +328,10 @@ export default function AdminGalleryPage() {
                   </>
                 )}
               </button>
-
             </div>
           </div>
         </div>
       )}
-
     </div>
   )
 }

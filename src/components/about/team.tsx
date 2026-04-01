@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import Link from "next/link";
 
-// ─── INTERSECTION OBSERVER HOOK ───────────────────────────────────────────────
+// ─── INTERSECTION OBSERVER HOOK ─────────────────────────
 function useInView(ref, { threshold = 0.15, once = true } = {}) {
   const [inView, setInView] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const obs = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -16,25 +17,22 @@ function useInView(ref, { threshold = 0.15, once = true } = {}) {
           if (once) obs.disconnect();
         }
       },
-      { threshold },
+      { threshold }
     );
+
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
+
   return inView;
 }
 
-// ─── TEAM DATA ────────────────────────────────────────────────────────────────
-// position: "top"    → name/role/X sits ABOVE the photo  (cards 2, 4)
-// position: "bottom" → name/role/X sits BELOW the photo  (cards 1, 3)
-// tall: true  → taller image card, starts flush at top
-// tall: false → shorter image card, offset downward (creates zigzag)
+// ─── TEAM DATA ─────────────────────────────────────────
 const TEAM = [
   {
     id: 1,
     name: "Ethan Walker",
     role: "Senior Architect",
-    twitter: "#",
     image:
       "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=600&q=80",
     position: "bottom",
@@ -44,7 +42,6 @@ const TEAM = [
     id: 2,
     name: "Sophia Carter",
     role: "Lead Interior Designer",
-    twitter: "#",
     image:
       "https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=600&q=80",
     position: "top",
@@ -54,7 +51,6 @@ const TEAM = [
     id: 3,
     name: "Liam Bennet",
     role: "Construction Manager",
-    twitter: "#",
     image:
       "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80",
     position: "bottom",
@@ -64,7 +60,6 @@ const TEAM = [
     id: 4,
     name: "Isabela Martinez",
     role: "Project Manager",
-    twitter: "#",
     image:
       "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80",
     position: "top",
@@ -72,70 +67,57 @@ const TEAM = [
   },
 ];
 
-// ─── META ROW (name + role + X icon) ─────────────────────────────────────────
+// ─── META ROW ─────────────────────────────────────────
 function MetaRow({ member }) {
   return (
-    <div className="flex items-start justify-between px-0.5">
+    <div className="flex justify-between items-start px-1">
       <div>
-        <h3
-          className="font-semibold leading-tight text-[#111]"
-          style={{
-            fontFamily: "'Cormorant Garamond', Georgia, serif",
-            fontSize: "1.2rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
+        <h3 className="font-semibold text-[#111] text-lg leading-tight">
           {member.name}
         </h3>
-        <p
-          className="mt-0.5 text-[#999]"
-          style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem" }}
-        >
-          {member.role}
-        </p>
+        <p className="text-[#999] text-xs mt-1">{member.role}</p>
       </div>
     </div>
   );
 }
 
-// ─── SINGLE CARD ─────────────────────────────────────────────────────────────
+// ─── TEAM CARD ─────────────────────────────────────────
 function TeamCard({ member, index }) {
   const [hovered, setHovered] = useState(false);
   const ref = useRef(null);
   const inView = useInView(ref, { threshold: 0.1 });
 
-  // Tall cards: 480px  |  Short cards: 390px
-  const imgH = member.tall ? 480 : 390;
-  // Short cards pushed down 90px to create the stagger
-  const topOffset = member.tall ? 0 : 90;
+  const imgHeight = member.tall
+    ? "h-[320px] md:h-[420px] lg:h-[480px]"
+    : "h-[280px] md:h-[360px] lg:h-[390px]";
+
+  const offset = member.tall ? "lg:mt-0" : "lg:mt-[90px]";
 
   return (
     <div
       ref={ref}
-      className="flex-1 min-w-0 flex flex-col"
+      className={`flex flex-col ${offset}`}
       style={{
-        marginTop: topOffset,
         opacity: inView ? 1 : 0,
         transform: inView ? "translateY(0)" : "translateY(36px)",
-        transition: `opacity 0.7s ease ${index * 120}ms, transform 0.7s ease ${index * 120}ms`,
+        transition: `all 0.7s ease ${index * 120}ms`,
       }}
     >
-      {/* META ABOVE */}
+      {/* ❌ SHOW TOP META ONLY ON DESKTOP */}
       {member.position === "top" && (
-        <div className="mb-3">
+        <div className="hidden lg:block mb-3">
           <MetaRow member={member} />
         </div>
       )}
 
-      {/* PHOTO */}
+      {/* IMAGE */}
       <div
-        className="relative overflow-hidden rounded-2xl"
+        className={`relative overflow-hidden rounded-2xl ${imgHeight}`}
         style={{
-          height: imgH,
           boxShadow: hovered
             ? "0 24px 56px rgba(0,0,0,0.16)"
             : "0 2px 16px rgba(0,0,0,0.07)",
-          transition: "box-shadow 0.45s ease",
+          transition: "0.4s ease",
         }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
@@ -143,111 +125,65 @@ function TeamCard({ member, index }) {
         <img
           src={member.image}
           alt={member.name}
-          className="w-full h-full object-cover object-top"
+          className="w-full h-full object-cover"
           style={{
-            transform: hovered ? "scale(1.06)" : "scale(1.0)",
-            transition: "transform 0.75s cubic-bezier(0.23, 1, 0.32, 1)",
+            transform: hovered ? "scale(1.06)" : "scale(1)",
+            transition: "transform 0.6s ease",
           }}
         />
-        {/* Subtle vignette */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.06) 100%)",
-          }}
-        />
+
+        <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/10" />
       </div>
 
-      {/* META BELOW */}
-      {member.position === "bottom" && (
-        <div className="mt-3">
-          <MetaRow member={member} />
-        </div>
-      )}
+      {/* ✅ ALWAYS SHOW BOTTOM META ON MOBILE + TABLET */}
+      <div className="mt-3">
+        <MetaRow member={member} />
+      </div>
     </div>
   );
 }
 
-// ─── MAIN EXPORT ─────────────────────────────────────────────────────────────
+// ─── MAIN SECTION ───────────────────────────────────────
 export default function TeamSection() {
   const headingRef = useRef(null);
   const headingInView = useInView(headingRef, { threshold: 0.3 });
 
   return (
-    <>
-      <section className="bg-white p-6">
-        <div className="">
-          {/* ── HEADER ── */}
-          <div
-            ref={headingRef}
-            className=""
-            style={{
-              opacity: headingInView ? 1 : 0,
-              transform: headingInView ? "translateY(0)" : "translateY(22px)",
-              transition: "opacity 0.8s ease, transform 0.8s ease",
-            }}
-          >
-            {/* Headline + sub — split on desktop */}
-            <div className="w-full p-12">
-            <div className="flex flex-row justify-between gap-10">
-              <h2 className="text-[80px]  font-raleway font-bold leading-tight text-[#111]">
-                <em>The team behind</em>
-                <div className="">
-                  <em className="pl-11">every masterpiece</em>
-                </div>
-              </h2>
-              <p
-                style={{
-                  maxWidth: "300px",
-                  color: "#aaa",
-                  fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 300,
-                  fontSize: "0.88rem",
-                  lineHeight: 1.75,
-                  textAlign: "end",
-                  placeContent: "end",
-                }}
-              >
-                Talented individuals united by a single commitment — to deliver
-                spaces that exceed every expectation.
-              </p>
+    <section className="bg-white p-4 md:p-6">
+      {/* HEADER */}
+      <div
+        ref={headingRef}
+        style={{
+          opacity: headingInView ? 1 : 0,
+          transform: headingInView ? "translateY(0)" : "translateY(20px)",
+          transition: "0.8s ease",
+        }}
+        className="px-4 md:px-12"
+      >
+        <div className="flex flex-col lg:flex-row justify-between gap-6 md:gap-10">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-[80px]  leading-tight text-[#111]">
+            The team behind
+            <div>
+              <h2 className="lg:pl-12">every masterpiece</h2>
             </div>
+          </h2>
 
-            {/* Divider */}
-            <div
-            className="flex flex-col sm:flex-row items-center justify-between"
-            style={{ borderTop: "1px solid #f0ece6" }}
-          ></div>
-          </div>
-
-          {/* ── CARDS ROW ── */}
-          {/*
-            Layout logic (matches screenshot exactly):
-            ┌──────────┬──────────┬──────────┬──────────┐
-            │          │ Sophia   │          │ Isabela  │  ← top-meta cards (offset 90px down)
-            │  Ethan   │ [photo]  │  Liam    │ [photo]  │
-            │  [photo] │          │  [photo] │          │
-            │          │          │          │          │
-            │  Ethan ↓ │ Sophia ↓ │  Liam ↓  │ Isabel ↓ │  ← bottom meta
-            └──────────┴──────────┴──────────┴──────────┘
-          */}
-          <div
-            className="flex gap-4 md:gap-5 items-start pb-10 px-10" >
-            {TEAM.map((member, i) => (
-              <TeamCard key={member.id} member={member} index={i} />
-            ))}
-          </div>
-
-          {/* ── FOOTER ROW ── */}
-          <div
-            className="flex flex-col sm:flex-row items-center justify-between"
-            style={{ borderTop: "1px solid #f0ece6" }}
-          ></div>
+          <p className="text-left lg:text-right text-[#aaa] text-sm max-w-[300px] leading-relaxed">
+            Talented individuals united by a single commitment — to deliver
+            spaces that exceed every expectation.
+          </p>
         </div>
-        </div>
-      </section>
-    </>
+      </div>
+
+      {/* GRID */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4 md:px-10 pt-10 pb-10">
+        {TEAM.map((member, i) => (
+          <TeamCard key={member.id} member={member} index={i} />
+        ))}
+      </div>
+
+      {/* DIVIDER */}
+      <div className="border-t border-[#f0ece6] mx-4 md:mx-10"></div>
+    </section>
   );
 }
-

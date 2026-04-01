@@ -17,7 +17,14 @@ export const FilterTabs = ({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2 }}
-      className="flex flex-wrap gap-4 md:gap-8  pb-6"
+      
+      className="
+        flex gap-4 md:gap-8 
+        overflow-x-auto md:overflow-visible
+        whitespace-nowrap md:flex-wrap
+        pb-4 md:pb-6
+        scrollbar-hide
+      "
     >
       {filterCategories.map((category) => {
         const isActive = activeFilter === category;
@@ -26,21 +33,28 @@ export const FilterTabs = ({
           <motion.button
             key={category}
             onClick={() => onFilterChange(category)}
-            className={`relative pb-2 text-sm md:text-base font-medium transition-colors duration-300 ${
-              isActive
-                ? "text-black font-bold"
-                : "text-gray-500 hover:text-gray-800"
-            }`}
+            className={`
+              relative px-1 py-2
+              text-sm sm:text-base md:text-lg
+              font-medium transition-all duration-300
+              shrink-0
+              
+              ${
+                isActive
+                  ? "text-black font-semibold"
+                  : "text-gray-500 hover:text-black"
+              }
+            `}
             whileHover={{ y: -2 }}
-            whileTap={{ y: 0 }}
+            whileTap={{ scale: 0.96 }}
           >
             {category}
 
-            {/* Active Underline Indicator */}
+            {/* UNDERLINE */}
             {isActive && (
               <motion.div
                 layoutId="underline"
-                className="absolute -bottom-[22px] left-0 right-0 h-1 bg-black rounded-full"
+                className="absolute left-0 bottom-0 w-full h-[2px] bg-black rounded-full"
                 transition={{ type: "spring", stiffness: 400, damping: 40 }}
               />
             )}

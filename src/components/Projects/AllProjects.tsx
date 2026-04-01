@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   FilterCategory,
-  filterCategories,
   getFilteredProjects,
   Project,
 } from "./../../data/projects";
@@ -12,21 +11,19 @@ import { ProjectCard } from "./ProjectCard";
 import { FilterTabs } from "./FilterTabs";
 
 interface AllProjectsProps {
-  /** Passed in from the server page component — already fetched from MongoDB */
   projects: Project[];
 }
 
 export const AllProjects = ({ projects }: AllProjectsProps) => {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
 
-  // Filter on the client — no extra DB call needed
   const filteredProjects = useMemo(
     () => getFilteredProjects(projects, activeFilter),
     [projects, activeFilter]
   );
 
   const containerVariants = {
-    hidden:  { opacity: 0 },
+    hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: { staggerChildren: 0.05, delayChildren: 0.1 },
@@ -35,52 +32,52 @@ export const AllProjects = ({ projects }: AllProjectsProps) => {
 
   return (
     <section className="bg-white">
-      <div className="px-12 gap-12 flex flex-col">
+      <div className="px-4 md:px-8 lg:px-12 flex flex-col gap-8 md:gap-10 lg:gap-12">
 
-        {/* Header */}
+        {/* HEADER */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="gap-6 flex flex-col"
+          className="flex flex-col gap-4 md:gap-6 max-w-3xl"
         >
-          <h2 className="text-[48px] md:text-[72px] text-left! leading-tight font-Raleway! text-black">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight font-semibold text-black">
             All Projects
           </h2>
-          <p className="text-[18px]! md:text-[18px] text-gray-600 max-w-[700px]">
-            Explore our diverse portfolio of innovative and inspiring
-            architectural designs.
+
+          <p className="text-sm sm:text-base md:text-lg text-gray-600">
+            Explore our diverse portfolio of innovative and inspiring architectural designs.
           </p>
         </motion.div>
 
-        {/* Filter Tabs */}
+        {/* FILTER */}
         <FilterTabs
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}
         />
 
-        {/* Projects Grid */}
+        {/* GRID */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8"
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </AnimatePresence>
         </motion.div>
 
-        {/* Empty state */}
+        {/* EMPTY STATE */}
         {filteredProjects.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col items-center justify-center py-20"
+            className="flex flex-col items-center justify-center py-16"
           >
-            <p className="text-lg text-gray-500">
+            <p className="text-sm md:text-base text-gray-500">
               No projects found in this category.
             </p>
           </motion.div>

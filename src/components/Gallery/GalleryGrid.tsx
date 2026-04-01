@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
 
 interface GalleryGridProps {
@@ -11,6 +11,9 @@ interface GalleryGridProps {
 
 export default function GalleryGrid({ images, showTitle = true, columns = 3 }: GalleryGridProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null)
+  const [touchStart, setTouchStart] = useState<number | null>(null)
+  const [touchEnd, setTouchEnd] = useState<number | null>(null)
+  const lightboxRef = useRef<HTMLDivElement>(null)
 
   const openLightbox = (index: number) => {
     setSelectedImageIndex(index)
@@ -31,6 +34,30 @@ export default function GalleryGrid({ images, showTitle = true, columns = 3 }: G
       setSelectedImageIndex(prev => 
         prev === images.length - 1 ? 0 : prev! + 1
       )
+    }
+  }
+
+  // Touch handlers for swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null)
+    setTouchStart(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return
+    
+    const distance = touchStart - touchEnd
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+
+    if (isLeftSwipe) {
+      navigateImage('next')
+    } else if (isRightSwipe) {
+      navigateImage('prev')
     }
   }
 
@@ -109,8 +136,12 @@ export default function GalleryGrid({ images, showTitle = true, columns = 3 }: G
       {/* Enhanced Lightbox */}
       {selectedImageIndex !== null && (
         <div 
+          ref={lightboxRef}
           className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
           onClick={closeLightbox}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
         >
           {/* Close button */}
           <button
@@ -130,7 +161,7 @@ export default function GalleryGrid({ images, showTitle = true, columns = 3 }: G
                   e.stopPropagation()
                   navigateImage('prev')
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                className="hidden xl:absolute xl:left-4 xl:top-1/2 xl:-translate-y-1/2 xl:w-12 xl:h-12 xl:rounded-full xl:bg-white/20 xl:backdrop-blur-sm xl:flex xl:items-center xl:justify-center xl:text-white hover:bg-white/30 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -142,7 +173,7 @@ export default function GalleryGrid({ images, showTitle = true, columns = 3 }: G
                   e.stopPropagation()
                   navigateImage('next')
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors"
+                className="hidden xl:absolute xl:right-4 xl:top-1/2 xl:-translate-y-1/2 xl:w-12 xl:h-12 xl:rounded-full xl:bg-white/20 xl:backdrop-blur-sm xl:flex xl:items-center xl:justify-center xl:text-white hover:bg-white/30 transition-colors"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -172,7 +203,10 @@ export default function GalleryGrid({ images, showTitle = true, columns = 3 }: G
 
           {/* Image info */}
           <div className="absolute bottom-4 left-4 right-4 text-white text-center">
-            <p className="text-sm opacity-75">Click outside or press ESC to close</p>
+            <p className="text-sm opacity-75">
+              <span className="sm:hidden">Swipe or click outside to close</span>
+              <span className="hidden sm:inline">Click outside or press ESC to close</span>
+            </p>
           </div>
         </div>
       )}

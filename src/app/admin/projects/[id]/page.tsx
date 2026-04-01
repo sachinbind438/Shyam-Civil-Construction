@@ -3,8 +3,8 @@
 // src/app/admin/projects/[id]/page.tsx
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { useRouter, useParams } from "next/navigation";
-
 import Link from "next/link";
+
 const cleanUrl = (url: string) => (url ?? "").replace(/[\n\r\t]/g, "").trim();
 
 async function uploadFile(file: File): Promise<string> {
@@ -158,10 +158,9 @@ export default function EditProjectPage() {
     background: "rgba(255,255,255,0.05)",
     border: "1px solid rgba(255,255,255,0.1)",
   };
-  const inputClass =
-    "w-full px-4 py-3 rounded-xl text-white text-sm outline-none";
-  const labelClass =
-    "block text-xs font-medium text-white/40 uppercase tracking-wider mb-2";
+  const inputClass = "w-full px-4 py-3 rounded-xl text-white text-sm outline-none";
+  const labelClass = "block text-xs font-medium text-white/40 uppercase tracking-wider mb-2";
+
   const zone = (active: boolean) => ({
     background: active ? "rgba(201,169,110,0.08)" : "rgba(255,255,255,0.03)",
     border: `2px dashed ${active ? "rgba(201,169,110,0.5)" : "rgba(255,255,255,0.12)"}`,
@@ -171,6 +170,7 @@ export default function EditProjectPage() {
     textAlign: "center" as const,
     transition: "all 0.2s",
   });
+
   const spinner = (
     <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-[#C9A96E] animate-spin mx-auto" />
   );
@@ -183,29 +183,22 @@ export default function EditProjectPage() {
     );
 
   return (
-    <div className="p-8">
-      <div className="mb-8">
+    // ↓ p-4 on mobile, p-8 on sm+
+    <div className="p-4 sm:p-8">
+
+      {/* Header */}
+      <div className="mb-6 sm:mb-8">
         <Link
           href="/admin/projects"
           className="text-white/30 hover:text-white text-sm flex items-center gap-2 mb-4"
         >
-          <svg
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path
-              d="M15 18l-6-6 6-6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           Back to Projects
         </Link>
-        <h1 className="text-2xl font-bold text-white">Edit Project</h1>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Edit Project</h1>
+        {/* truncate prevents long titles from breaking layout on mobile */}
         <p className="text-white/40 text-sm mt-1 truncate">{title}</p>
       </div>
 
@@ -215,7 +208,9 @@ export default function EditProjectPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+      <form onSubmit={handleSubmit} className="max-w-3xl w-full space-y-6">
+
+        {/* ── TITLE ── */}
         <div>
           <label className={labelClass}>Title *</label>
           <input
@@ -227,6 +222,7 @@ export default function EditProjectPage() {
           />
         </div>
 
+        {/* ── CATEGORY ── */}
         <div>
           <label className={labelClass}>Category *</label>
           <select
@@ -241,6 +237,7 @@ export default function EditProjectPage() {
           </select>
         </div>
 
+        {/* ── DESCRIPTION ── */}
         <div>
           <label className={labelClass}>Description *</label>
           <textarea
@@ -253,36 +250,35 @@ export default function EditProjectPage() {
           />
         </div>
 
-        <div>
-          <label className={labelClass}>Location *</label>
-          <input
-            className={inputClass}
-            style={inputStyle}
-            required
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
+        {/* ── LOCATION + YEAR — stacked on mobile, side-by-side on sm+ ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div>
+            <label className={labelClass}>Location *</label>
+            <input
+              className={inputClass}
+              style={inputStyle}
+              required
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className={labelClass}>Year *</label>
+            <input
+              className={inputClass}
+              style={inputStyle}
+              type="number"
+              required
+              value={year}
+              onChange={(e) => setYear(parseInt(e.target.value))}
+            />
+          </div>
         </div>
 
-        <div>
-          <label className={labelClass}>Year *</label>
-          <input
-            className={inputClass}
-            style={inputStyle}
-            type="number"
-            required
-            value={year}
-            onChange={(e) => setYear(parseInt(e.target.value))}
-          />
-        </div>
-
-        {/* Cover Image */}
+        {/* ── COVER IMAGE ── */}
         <div>
           <label className={labelClass}>Cover Image *</label>
-          <div
-            style={zone(coverUploading)}
-            onClick={() => !coverUploading && coverRef.current?.click()}
-          >
+          <div style={zone(coverUploading)} onClick={() => !coverUploading && coverRef.current?.click()}>
             {coverUploading ? (
               <div className="flex flex-col items-center gap-2">
                 {spinner}
@@ -291,47 +287,24 @@ export default function EditProjectPage() {
             ) : coverImage ? (
               <div className="flex flex-col items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={coverImage}
-                  alt=""
-                  className="w-full max-h-48 object-cover rounded-lg"
-                />
-                <p className="text-xs" style={{ color: "#C9A96E" }}>
-                  ✓ Click to replace
-                </p>
+                <img src={coverImage} alt="" className="w-full max-h-48 object-cover rounded-lg" />
+                <p className="text-xs" style={{ color: "#C9A96E" }}>✓ Click to replace</p>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
-                  style={{ background: "rgba(201,169,110,0.1)" }}
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#C9A96E"
-                    strokeWidth="2"
-                  >
+                <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(201,169,110,0.1)" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2">
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
                     <polyline points="17 8 12 3 7 8" />
                     <line x1="12" y1="3" x2="12" y2="15" />
                   </svg>
                 </div>
-                <p className="text-white/50 text-sm">
-                  Click to upload cover image
-                </p>
+                <p className="text-white/50 text-sm">Click to upload cover image</p>
               </div>
             )}
           </div>
-          <input
-            ref={coverRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleCoverUpload}
-          />
+          <input ref={coverRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
           <div className="mt-2">
             <input
               className={inputClass}
@@ -344,34 +317,20 @@ export default function EditProjectPage() {
           </div>
         </div>
 
-        {/* Gallery */}
+        {/* ── GALLERY ── */}
         <div>
           <label className={labelClass}>Gallery Images</label>
-          <div
-            style={zone(galleryUploading)}
-            onClick={() => !galleryUploading && galleryRef.current?.click()}
-          >
+          <div style={zone(galleryUploading)} onClick={() => !galleryUploading && galleryRef.current?.click()}>
             {galleryUploading ? (
               <div className="flex flex-col items-center gap-2">
                 {spinner}
-                <p className="text-white/50 text-xs">
-                  {galleryProgress || "Uploading..."}
-                </p>
+                <p className="text-white/50 text-xs">{galleryProgress || "Uploading..."}</p>
               </div>
             ) : (
               <div className="flex flex-col items-center gap-2">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
-                  style={{ background: "rgba(201,169,110,0.1)" }}
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#C9A96E"
-                    strokeWidth="2"
-                  >
+                <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(201,169,110,0.1)" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2">
                     <rect x="3" y="3" width="18" height="18" rx="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <polyline points="21 15 16 10 5 21" />
@@ -381,34 +340,22 @@ export default function EditProjectPage() {
               </div>
             )}
           </div>
-          <input
-            ref={galleryRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={handleGalleryUpload}
-          />
+          <input ref={galleryRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryUpload} />
+
+          {/* 2 cols on mobile, 3 on sm+ */}
           {gallery.length > 0 && (
-            <div className="mt-3 grid grid-cols-3 gap-2">
+            <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
               {gallery.map((url, i) => (
-                <div
-                  key={i}
-                  className="relative group rounded-xl overflow-hidden"
-                  style={{ height: "90px" }}
-                >
+                <div key={i} className="relative group rounded-xl overflow-hidden" style={{ height: "90px" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={url}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={url} alt="" className="w-full h-full object-cover" />
+                  {/* Always visible on touch devices, hover-only on desktop */}
                   <button
                     type="button"
-                    onClick={() =>
-                      setGallery((p) => p.filter((_, j) => j !== i))
-                    }
-                    className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => setGallery((p) => p.filter((_, j) => j !== i))}
+                    className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center
+                               text-white text-xs font-bold
+                               opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
                     style={{ background: "rgba(220,38,38,0.9)" }}
                   >
                     ×
@@ -417,6 +364,7 @@ export default function EditProjectPage() {
               ))}
             </div>
           )}
+
           {gallery.length > 0 && (
             <p className="mt-2 text-xs" style={{ color: "#C9A96E" }}>
               ✓ {gallery.length} image{gallery.length > 1 ? "s" : ""}
@@ -424,10 +372,12 @@ export default function EditProjectPage() {
           )}
         </div>
 
-        {/* Video */}
+        {/* ── VIDEO ── */}
         <div>
           <label className={labelClass}>Project Video (optional)</label>
-          <div className="flex gap-2 mb-3">
+
+          {/* Toggle buttons wrap on very small screens */}
+          <div className="flex flex-wrap gap-2 mb-3">
             {(["url", "upload"] as const).map((m) => (
               <button
                 key={m}
@@ -435,10 +385,7 @@ export default function EditProjectPage() {
                 onClick={() => setVideoMode(m)}
                 className="px-4 py-2 rounded-lg text-xs font-medium transition-all"
                 style={{
-                  background:
-                    videoMode === m
-                      ? "rgba(201,169,110,0.15)"
-                      : "rgba(255,255,255,0.05)",
+                  background: videoMode === m ? "rgba(201,169,110,0.15)" : "rgba(255,255,255,0.05)",
                   color: videoMode === m ? "#C9A96E" : "rgba(255,255,255,0.4)",
                   border: `1px solid ${videoMode === m ? "rgba(201,169,110,0.3)" : "rgba(255,255,255,0.08)"}`,
                 }}
@@ -447,6 +394,7 @@ export default function EditProjectPage() {
               </button>
             ))}
           </div>
+
           {videoMode === "url" ? (
             <input
               className={inputClass}
@@ -458,88 +406,55 @@ export default function EditProjectPage() {
             />
           ) : (
             <div>
-              <div
-                style={zone(videoUploading)}
-                onClick={() => !videoUploading && videoRef.current?.click()}
-              >
+              <div style={zone(videoUploading)} onClick={() => !videoUploading && videoRef.current?.click()}>
                 {videoUploading ? (
                   <div className="flex flex-col items-center gap-2">
                     {spinner}
                     <p className="text-white/50 text-xs">Uploading video...</p>
                   </div>
-                ) : video &&
-                  !video.includes("youtube") &&
-                  !video.includes("vimeo") ? (
+                ) : video && !video.includes("youtube") && !video.includes("vimeo") ? (
                   <div className="flex flex-col items-center gap-2">
-                    <video
-                      src={video}
-                      controls
-                      className="w-full rounded-lg max-h-48"
-                    />
-                    <p className="text-xs" style={{ color: "#C9A96E" }}>
-                      ✓ Click to replace
-                    </p>
+                    <video src={video} controls className="w-full rounded-lg max-h-48" />
+                    <p className="text-xs" style={{ color: "#C9A96E" }}>✓ Click to replace</p>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center gap-2">
-                    <div
-                      className="w-12 h-12 rounded-full flex items-center justify-center"
-                      style={{ background: "rgba(201,169,110,0.1)" }}
-                    >
-                      <svg
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="#C9A96E"
-                        strokeWidth="2"
-                      >
+                    <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                      style={{ background: "rgba(201,169,110,0.1)" }}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2">
                         <polygon points="23 7 16 12 23 17 23 7" />
                         <rect x="1" y="5" width="15" height="14" rx="2" />
                       </svg>
                     </div>
-                    <p className="text-white/50 text-sm">
-                      Click to upload video
-                    </p>
-                    <p className="text-white/25 text-xs">
-                      MP4, MOV, WebM — max 50MB
-                    </p>
+                    <p className="text-white/50 text-sm">Click to upload video</p>
+                    <p className="text-white/25 text-xs">MP4, MOV, WebM — max 50MB</p>
                   </div>
                 )}
               </div>
-              <input
-                ref={videoRef}
-                type="file"
-                accept="video/*"
-                className="hidden"
-                onChange={handleVideoUpload}
-              />
+              <input ref={videoRef} type="file" accept="video/*" className="hidden" onChange={handleVideoUpload} />
             </div>
           )}
         </div>
 
-        <div className="flex items-center gap-4 pt-4">
+        {/* ── SUBMIT — stacked on mobile, inline on sm+ ── */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
           <button
             type="submit"
-            disabled={
-              submitting || coverUploading || galleryUploading || videoUploading
-            }
-            className="px-8 py-3 rounded-full font-semibold text-sm hover:opacity-90 disabled:opacity-50"
+            disabled={submitting || coverUploading || galleryUploading || videoUploading}
+            className="px-8 py-3 rounded-full font-semibold text-sm hover:opacity-90 disabled:opacity-50 text-center"
             style={{ background: "#C9A96E", color: "#0a1520" }}
           >
             {submitting ? "Saving..." : "Save Changes"}
           </button>
           <Link
             href="/admin/projects"
-            className="px-8 py-3 rounded-full font-semibold text-sm"
-            style={{
-              background: "rgba(255,255,255,0.06)",
-              color: "rgba(255,255,255,0.5)",
-            }}
+            className="px-8 py-3 rounded-full font-semibold text-sm text-center"
+            style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)" }}
           >
             Cancel
           </Link>
         </div>
+
       </form>
     </div>
   );

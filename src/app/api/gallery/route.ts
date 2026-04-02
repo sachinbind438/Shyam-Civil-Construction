@@ -10,9 +10,9 @@ export async function GET(request: NextRequest) {
       MONGODB_URI: process.env.MONGODB_URI ? "SET" : "NOT_SET"
     });
 
-    // Handle build-time requests gracefully
-    if (process.env.NODE_ENV === 'production' && !process.env.MONGODB_URI) {
-      console.log("Gallery API: No MongoDB URI in production, returning empty");
+    // Skip database operations during build time
+    if (process.env.NODE_ENV === 'production' && process.env.VERCEL_ENV === 'production') {
+      console.log("Gallery API: Build time detected, returning empty");
       return NextResponse.json({
         success: true,
         data: [],

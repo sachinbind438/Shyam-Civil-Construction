@@ -3,6 +3,15 @@ import GalleryGrid from "@/components/Gallery/GalleryGrid"
 // ── Fetch gallery images ─────────────────────────────
 async function getGalleryImages() {
   try {
+    // Skip fetching during build time - check multiple build indicators
+    const isBuildTime = process.env.NEXT_BUILD === 'true' || 
+                       process.env.NODE_ENV === 'production' && 
+                       !process.env.VERCEL_URL;
+
+    if (isBuildTime) {
+      return [];
+    }
+
     // Use relative URL for server-side fetching
     const res = await fetch(`${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/gallery`, {
       next: { revalidate: 60 },

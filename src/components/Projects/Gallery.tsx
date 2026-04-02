@@ -4,6 +4,15 @@ import ImageCard from "../Cards/ImageCard";
 // Fetch gallery images from API
 async function getGalleryImages() {
   try {
+    // Skip fetching during build time - check multiple build indicators
+    const isBuildTime = process.env.NEXT_BUILD === 'true' || 
+                       process.env.NODE_ENV === 'production' && 
+                       !process.env.VERCEL_URL;
+
+    if (isBuildTime) {
+      return [];
+    }
+
     // Use absolute URL for server-side rendering
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`

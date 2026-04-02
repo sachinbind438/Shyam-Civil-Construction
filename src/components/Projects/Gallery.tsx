@@ -1,11 +1,6 @@
 import Button from "./../button/button";
 import Image from "next/image";
 
-interface GalleryImage {
-  id: string;
-  url: string;
-}
-
 async function getGalleryImages() {
   try {
     const baseUrl = process.env.VERCEL_URL
@@ -13,7 +8,7 @@ async function getGalleryImages() {
       : process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
 
     const res = await fetch(`${baseUrl}/api/gallery`, {
-      next: { revalidate: 60 },
+      cache: 'no-store',
     });
 
     if (!res.ok) {
@@ -36,16 +31,14 @@ export default async function Gallery() {
 
   return (
     <div className="flex flex-col py-8 md:py-10 px-4 md:px-6 gap-6">
-      {/* Heading */}
       <div className="text-center mb-6 md:mb-8">
         <h4 className="font-raleway text-5xl sm:text-4xl md:text-5xl lg:text-7xl">
           Our Gallery
         </h4>
       </div>
 
-      {/* Masonry Layout */}
       <div className="columns-1 p-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6">
-        {images.map((img: GalleryImage) => (
+        {images.map((img: any) => (
           <div key={img.id} className="break-inside-avoid mb-4 md:mb-6">
             <div className="relative w-full h-[260px] overflow-hidden rounded-4xl">
               <Image
@@ -60,7 +53,6 @@ export default async function Gallery() {
         ))}
       </div>
 
-      {/* CTA */}
       <div className="mt-4 md:mt-8 text-center">
         <Button
           className="self-center"

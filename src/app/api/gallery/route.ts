@@ -5,8 +5,14 @@ import { GalleryImage } from "@/backend/db/models/GalleryImage"
 // ── Public GET handler — no auth required ─────────────────────────────
 export async function GET(request: NextRequest) {
   try {
+    console.log("Gallery API called - Environment check:", {
+      NODE_ENV: process.env.NODE_ENV,
+      MONGODB_URI: process.env.MONGODB_URI ? "SET" : "NOT_SET"
+    });
+
     // Handle build-time requests gracefully
     if (process.env.NODE_ENV === 'production' && !process.env.MONGODB_URI) {
+      console.log("Gallery API: No MongoDB URI in production, returning empty");
       return NextResponse.json({
         success: true,
         data: [],

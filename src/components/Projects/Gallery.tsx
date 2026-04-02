@@ -4,9 +4,11 @@ import ImageCard from "../Cards/ImageCard";
 // Fetch gallery images from API
 async function getGalleryImages() {
   try {
+    // Use absolute URL for server-side rendering
     const baseUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}` 
-  : process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+    
     const res = await fetch(`${baseUrl}/api/gallery`, {
       next: { revalidate: 60 },
     });

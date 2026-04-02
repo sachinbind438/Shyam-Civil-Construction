@@ -1,23 +1,17 @@
 import Button from "./../button/button";
-import ImageCard from "../Cards/ImageCard";
+import Image from "next/image";
 
-// Fetch gallery images from API
+interface GalleryImage {
+  id: string;
+  url: string;
+}
+
 async function getGalleryImages() {
   try {
-    // Skip fetching during build time - check multiple build indicators
-    const isBuildTime = process.env.NEXT_BUILD === 'true' || 
-                       process.env.NODE_ENV === 'production' && 
-                       !process.env.VERCEL_URL;
-
-    if (isBuildTime) {
-      return [];
-    }
-
-    // Use absolute URL for server-side rendering
     const baseUrl = process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-    
+
     const res = await fetch(`${baseUrl}/api/gallery`, {
       next: { revalidate: 60 },
     });
@@ -38,6 +32,8 @@ async function getGalleryImages() {
 export default async function Gallery() {
   const images = await getGalleryImages();
 
+  if (!images.length) return null;
+
   return (
     <div className="flex flex-col py-8 md:py-10 px-4 md:px-6 gap-6">
       {/* Heading */}
@@ -49,16 +45,17 @@ export default async function Gallery() {
 
       {/* Masonry Layout */}
       <div className="columns-1 p-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6">
-        {images.map((img) => (
+        {images.map((img: GalleryImage) => (
           <div key={img.id} className="break-inside-avoid mb-4 md:mb-6">
-            <ImageCard
-              src={img.url}
-              className="w-full h-[240px] sm:h-[240px] md:h-[260px] lg:h-[280px]"
-              href={`/gallery`}
-              showOverlay={false}
-              imageClassName="rounded-4xl md:rounded-4xl"
-              overlayClassName="rounded-4xl md:rounded-4xl"
-            />
+            <div className="relative w-full h-[260px] overflow-hidden rounded-4xl">
+              <Image
+                src={img.url}
+                alt="Gallery image"
+                fill
+                className="object-cover hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              />
+            </div>
           </div>
         ))}
       </div>

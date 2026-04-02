@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import TeamMemberAvatar from "./TeamMemberAvatar";
 
 // ─── INTERSECTION OBSERVER HOOK ─────────────────────────
 function useInView(ref, { threshold = 0.15, once = true } = {}) {
@@ -122,14 +123,10 @@ function TeamCard({ member, index }) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <img
-          src={member.image}
-          alt={member.name}
-          className="w-full h-full object-cover"
-          style={{
-            transform: hovered ? "scale(1.06)" : "scale(1)",
-            transition: "transform 0.6s ease",
-          }}
+        <TeamMemberAvatar 
+          image={member.image}
+          name={member.name}
+          className="w-full h-full"
         />
 
         <div className="absolute inset-0 bg-linear-to-b from-transparent to-black/10" />

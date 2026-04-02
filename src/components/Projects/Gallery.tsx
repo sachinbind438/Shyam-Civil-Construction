@@ -1,25 +1,22 @@
 import Button from "./../button/button";
 import Image from "next/image";
+import { connectDB } from "@/lib/mongodb";
+import { GalleryImage } from "@/backend/db/models/GalleryImage";
 
 async function getGalleryImages() {
   try {
-    // Use NEXT_PUBLIC_BASE_URL for stable URL, fallback to VERCEL_URL
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL 
-      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+    await connectDB();
+    const images = await (GalleryImage as any)
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(15)
+      .lean() as any[];
 
-    console.log("Gallery fetching from:", baseUrl);
-
-    const res = await fetch(`${baseUrl}/api/gallery`, {
-      cache: 'no-store',
-    });
-
-    if (!res.ok) {
-      console.error("Failed to fetch gallery:", res.status);
-      return [];
-    }
-
-    const data = await res.json();
-    return data.success ? data.data.slice(0, 15) : [];
+    const clean = (url: string) => (url ?? "").replace(/[\n\r\t]/g, "").trim();
+    return images.map((img: any) => ({
+      id: img._id.toString(),
+      url: clean(img.url),
+    }));
   } catch (error) {
     console.error("Gallery fetch error:", error);
     return [];

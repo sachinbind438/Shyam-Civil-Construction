@@ -1,5 +1,6 @@
 import Button from "./../button/button";
 import Image from "next/image";
+import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import { GalleryImage } from "@/backend/db/models/GalleryImage";
 
@@ -38,16 +39,37 @@ export default async function Gallery() {
 
       <div className="columns-1 p-2 sm:columns-2 lg:columns-3 gap-4 md:gap-6">
         {images.map((img: any) => (
-          <div key={img.id} className="break-inside-avoid mb-4 md:mb-6">
-            <div className="relative w-full h-[260px] overflow-hidden rounded-4xl">
-              <Image
-                src={img.url}
-                alt="Gallery image"
-                fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              />
-            </div>
+          <div key={img.id} className="break-inside-avoid mb-4 md:mb-6 group">
+            <Link href="/gallery" className="block">
+              <div className="relative w-full h-[260px] overflow-hidden rounded-4xl cursor-pointer">
+                <Image
+                  src={img.url}
+                  alt="Gallery image"
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                />
+                
+                {/* Circular Arrow - Bottom Right on Hover */}
+                <div className="absolute bottom-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center text-black shadow-md opacity-0 translate-x-6 translate-y-6 group-hover:translate-x-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="w-5 h-5"
+                  >
+                    <path d="M5 12h14" strokeLinecap="round" strokeLinejoin="round" />
+                    <path
+                      d="M12 5l7 7-7 7"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </Link>
           </div>
         ))}
       </div>

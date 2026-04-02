@@ -3,9 +3,11 @@ import Image from "next/image";
 
 async function getGalleryImages() {
   try {
-    const baseUrl = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}`
-      : process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
+    // Use NEXT_PUBLIC_BASE_URL for stable URL, fallback to VERCEL_URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL 
+      || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
+    console.log("Gallery fetching from:", baseUrl);
 
     const res = await fetch(`${baseUrl}/api/gallery`, {
       cache: 'no-store',

@@ -1,32 +1,26 @@
 import GalleryGrid from "@/components/Gallery/GalleryGrid"
+import { connectDB } from "@/lib/mongodb"
+import { GalleryImage } from "@/backend/db/models/GalleryImage"
 
-// ── Fetch gallery images ─────────────────────────────
 async function getGalleryImages() {
   try {
-    // Skip fetching during build time - check multiple build indicators
-    const isBuildTime = process.env.NEXT_BUILD === 'true' || 
-                       process.env.NODE_ENV === 'production' && 
-                       !process.env.VERCEL_URL;
+    await connectDB();
+    const images = await (GalleryImage as any)
+      .find({})
+      .sort({ createdAt: -1 })
+      .lean() as any[];
 
-    if (isBuildTime) {
-      return [];
-    }
-
-    // Use relative URL for server-side fetching
-    const res = await fetch(`${process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'}/api/gallery`, {
-      next: { revalidate: 60 },
-    });
-
-    if (!res.ok) return [];
-
-    const data = await res.json();
-    return data.success ? data.data : [];
-  } catch {
+    const clean = (url: string) => (url ?? "").replace(/[\n\r\t]/g, "").trim();
+    return images.map((img: any) => ({
+      id: img._id.toString(),
+      url: clean(img.url),
+    }));
+  } catch (error) {
+    console.error("Gallery page fetch error:", error);
     return [];
   }
 }
 
-// ISR
 export const revalidate = 60;
 
 export default async function GalleryPage() {
@@ -34,25 +28,22 @@ export default async function GalleryPage() {
 
   return (
     <main className="bg-white">
-      {/* HERO */}
       <section className="px-4 md:px-8 lg:px-16 pt-32 md:pt-40">
         <div className="max-w-6xl">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4">
             Gallery
           </h1>
-
           <p className="text-sm sm:text-base md:text-lg text-gray-600 max-w-xl">
             Browse our collection of project images and design inspiration
           </p>
         </div>
       </section>
 
-      {/* GRID */}
       <section className="px-4 md:px-8 lg:px-16 py-10">
         <GalleryGrid
           images={images}
           showTitle={true}
-          columns={3} // keep logic, but we control via CSS
+          columns={3}
         />
       </section>
     </main>

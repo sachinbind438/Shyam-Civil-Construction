@@ -6,7 +6,11 @@ import { Project } from "@/backend/db/models/Project"
 // ── Verify JWT token ─────────────────────────────────────────────────
 async function verifyToken(request: NextRequest) {
   const token = request.cookies.get('admin_token')?.value
-  const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret'
+  const JWT_SECRET = process.env.NEXTAUTH_SECRET
+  
+  if (!JWT_SECRET) {
+    return { success: false, error: "Server configuration error" }
+  }
   
   if (!token) {
     return { success: false, error: "No authentication token" }
@@ -14,7 +18,7 @@ async function verifyToken(request: NextRequest) {
   
   try {
     const jwt = require('jsonwebtoken')
-    jwt.verify(token, JWT_SECRET)
+    jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] })
     return { success: true }
   } catch (error) {
     return { success: false, error: "Invalid token" }
@@ -35,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '50')
+    const limit = parseInt(searchParams.get('limit') || '24')
 
     await connectDB()
     

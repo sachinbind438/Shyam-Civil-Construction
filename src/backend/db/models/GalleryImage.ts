@@ -8,6 +8,9 @@ const GalleryImageSchema = new Schema(
   { timestamps: true }
 )
 
+// Index for faster sorting by creation date
+GalleryImageSchema.index({ createdAt: -1 })
+
 export const GalleryImage =
   models["GalleryImage"] ?? model("GalleryImage", GalleryImageSchema)
 

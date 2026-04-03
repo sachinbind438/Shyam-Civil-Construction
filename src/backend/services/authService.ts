@@ -3,7 +3,11 @@ import { Admin } from "../db/models/Admin";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.NEXTAUTH_SECRET || 'fallback-secret';
+const JWT_SECRET = process.env.NEXTAUTH_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('NEXTAUTH_SECRET environment variable is required');
+}
 
 // ── Get admin by email ───────────────────────────────────────────────────────
 export async function getAdminByEmail(email: string): Promise<any> {
@@ -50,12 +54,15 @@ export function generateAdminToken(admin: {
 }): string {
   return jwt.sign(
     {
-      id: admin.id,
+      sub: admin.id,
       email: admin.email,
-      name: admin.name || "Admin"
+      iat: Math.floor(Date.now() / 1000),
     },
     JWT_SECRET,
-    { expiresIn: "7d" }
+    { 
+      expiresIn: "2h",
+      algorithm: "HS256"
+    }
   );
 }
 

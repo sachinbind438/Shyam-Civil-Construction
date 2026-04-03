@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/mongodb";
 import { verifyAdminToken } from "@/lib/jwt-auth";
 import { Message } from "@/backend/db/models/Message";
+import DeleteMessageButton from "@/components/admin/DeleteMessageButton";
 
 export default async function AdminMessagesPage() {
   await verifyAdminToken();
@@ -107,7 +108,7 @@ export default async function AdminMessagesPage() {
                   </p>
                 </div>
 
-                {/* ACTION BUTTON */}
+                {/* ACTION BUTTONS */}
                 <div className="flex md:flex-col gap-2 shrink-0">
                   <a
                     href={`mailto:${m.email}`}
@@ -115,6 +116,7 @@ export default async function AdminMessagesPage() {
                   >
                     Reply ↗
                   </a>
+                  <DeleteMessageButton id={m._id.toString()} />
                 </div>
               </div>
             </div>

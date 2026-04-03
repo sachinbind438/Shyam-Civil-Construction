@@ -18,7 +18,8 @@ const AdminSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
-    minlength: [6, "Password must be at least 6 characters"]
+    minlength: [6, "Password must be at least 6 characters"],
+    select: false, // Never return password in queries by default
   },
   name: {
     type: String,
@@ -47,16 +48,11 @@ const AdminSchema = new Schema({
 });
 
 // ── Password hashing middleware ───────────────────────────────────────────
-AdminSchema.pre("save", async function(next) {
-  if (!this.isModified("password")) return (next as any)();
+AdminSchema.pre("save", async function() {
+  if (!this.isModified("password")) return;
   
-  try {
-    const salt = await bcrypt.genSalt(12);
-    this.password = await bcrypt.hash(this.password, salt);
-    (next as any)();
-  } catch (error) {
-    (next as any)(error as Error);
-  }
+  const salt = await bcrypt.genSalt(12);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // ── Password comparison method ─────────────────────────────────────────────

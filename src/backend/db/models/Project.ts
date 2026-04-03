@@ -57,5 +57,8 @@ const ProjectSchema = new Schema({
   }
 });
 
+// Index for admin queries - sort by createdAt descending
+ProjectSchema.index({ createdAt: -1 });
+
 export const Project = mongoose.models.Project ?? model("Project", ProjectSchema);
 export default Project;

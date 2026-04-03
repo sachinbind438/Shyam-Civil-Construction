@@ -10,10 +10,28 @@ export function validateProjectInput(data: any): {
   // Title validation
   if (!data.title || typeof data.title !== 'string') {
     errors.push("Title is required");
-  } else if (data.title.length < VALIDATION_RULES.PROJECT.TITLE_MIN) {
+  } else if (data.title.length < VALIDATION_RULES.TITLE_MIN_LENGTH) {
     errors.push("Title is too short");
-  } else if (data.title.length > VALIDATION_RULES.PROJECT.TITLE_MAX) {
+  } else if (data.title.length > VALIDATION_RULES.TITLE_MAX_LENGTH) {
     errors.push("Title is too long");
+  }
+  
+  // Description validation
+  if (!data.description || typeof data.description !== 'string') {
+    errors.push("Description is required");
+  } else if (data.description.length < VALIDATION_RULES.DESCRIPTION_MIN_LENGTH) {
+    errors.push("Description is too short");
+  } else if (data.description.length > VALIDATION_RULES.DESCRIPTION_MAX_LENGTH) {
+    errors.push("Description is too long");
+  }
+  
+  // Features validation
+  if (!data.features || typeof data.features !== 'string') {
+    errors.push("Features are required");
+  } else if (data.features.length < VALIDATION_RULES.FEATURES_MIN_LENGTH) {
+    errors.push("Features are too short");
+  } else if (data.features.length > VALIDATION_RULES.FEATURES_MAX_LENGTH) {
+    errors.push("Features are too long");
   }
   
   // Category validation
@@ -21,23 +39,18 @@ export function validateProjectInput(data: any): {
     errors.push("Valid category is required");
   }
   
-  // Description validation
-  if (!data.description || typeof data.description !== 'string') {
-    errors.push("Description is required");
-  } else if (data.description.length > VALIDATION_RULES.PROJECT.DESCRIPTION_MAX) {
-    errors.push("Description is too long");
-  }
-  
   // Location validation
   if (!data.location || typeof data.location !== 'string') {
     errors.push("Location is required");
-  } else if (data.location.length > VALIDATION_RULES.PROJECT.LOCATION_MAX) {
+  } else if (data.location.length > VALIDATION_RULES.LOCATION_MAX_LENGTH) {
     errors.push("Location is too long");
   }
   
   // Year validation
   if (!data.year || typeof data.year !== 'number') {
     errors.push("Valid year is required");
+  } else if (data.year < VALIDATION_RULES.YEAR_MIN || data.year > VALIDATION_RULES.YEAR_MAX) {
+    errors.push("Invalid year");
   } else if (data.year < 1900 || data.year > new Date().getFullYear() + 1) {
     errors.push("Year is out of valid range");
   }
@@ -48,15 +61,28 @@ export function validateProjectInput(data: any): {
   }
   
   // Cover image validation
-  if (!data.coverImage || typeof data.coverImage !== 'string') {
-    errors.push("Cover image URL is required");
+  if (data.coverImage && typeof data.coverImage !== 'string') {
+    errors.push("Cover image must be a string");
   }
   
-  // Gallery validation (optional)
-  if (data.gallery && Array.isArray(data.gallery)) {
-    const invalidUrls = data.gallery.filter((url: any) => typeof url !== 'string');
-    if (invalidUrls.length > 0) {
-      errors.push("Gallery contains invalid URLs");
+  // Gallery images validation
+  if (data.galleryImages && !Array.isArray(data.galleryImages)) {
+    errors.push("Gallery images must be an array");
+  }
+  
+  if (data.galleryImages && Array.isArray(data.galleryImages)) {
+    if (data.galleryImages.length > UPLOAD_LIMITS.MAX_FILES) {
+      errors.push(`Maximum ${UPLOAD_LIMITS.MAX_FILES} images allowed`);
+    }
+    
+    for (const image of data.galleryImages) {
+      if (!image.type || !UPLOAD_LIMITS.ALLOWED_TYPES.includes(image.type)) {
+        errors.push(`Invalid image type: ${image.type || 'unknown'}. Allowed types: ${UPLOAD_LIMITS.ALLOWED_TYPES.join(', ')}`);
+      }
+      
+      if (image.size > UPLOAD_LIMITS.MAX_FILE_SIZE) {
+        errors.push(`Image ${image.name} is too large. Maximum size: ${UPLOAD_LIMITS.MAX_FILE_SIZE / (1024 * 1024)}MB`);
+      }
     }
   }
   
@@ -71,31 +97,28 @@ export function validateProjectInput(data: any): {
   };
 }
 
-// ── Validate message input ─────────────────────────────────────────────────────
-export function validateMessageInput(data: any): {
-  isValid: boolean;
-  errors: string[];
-} {
+// ── Validate message input ───────────────────────────────────────────────
+export function validateMessageInput(data: any): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   
   // Name validation
   if (!data.name || typeof data.name !== 'string') {
     errors.push("Name is required");
-  } else if (data.name.length > VALIDATION_RULES.MESSAGE.NAME_MAX) {
+  } else if (data.name.length > 50) {
     errors.push("Name is too long");
   }
   
   // Email validation
   if (!data.email || typeof data.email !== 'string') {
     errors.push("Email is required");
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+  } else if (!/^[^\s@]+@[^\s@]+$/.test(data.email)) {
     errors.push("Invalid email format");
   }
   
   // Message validation
   if (!data.message || typeof data.message !== 'string') {
     errors.push("Message is required");
-  } else if (data.message.length > VALIDATION_RULES.MESSAGE.MESSAGE_MAX) {
+  } else if (data.message.length > 500) {
     errors.push("Message is too long");
   }
   
@@ -109,7 +132,7 @@ export function validateMessageInput(data: any): {
   // Subject validation (optional)
   if (data.subject && typeof data.subject !== 'string') {
     errors.push("Subject must be a string");
-  } else if (data.subject && data.subject.length > VALIDATION_RULES.MESSAGE.SUBJECT_MAX) {
+  } else if (data.subject && data.subject.length > 100) {
     errors.push("Subject is too long");
   }
   
@@ -132,7 +155,7 @@ export function validateFileUpload(file: File): {
   }
   
   // File type validation
-  const allowedTypes = [...UPLOAD_LIMITS.ALLOWED_IMAGE_TYPES, ...UPLOAD_LIMITS.ALLOWED_VIDEO_TYPES];
+  const allowedTypes = [...UPLOAD_LIMITS.ALLOWED_TYPES, ...UPLOAD_LIMITS.ALLOWED_VIDEO_TYPES];
   if (!allowedTypes.includes(file.type as typeof allowedTypes[number])) {
     errors.push("File type not allowed");
   }

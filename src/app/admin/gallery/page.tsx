@@ -1,6 +1,62 @@
 "use client"
 
-import { useState, useEffect, useRef, ChangeEvent } from "react"
+import { useState, useEffect, useCallback, memo, useRef, ChangeEvent } from "react"
+import Image from "next/image"
+
+const PAGE_SIZE = 24
+
+// Memoized gallery image for performance
+const GalleryImageItem = memo(function GalleryImageItem({
+  img,
+  onDelete,
+}: {
+  img: any
+  onDelete: (id: string) => void
+}) {
+  const id = img._id?.toString() ?? img.id
+  
+  return (
+    <div
+      key={id}
+      className="relative group aspect-square overflow-hidden rounded-lg transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
+    >
+      <Image
+        src={img.url}
+        alt=""
+        fill
+        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, (max-width: 1280px) 20vw, 16vw"
+        className="object-cover transition-transform duration-200 group-hover:scale-105"
+        loading="lazy"
+        unoptimized={img.url.includes('cloudinary') || img.url.includes('r2')} // External images
+      />
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+
+      {/* Delete button */}
+      <button
+        onClick={() => onDelete(id)}
+        className="
+          absolute top-1.5 right-1.5 sm:top-2 sm:right-2
+          w-7 h-7 sm:w-8 sm:h-8
+          bg-red-500 text-white rounded-full
+          flex items-center justify-center
+          transition-all duration-200
+          hover:bg-red-600
+          opacity-100 scale-100
+          sm:opacity-0 sm:scale-75
+          sm:group-hover:opacity-100 sm:group-hover:scale-100
+        "
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M3 6h18"/>
+          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+          <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+        </svg>
+      </button>
+    </div>
+  )
+})
 
 export default function AdminGalleryPage() {
   const [images,        setImages]        = useState<any[]>([])
@@ -77,9 +133,9 @@ export default function AdminGalleryPage() {
     }
   }
 
-  const fetchImages = async (page = 1, limit = 50) => {
+  const fetchImages = async (pageNum = 1, limit = 24) => {
     try {
-      const res  = await fetch(`/api/admin/gallery?page=${page}&limit=${limit}`)
+      const res  = await fetch(`/api/admin/gallery?page=${pageNum}&limit=${limit}`)
       const data = await res.json()
       if (page === 1) {
         setImages(data.data ?? [])
@@ -98,7 +154,7 @@ export default function AdminGalleryPage() {
   const loadMore = () => {
     const nextPage = page + 1
     setPage(nextPage)
-    fetchImages(nextPage, 50)
+    fetchImages(nextPage, 24)
   }
 
   return (
@@ -179,48 +235,13 @@ export default function AdminGalleryPage() {
       {!loading && images.length > 0 && (
         <>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3">
-            {images.map((img: any) => {
-              const id = img._id?.toString() ?? img.id
-              return (
-                <div
-                  key={id}
-                  className="relative group aspect-square overflow-hidden rounded-lg transition-all duration-200 hover:shadow-lg hover:scale-[1.02] cursor-pointer"
-                >
-                  <img
-                    src={img.url}
-                    alt=""
-                    className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
-                    loading="lazy"
-                    decoding="async"
-                  />
-
-                  {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-
-                  {/* Delete button — always visible on mobile (no hover), hover-only on desktop */}
-                  <button
-                    onClick={() => confirmDelete(id)}
-                    className="
-                      absolute top-1.5 right-1.5 sm:top-2 sm:right-2
-                      w-7 h-7 sm:w-8 sm:h-8
-                      bg-red-500 text-white rounded-full
-                      flex items-center justify-center
-                      transition-all duration-200
-                      hover:bg-red-600
-                      opacity-100 scale-100
-                      sm:opacity-0 sm:scale-75
-                      sm:group-hover:opacity-100 sm:group-hover:scale-100
-                    "
-                  >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 6h18"/>
-                      <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-                      <path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
-                    </svg>
-                  </button>
-                </div>
-              )
-            })}
+            {images.map((img: any) => (
+              <GalleryImageItem
+                key={img._id?.toString() ?? img.id}
+                img={img}
+                onDelete={confirmDelete}
+              />
+            ))}
           </div>
 
           {/* Load More */}

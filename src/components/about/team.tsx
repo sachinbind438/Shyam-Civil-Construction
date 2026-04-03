@@ -34,8 +34,7 @@ const TEAM = [
     id: 1,
     name: "Ethan Walker",
     role: "Senior Architect",
-    image:
-      "",
+    image: "",
     position: "bottom",
     tall: true,
   },
@@ -43,8 +42,7 @@ const TEAM = [
     id: 2,
     name: "Sophia Carter",
     role: "Lead Interior Designer",
-    image:
-      "https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=600&q=80",
+    image: "",
     position: "top",
     tall: false,
   },
@@ -52,8 +50,7 @@ const TEAM = [
     id: 3,
     name: "Liam Bennet",
     role: "Construction Manager",
-    image:
-      "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&q=80",
+    image: "",
     position: "bottom",
     tall: true,
   },
@@ -61,8 +58,7 @@ const TEAM = [
     id: 4,
     name: "Isabela Martinez",
     role: "Project Manager",
-    image:
-      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=600&q=80",
+    image: "",
     position: "top",
     tall: false,
   },

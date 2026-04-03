@@ -35,7 +35,7 @@ const TEAM = [
     name: "Ethan Walker",
     role: "Senior Architect",
     image:
-      "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?w=600&q=80",
+      "",
     position: "bottom",
     tall: true,
   },

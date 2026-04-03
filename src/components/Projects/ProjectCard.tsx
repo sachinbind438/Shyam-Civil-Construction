@@ -21,7 +21,7 @@ export const ProjectCard = ({ project, index = 0 }: ProjectCardProps) => {
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.5, delay: index * 0.05 }}
-        className={`group relative isolate cursor-pointer transition-all duration-300 transform-gpu 
+        className={`group relative isolate cursor-pointer transition-all duration-700 transform-gpu 
         h-[260px] sm:h-[300px] md:h-[340px] lg:h-[360px] ${wrapperRounded}`}
       >
         {/* IMAGE */}

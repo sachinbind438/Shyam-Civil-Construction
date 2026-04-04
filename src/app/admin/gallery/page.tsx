@@ -146,7 +146,7 @@ export default function AdminGalleryPage() {
   const loadMore = () => {
     const nextPage = page + 1
     setPage(nextPage)
-    fetchImages(nextPage, 24)
+    fetchImages(nextPage)
   }
 
   return (

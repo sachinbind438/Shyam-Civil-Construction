@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+import { jwtVerify } from 'jose';
 
-const JWT_SECRET = process.env.NEXTAUTH_SECRET;
-
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ── Only handle /admin routes ─────────────────────────────────────────────
@@ -29,15 +27,18 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }
 
-  // Verify JWT token
+  // Verify JWT token using jose (Edge Runtime compatible)
   try {
-    if (!JWT_SECRET) {
-      throw new Error('JWT_SECRET not configured');
-    }
-    
-    jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+    const secret = process.env.NEXTAUTH_SECRET;
+    if (!secret) throw new Error('NEXTAUTH_SECRET not set');
+
+    await jwtVerify(
+      token,
+      new TextEncoder().encode(secret)
+    );
+
     return NextResponse.next();
-  } catch (error) {
+  } catch {
     // Invalid or expired token — redirect to login
     return NextResponse.redirect(new URL('/admin/login', request.url));
   }

@@ -142,6 +142,19 @@ async function handleLogin(request: NextRequest) {
 
     // ── 9. Set secure cookie ─────────────────────────────────────────
     const isSecure = isSecureRequest(request)
+    
+    // Force secure cookie in production (Vercel, Netlify, etc.)
+    const shouldSetSecure = isSecure || process.env.NODE_ENV === 'production'
+    
+    // Debug logging for deployment issues
+    console.log('[Login Debug]', {
+      url: request.url,
+      forwardedProto: request.headers.get('x-forwarded-proto'),
+      isSecure,
+      shouldSetSecure,
+      hasJwtSecret: !!JWT_SECRET,
+    })
+    
     const response = NextResponse.json(
       { success: true },
       { status: 200 }
@@ -149,12 +162,14 @@ async function handleLogin(request: NextRequest) {
 
     response.cookies.set('admin_token', token, {
       httpOnly: true,
-      secure: isSecure,        // HTTPS only when actually on HTTPS
+      secure: shouldSetSecure,
       sameSite: 'lax',
-      maxAge: 2 * 60 * 60,     // 2 hours
+      maxAge: 2 * 60 * 60,
       path: '/',
     })
-
+    
+    console.log('[Login] Cookie set:', { shouldSetSecure, tokenLength: token.length })
+    console.log('[Login] Response sent successfully')
     return response
 
   } catch (error) {

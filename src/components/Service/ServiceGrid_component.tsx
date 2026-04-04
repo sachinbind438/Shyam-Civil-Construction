@@ -88,7 +88,7 @@ export default function ServiceGrid() {
           <div className="lg:hidden px-4">
             <div className="relative w-full h-[300px] sm:h-[300px] overflow-hidden rounded-2xl">
               <Image
-                src="/assets/Services/Bathroom Renovation.jpg"
+                src="/services/Bathroom Renovation.jpg"
                 alt="Bathroom Remodeling"
                 fill
                 className="object-cover"
@@ -142,7 +142,7 @@ export default function ServiceGrid() {
           <div className="lg:hidden px-4">
             <div className="relative w-full h-[300px] sm:h-[300px] overflow-hidden rounded-2xl">
               <Image
-                src="/assets/Services/Kitchen Renovation.jpg"
+                src="/services/Kitchen Renovation.jpg"
                 alt="Kitchen Remodeling"
                 fill
                 className="object-cover"

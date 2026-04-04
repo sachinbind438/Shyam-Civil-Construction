@@ -132,7 +132,7 @@ export default function AdminGalleryPage() {
 
   const fetchImages = async (pageNum = 1) => {
     try {
-      const res  = await fetch(`/api/admin/gallery?page=${pageNum}&limit=24`)
+      const res  = await fetch(`/api/admin/gallery?page=${pageNum}&limit=18`)
       const data = await res.json()
       setImages(data.data ?? [])
       setPagination(data.pagination)

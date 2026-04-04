@@ -127,24 +127,30 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
 
+    // Get the current domain from request URL
+    const url = new URL(request.url)
+    const domain = url.hostname.replace('www.', '') // Remove www to set on root domain
+    
     response.cookies.set('admin_token', token, {
       httpOnly: true,
-      secure: isSecure,        // HTTPS only when actually on HTTPS
+      secure: isSecure,
       sameSite: 'lax',
-      maxAge: 2 * 60 * 60,     // 2 hours
+      maxAge: 2 * 60 * 60,
       path: '/',
+      domain: domain, // Set to root domain without www
     })
 
     // Debug: Log cookie settings
     console.log('[Cookie Debug]', {
       isSecure,
+      domain,
       cookieSettings: {
         httpOnly: true,
         secure: isSecure,
         sameSite: 'lax',
         maxAge: 7200000,
         path: '/',
-        // Note: No explicit domain - browser will set to current domain
+        domain,
       }
     })
 

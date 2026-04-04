@@ -11,13 +11,17 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json({ success: true })
   
   const isSecure = isSecureRequest(request)
+  const url = new URL(request.url)
+  const domain = url.hostname.replace('www.', '')
+  
   console.log('[Logout Debug]', {
     url: request.url,
     forwardedProto: request.headers.get('x-forwarded-proto'),
     isSecure,
+    domain,
   })
 
-  // Clear the cookie properly
+  // Clear cookie properly
   response.cookies.set('admin_token', '', {
     httpOnly: true,
     secure: isSecure,
@@ -25,6 +29,7 @@ export async function POST(request: NextRequest) {
     maxAge: 0,
     expires: new Date(0),
     path: '/',
+    domain,
   })
 
   return response

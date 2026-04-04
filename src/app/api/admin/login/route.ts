@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
 
     // Get the current domain from request URL
     const url = new URL(request.url)
-    const domain = url.hostname.replace('www.', '') // Remove www to set on root domain
+    // Don't set explicit domain - let browser match current domain exactly
     
     response.cookies.set('admin_token', token, {
       httpOnly: true,
@@ -137,7 +137,7 @@ export async function POST(request: NextRequest) {
       sameSite: 'lax',
       maxAge: 2 * 60 * 60,
       path: '/',
-      domain: domain, // Set to root domain without www
+      // No explicit domain - browser will set to exact current domain
     })
 
     return response

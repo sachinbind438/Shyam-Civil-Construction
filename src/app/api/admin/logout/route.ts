@@ -11,10 +11,8 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json({ success: true })
   
   const isSecure = isSecureRequest(request)
-  const url = new URL(request.url)
-  const domain = url.hostname.replace('www.', '')
 
-  // Clear cookie properly
+  // Clear cookie properly - no explicit domain to match login
   response.cookies.set('admin_token', '', {
     httpOnly: true,
     secure: isSecure,
@@ -22,7 +20,7 @@ export async function POST(request: NextRequest) {
     maxAge: 0,
     expires: new Date(0),
     path: '/',
-    domain,
+    // No explicit domain - matches login cookie
   })
 
   return response

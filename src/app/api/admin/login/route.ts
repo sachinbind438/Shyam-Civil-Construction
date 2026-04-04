@@ -119,9 +119,9 @@ export async function POST(request: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,                                          // not accessible via JS
       secure: process.env.NODE_ENV === 'production',          // HTTPS only in production
-      sameSite: 'strict',                                      // CSRF protection
+      sameSite: 'lax',                                         // lax works better for deployed sites
       maxAge: 2 * 60 * 60,                                    // 2 hours in seconds
-      path: '/',                                               // sent to all routes (needed for /api/admin/*)
+      path: '/',                                               // sent to all routes
     })
 
     return response

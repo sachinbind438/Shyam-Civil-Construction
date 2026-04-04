@@ -16,45 +16,21 @@ export default function AdminLoginClient() {
     setError("");
 
     try {
-      console.log('[Client] Attempting login with:', { email, hasPassword: !!password });
-      
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
-      console.log('[Client] Response status:', response.status);
-      console.log('[Client] Response headers:', Object.fromEntries(response.headers.entries()));
-
       const data = await response.json();
-      console.log('[Client] Response data:', data);
 
       if (response.ok) {
-        console.log('[Client] Login successful, redirecting...');
-        
-        // Try Next.js router first
-        try {
-          router.push("/admin/dashboard");
-          router.refresh();
-          
-          // Fallback if router doesn't work within 1 second
-          setTimeout(() => {
-            if (window.location.pathname === '/admin/login') {
-              console.log('[Client] Router redirect failed, using window.location');
-              window.location.href = "/admin/dashboard";
-            }
-          }, 1000);
-        } catch (error) {
-          console.error('[Client] Router error, using window.location:', error);
-          window.location.href = "/admin/dashboard";
-        }
+        router.push("/admin/dashboard");
+        router.refresh();
       } else {
-        console.log('[Client] Login failed:', data.error);
         setError(data.error || "Login failed");
       }
     } catch (err) {
-      console.error('[Client] Network error:', err);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);

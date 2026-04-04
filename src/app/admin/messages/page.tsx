@@ -1,15 +1,50 @@
-import { connectDB } from "@/lib/mongodb";
-import { verifyAdminToken } from "@/lib/jwt-auth";
-import { Message } from "@/backend/db/models/Message";
-import DeleteMessageButton from "@/components/admin/DeleteMessageButton";
+"use client"
 
-export default async function AdminMessagesPage() {
-  await verifyAdminToken();
-  await connectDB();
+import { useState, useEffect, useCallback } from "react"
+import DeleteMessageButton from "@/components/admin/DeleteMessageButton"
 
-  const messages = await (Message as any).find({}).sort({ createdAt: -1 }).lean().exec();
+interface Message {
+  _id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+}
 
-  const unread = messages.filter((m) => !m.read).length;
+interface Pagination {
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+}
+
+export default function AdminMessagesPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<Pagination | null>(null);
+  const [error, setError] = useState("");
+
+  const fetchMessages = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/admin/messages?page=${page}&limit=5`);
+      const data = await response.json();
+      setMessages(data.data);
+      setPagination(data.pagination);
+      setLoading(false);
+    } catch (error) {
+      setError("Failed to fetch messages");
+      setLoading(false);
+    }
+  }, [page]);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [fetchMessages]);
+
+  const unreadCount = messages.filter(m => !m.read).length;
 
   return (
     <div className="p-4 sm:p-6 md:p-8">
@@ -20,9 +55,9 @@ export default async function AdminMessagesPage() {
         </h1>
 
         <p className="text-white/40 text-sm">
-          {unread > 0 ? (
+          {unreadCount > 0 ? (
             <>
-              <span className="text-[#C9A96E]">{unread} unread</span> ·{" "}
+              <span className="text-[#C9A96E]">{unreadCount} unread</span> ·{" "}
               {messages.length} total
             </>
           ) : (
@@ -31,16 +66,33 @@ export default async function AdminMessagesPage() {
         </p>
       </div>
 
+      {/* LOADING */}
+      {loading && (
+        <div className="flex items-center justify-center py-24">
+          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-[#C9A96E] animate-spin" />
+        </div>
+      )}
+
+      {/* ERROR */}
+      {error && (
+        <div className="rounded-2xl p-6 text-center text-red-400 border border-red-400/20">
+          {error}
+        </div>
+      )}
+
       {/* EMPTY STATE */}
-      {messages.length === 0 ? (
+      {!loading && !error && messages.length === 0 && (
         <div className="rounded-2xl p-10 md:p-16 text-center text-white/25 text-sm border border-white/10">
           No messages yet. They will appear here when someone fills your contact form.
         </div>
-      ) : (
+      )}
+
+      {/* MESSAGES LIST */}
+      {!loading && !error && messages.length > 0 && (
         <div className="space-y-4">
           {messages.map((m) => (
             <div
-              key={m._id.toString()}
+              key={m._id}
               className="rounded-2xl p-4 sm:p-5 md:p-6 transition-all"
               style={{
                 background: m.read
@@ -58,7 +110,7 @@ export default async function AdminMessagesPage() {
                 
                 {/* LEFT CONTENT */}
                 <div className="flex-1">
-                  
+                   
                   {/* NAME + BADGE */}
                   <div className="flex items-center gap-2 mb-2 flex-wrap">
                     <p className="text-white font-medium text-base sm:text-lg">
@@ -116,11 +168,34 @@ export default async function AdminMessagesPage() {
                   >
                     Reply ↗
                   </a>
-                  <DeleteMessageButton id={m._id.toString()} />
+                  <DeleteMessageButton id={m._id} />
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* PAGINATION */}
+      {pagination && (
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <button
+            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+          >
+            Prev
+          </button>
+          <span className="text-white/30 text-xs">
+            Page {page} of {pagination.pages}
+          </span>
+          <button
+            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
+            onClick={() => setPage(page + 1)}
+            disabled={page === pagination.pages}
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

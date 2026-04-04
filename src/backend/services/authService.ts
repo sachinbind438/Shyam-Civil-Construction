@@ -47,11 +47,11 @@ export async function createAdmin(data: {
 }
 
 // ── Generate JWT token ───────────────────────────────────────────────────────
-export function generateAdminToken(admin: {
+export async function generateAdminToken(admin: {
   id: string;
   email: string;
   name?: string;
-}): string {
+}): Promise<string> {
   const secret = new TextEncoder().encode(JWT_SECRET);
   
   return new SignJWT({

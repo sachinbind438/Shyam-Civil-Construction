@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, memo, useRef, ChangeEvent } from "react"
 import Image from "next/image"
 
-const PAGE_SIZE = 24
+const PAGE_SIZE = 18
 
 // Memoized gallery image for performance
 const GalleryImageItem = memo(function GalleryImageItem({
@@ -65,17 +65,14 @@ export default function AdminGalleryPage() {
   const [loading,       setLoading]       = useState(true)
   const [error,         setError]         = useState("")
   const [page,          setPage]          = useState(1)
-  const [hasMore,       setHasMore]       = useState(true)
+  const [pagination,    setPagination]    = useState<any>(null)
   const [deleteId,      setDeleteId]      = useState<string | null>(null)
   const [deleteLoading, setDeleteLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetch("/api/admin/gallery")
-      .then(r => r.json())
-      .then(d => { setImages(d.data ?? []); setLoading(false) })
-      .catch(() => { setError("Failed to load images"); setLoading(false) })
-  }, [])
+    fetchImages(page);
+  }, [page]);
 
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? [])
@@ -133,17 +130,12 @@ export default function AdminGalleryPage() {
     }
   }
 
-  const fetchImages = async (pageNum = 1, limit = 24) => {
+  const fetchImages = async (pageNum = 1) => {
     try {
-      const res  = await fetch(`/api/admin/gallery?page=${pageNum}&limit=${limit}`)
+      const res  = await fetch(`/api/admin/gallery?page=${pageNum}&limit=24`)
       const data = await res.json()
-      if (page === 1) {
-        setImages(data.data ?? [])
-        setHasMore(data.pagination?.pages > 1)
-      } else {
-        setImages(prev => [...prev, ...(data.data ?? [])])
-        setHasMore(data.pagination?.page < data.pagination?.pages)
-      }
+      setImages(data.data ?? [])
+      setPagination(data.pagination)
       setLoading(false)
     } catch (err: any) {
       setError(err.message)
@@ -244,17 +236,28 @@ export default function AdminGalleryPage() {
             ))}
           </div>
 
-          {/* Load More */}
-          {hasMore && (
-            <div className="text-center mt-4 sm:mt-6">
-              <button
-                onClick={loadMore}
-                className="px-5 sm:px-6 py-2 bg-[#C9A96E] text-white rounded-lg text-sm hover:bg-[#B8945C] transition-colors duration-200"
-              >
-                Load More Images
-              </button>
-            </div>
-          )}
+          {/* Pagination */}
+      {pagination && (
+        <div className="flex items-center justify-center gap-2 mt-6">
+          <button
+            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+          >
+            Prev
+          </button>
+          <span className="text-white/30 text-xs">
+            Page {page} of {pagination.pages}
+          </span>
+          <button
+            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
+            onClick={() => setPage(page + 1)}
+            disabled={page === pagination.pages}
+          >
+            Next
+          </button>
+        </div>
+      )}
         </>
       )}
 

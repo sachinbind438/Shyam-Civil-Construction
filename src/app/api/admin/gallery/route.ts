@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { jwtVerify } from 'jose'
 import { connectDB } from "@/lib/mongodb"
 import { GalleryImage } from "@/backend/db/models/GalleryImage"
 import { Project } from "@/backend/db/models/Project"
@@ -17,8 +18,7 @@ async function verifyToken(request: NextRequest) {
   }
   
   try {
-    const jwt = require('jsonwebtoken')
-    jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] })
+    await jwtVerify(token, new TextEncoder().encode(JWT_SECRET))
     return { success: true }
   } catch (error) {
     return { success: false, error: "Invalid token" }
@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
     // Auth check
     const auth = await verifyToken(request)
     if (!auth.success) {
+      console.log('[Gallery API] Auth failed:', auth.error)
       return NextResponse.json(
         { success: false, error: auth.error },
         { status: 401 }
@@ -40,6 +41,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '24')
+    
+    console.log('[Gallery API] Fetching page:', page, 'limit:', limit)
 
     await connectDB()
     
@@ -52,6 +55,8 @@ export async function GET(request: NextRequest) {
     
     // Get total count for pagination
     const total = await GalleryImage.countDocuments()
+    
+    console.log('[Gallery API] Found images:', images.length, 'Total:', total)
     
     return NextResponse.json({
       success: true,

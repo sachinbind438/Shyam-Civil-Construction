@@ -6,7 +6,7 @@ const services = [
   {
     id: "residential",
     title: "Residential Renovation",
-    image: "/assets/services/Grid3.avif",
+    image: "/assets/services/Grid1.avif",
     rounded: "rounded-tl-[60px]",
     reverse: false,
   },
@@ -20,7 +20,7 @@ const services = [
   {
     id: "commercial",
     title: "Commercial Renovation",
-    image: "/assets/services/Grid1.avif",
+    image: "/assets/services/Grid3.avif",
     rounded: "rounded-tr-[60px]",
     reverse: false,
   },

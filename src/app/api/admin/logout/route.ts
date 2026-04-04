@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     sameSite: 'strict',
     maxAge: 0,
     expires: new Date(0),
-    path: '/admin',
+    path: '/',
     // No explicit domain - matches login cookie
   })
 

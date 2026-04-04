@@ -21,7 +21,7 @@ interface Pagination {
   pages: number;
 }
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 8;
 
 // Memoized project row for performance
 const ProjectRow = memo(function ProjectRow({

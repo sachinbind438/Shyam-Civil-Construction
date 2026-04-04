@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
       secure: isSecure,
       sameSite: 'strict',
       maxAge: 2 * 60 * 60,
-      path: '/admin',
+      path: '/',
       // No explicit domain - browser will set to exact current domain
     })
 

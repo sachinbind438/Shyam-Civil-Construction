@@ -10,6 +10,16 @@ import {
   getClientIdentifier
 } from '@/lib/rateLimit'
 
+// Detect if request is HTTPS (works behind proxies too)
+function isSecureRequest(request: NextRequest): boolean {
+  // Check forwarded proto header (used by reverse proxies like Vercel, Netlify, Nginx)
+  const forwardedProto = request.headers.get('x-forwarded-proto')
+  if (forwardedProto === 'https') return true
+  
+  // Check if URL protocol is https
+  return request.url.startsWith('https://')
+}
+
 const JWT_SECRET = process.env.NEXTAUTH_SECRET
 const JWT_ALGORITHM = 'HS256'
 const TOKEN_EXPIRY = '2h'
@@ -111,17 +121,18 @@ export async function POST(request: NextRequest) {
     )
 
     // ── 9. Set secure cookie ─────────────────────────────────────────
+    const isSecure = isSecureRequest(request)
     const response = NextResponse.json(
       { success: true },
       { status: 200 }
     )
 
     response.cookies.set('admin_token', token, {
-      httpOnly: true,                                          // not accessible via JS
-      secure: process.env.NODE_ENV === 'production',          // HTTPS only in production
-      sameSite: 'lax',                                         // lax works better for deployed sites
-      maxAge: 2 * 60 * 60,                                    // 2 hours in seconds
-      path: '/',                                               // sent to all routes
+      httpOnly: true,
+      secure: isSecure,        // HTTPS only when actually on HTTPS
+      sameSite: 'lax',
+      maxAge: 2 * 60 * 60,     // 2 hours
+      path: '/',
     })
 
     return response

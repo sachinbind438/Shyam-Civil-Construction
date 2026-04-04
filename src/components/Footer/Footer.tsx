@@ -20,10 +20,8 @@ export default function Footer() {
   return (
     <footer className="p-4 md:p-6">
       <div className="bg-black text-[#b3b3b3] rounded-3xl md:rounded-[72px] p-6 md:p-12">
-
         {/* Top Section */}
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          
           {/* Logo */}
           <div className="flex items-center gap-2">
             <Image
@@ -99,15 +97,15 @@ export default function Footer() {
         {/* Address */}
         <div className="pt-8 md:pt-10">
           <div className="flex flex-col gap-6 md:flex-row md:justify-between">
-            <div className="space-y-2 text-gray-300">
+            <div className="space-y-2 text-gray-300 hover:text-white transition-colors duration-300" >
               <p className="text-sm md:text-lg">
                 D1, First Floor, Akurli Samata CHS LTD,
               </p>
               <p className="text-sm md:text-lg">
-                Road No RSC 1, Akurli Road, Near Fast Food
+                Akurli Road, Near Fast Food centre,
               </p>
               <p className="text-sm md:text-lg">
-                Center, Kandivali (E)- Mumbai 400101
+                Lokhanndwala, Kandivali (E)- Mumbai 400101
               </p>
             </div>
           </div>
@@ -115,20 +113,27 @@ export default function Footer() {
 
         {/* CTA + Social */}
         <div className="pt-8 md:pt-10 flex flex-col gap-10 md:flex-row md:justify-between">
-
           {/* CTA */}
           <div className="flex flex-col space-y-6 md:space-y-10 text-2xl md:text-5xl">
-            <Link href="/contact" className="group relative inline-flex items-center">
+            <a
+              href="mailto:shyamcivilconstruction@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group relative inline-flex items-center"
+            >
               <h2 className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
                 Send a Email
               </h2>
-            </Link>
+            </a>
 
-            <Link href="/contact" className="group relative inline-flex items-center">
+            <a
+              href="tel:+91 9324455382"
+              className="group relative inline-flex items-center"
+            >
               <h2 className="inline-block transition-transform duration-200 group-hover:translate-x-6 group-hover:text-white">
                 Book a Call
               </h2>
-            </Link>
+            </a>
           </div>
 
           {/* Social */}
@@ -140,7 +145,6 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="pt-10 md:pt-12 flex flex-col gap-6 md:flex-row md:justify-between md:items-center">
-
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-gray-400 text-sm">
             <Link href="#cookies" className="hover:text-white transition">
               Cookie Policy

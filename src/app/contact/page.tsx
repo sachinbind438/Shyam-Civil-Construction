@@ -16,7 +16,7 @@ export default function ContactPage() {
   const [error, setError] = useState("");
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({
       ...formData,
@@ -107,31 +107,55 @@ export default function ContactPage() {
 
           <div className="mb-6">
             <h2 className="text-2xl md:text-3xl lg:text-3xl mb-2">Address:</h2>
-            <p className="text-gray-600 text-sm md:text-base">
+            <p className="text-gray-600 text-sm md:text-lg hover:text-black transition-colors">
               D1, First Floor, Akurli Samata CHS LTD,
               <br />
-              Kandivali (E), Mumbai 400101
+              Akurli Road, Near Fast Food centre,
+              <br />
+              Lokhanndwala, Kandivali (E), Mumbai 400101
             </p>
           </div>
 
           <div className="mb-6">
             <h2 className="text-2xl md:text-3xl lg:text-3xl mb-2">Email:</h2>
-            <p className="text-gray-600 text-xl md:text-base">
+            <a
+              href="mailto:shyamcivilconstruction@gmail.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-gray-600 text-xl! md:text-base hover:text-black transition-colors"
+            >
               Shyamcivilconstruction@gmail.com
-            </p>
+            </a>
           </div>
 
           <div className="mb-6">
             <h2 className="text-2xl md:text-3xl lg:text-3xl mb-2">Phone:</h2>
-            <p className="text-gray-600 text-md md:text-base">
-              +91 9324508485 <br />
-              +91 9324455382 <br />
-              +91 9930584607
-            </p>
+            <div className="text-gray-600 text-md md:text-base hover:text-black transition-colors">
+              <a
+                href="tel:+919324508485"
+                className="hover:text-black transition-colors"
+              >
+                +91 9324508485
+              </a>{" "}
+              <br />
+              <a
+                href="tel:+919324455382"    
+                className="hover:text-black transition-colors"
+              >
+                +91 9324455382
+              </a>{" "}
+              <br />
+              <a
+                href="tel:+919930584607"
+                className="hover:text-black transition-colors"
+              >
+                +91 9930584607
+              </a>
+            </div>
           </div>
 
-          <Link href="/contact" className="group inline-flex items-center">
-            <h2 className="text-3xl md:text-4xl mb-6 transition group-hover:translate-x-2">
+          <Link href="tel:+919324455382" className="group inline-flex items-center">
+            <h2 className="text-3xl md:text-4xl mb-6 transition group-hover:translate-x-2 group-hover:text-black">
               Book a Call →
             </h2>
           </Link>
@@ -167,7 +191,7 @@ export default function ContactPage() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full border px-4 py-3"
+                className="w-full border rounded-2xl px-4 py-3"
                 required
               />
             </div>
@@ -181,7 +205,7 @@ export default function ContactPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full border px-4 py-3"
+                  className="w-full border rounded-2xl px-4 py-3"
                   required
                 />
               </div>
@@ -193,7 +217,7 @@ export default function ContactPage() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="w-full border px-4 py-3"
+                  className="w-full border rounded-2xl px-4 py-3"
                   required
                 />
               </div>
@@ -206,7 +230,7 @@ export default function ContactPage() {
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                className="w-full border px-4 py-3 h-32"
+                className="w-full border rounded-2xl px-4 py-3 h-32"
                 required
               />
             </div>
@@ -214,8 +238,8 @@ export default function ContactPage() {
             {/* TERMS + BUTTON */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <label className="flex items-center gap-2 text-sm">
-                <input type="checkbox" required />
-                I agree with Terms & Conditions
+                <input type="checkbox" required />I agree with Terms &
+                Conditions
               </label>
 
               <button

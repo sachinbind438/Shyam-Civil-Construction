@@ -27,7 +27,27 @@ const TOKEN_EXPIRY = '2h'
 // Generic error — never reveal if email exists or not
 const GENERIC_ERROR = 'Invalid email or password'
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<NextResponse> {
+  // Add timeout to prevent hanging
+  const timeoutPromise = new Promise<never>((_, reject) => {
+    setTimeout(() => reject(new Error('Request timeout')), 10000); // 10 second timeout
+  })
+
+  const loginPromise = handleLogin(request)
+
+  try {
+    const result = await Promise.race([loginPromise, timeoutPromise])
+    return result
+  } catch (error: any) {
+    console.error('[Login] Timeout or error:', error.message)
+    return NextResponse.json(
+      { error: error.message === 'Request timeout' ? 'Request timeout. Please try again.' : 'Internal server error' },
+      { status: error.message === 'Request timeout' ? 408 : 500 }
+    )
+  }
+}
+
+async function handleLogin(request: NextRequest) {
   // ── 1. Check JWT secret is properly configured ──────────────────────
   if (!JWT_SECRET) {
     console.error('NEXTAUTH_SECRET environment variable is not set')

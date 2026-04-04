@@ -16,21 +16,30 @@ export default function AdminLoginClient() {
     setError("");
 
     try {
+      console.log('[Client] Attempting login with:', { email, hasPassword: !!password });
+      
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
 
+      console.log('[Client] Response status:', response.status);
+      console.log('[Client] Response headers:', Object.fromEntries(response.headers.entries()));
+
       const data = await response.json();
+      console.log('[Client] Response data:', data);
 
       if (response.ok) {
+        console.log('[Client] Login successful, redirecting...');
         router.push("/admin/dashboard");
         router.refresh();
       } else {
+        console.log('[Client] Login failed:', data.error);
         setError(data.error || "Login failed");
       }
     } catch (err) {
+      console.error('[Client] Network error:', err);
       setError("Network error. Please try again.");
     } finally {
       setLoading(false);

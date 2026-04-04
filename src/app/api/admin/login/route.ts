@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
     // Use Zod for robust validation
     const parsed = loginSchema.safeParse(body)
     if (!parsed.success) {
+      console.log('[Login Validation Error]', parsed.error)
       recordFailedAttempt(identifier)
       return NextResponse.json({ error: GENERIC_ERROR }, { status: 400 })
     }

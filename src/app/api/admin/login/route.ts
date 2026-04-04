@@ -135,6 +135,19 @@ export async function POST(request: NextRequest) {
       path: '/',
     })
 
+    // Debug: Log cookie settings
+    console.log('[Cookie Debug]', {
+      isSecure,
+      cookieSettings: {
+        httpOnly: true,
+        secure: isSecure,
+        sameSite: 'lax',
+        maxAge: 7200000,
+        path: '/',
+        // Note: No explicit domain - browser will set to current domain
+      }
+    })
+
     return response
 
   } catch (error) {

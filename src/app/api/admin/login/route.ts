@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose'
 import bcrypt from 'bcryptjs'
 import { connectDB } from '@/lib/mongodb'
 import { Admin } from '@/backend/db/models/Admin'
@@ -9,6 +9,7 @@ import {
   recordSuccessfulLogin,
   getClientIdentifier
 } from '@/lib/rateLimit'
+import { loginSchema } from '@/lib/validation'
 
 // Detect if request is HTTPS (works behind proxies too)
 function isSecureRequest(request: NextRequest): boolean {
@@ -21,8 +22,6 @@ function isSecureRequest(request: NextRequest): boolean {
 }
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET
-const JWT_ALGORITHM = 'HS256'
-const TOKEN_EXPIRY = '2h'
 
 // Generic error — never reveal if email exists or not
 const GENERIC_ERROR = 'Invalid email or password'
@@ -60,25 +59,14 @@ export async function POST(request: NextRequest) {
 
     // ── 3. Parse and validate input ─────────────────────────────────
     const body = await request.json()
-    const { email, password } = body
-
-    if (!email || !password) {
+    
+    // Use Zod for robust validation
+    const parsed = loginSchema.safeParse(body)
+    if (!parsed.success) {
       recordFailedAttempt(identifier)
       return NextResponse.json({ error: GENERIC_ERROR }, { status: 400 })
     }
-
-    // ── 4. Validate email format ────────────────────────────────────
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email) || email.length > 255) {
-      recordFailedAttempt(identifier)
-      return NextResponse.json({ error: GENERIC_ERROR }, { status: 401 })
-    }
-
-    // ── 5. Validate password length ──────────────────────────────────
-    if (typeof password !== 'string' || password.length < 1 || password.length > 128) {
-      recordFailedAttempt(identifier)
-      return NextResponse.json({ error: GENERIC_ERROR }, { status: 401 })
-    }
+    const { email, password } = parsed.data
 
     await connectDB()
 
@@ -107,18 +95,15 @@ export async function POST(request: NextRequest) {
 
     // ── 8. Create minimal JWT payload ────────────────────────────────
     // Store only what is absolutely necessary
-    const token = jwt.sign(
-      {
+    const secret = new TextEncoder().encode(JWT_SECRET)
+    const token = await new SignJWT({
         sub: admin._id.toString(), // use 'sub' standard claim
         email: admin.email,
         iat: Math.floor(Date.now() / 1000),
-      },
-      JWT_SECRET,
-      {
-        expiresIn: TOKEN_EXPIRY,
-        algorithm: JWT_ALGORITHM,
-      }
-    )
+      })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setExpirationTime('2h')
+      .sign(secret)
 
     // ── 9. Set secure cookie ─────────────────────────────────────────
     const isSecure = isSecureRequest(request)
@@ -134,9 +119,9 @@ export async function POST(request: NextRequest) {
     response.cookies.set('admin_token', token, {
       httpOnly: true,
       secure: isSecure,
-      sameSite: 'lax',
+      sameSite: 'strict',
       maxAge: 2 * 60 * 60,
-      path: '/',
+      path: '/admin',
       // No explicit domain - browser will set to exact current domain
     })
 

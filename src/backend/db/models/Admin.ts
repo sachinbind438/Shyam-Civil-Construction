@@ -18,7 +18,7 @@ const AdminSchema = new Schema({
   password: {
     type: String,
     required: [true, "Password is required"],
-    minlength: [6, "Password must be at least 6 characters"],
+    minlength: [12, "Password must be at least 12 characters"],
     select: false, // Never return password in queries by default
   },
   name: {

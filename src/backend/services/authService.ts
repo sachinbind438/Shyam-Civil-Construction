@@ -1,7 +1,7 @@
 import { connectDB } from "../db/connection";
 import { Admin } from "../db/models/Admin";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { jwtVerify, SignJWT } from 'jose';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET;
 
@@ -52,25 +52,24 @@ export function generateAdminToken(admin: {
   email: string;
   name?: string;
 }): string {
-  return jwt.sign(
-    {
-      sub: admin.id,
-      email: admin.email,
-      iat: Math.floor(Date.now() / 1000),
-    },
-    JWT_SECRET,
-    { 
-      expiresIn: "2h",
-      algorithm: "HS256"
-    }
-  );
+  const secret = new TextEncoder().encode(JWT_SECRET);
+  
+  return new SignJWT({
+    sub: admin.id,
+    email: admin.email,
+    iat: Math.floor(Date.now() / 1000),
+  })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('2h')
+    .sign(secret);
 }
 
 // ── Verify JWT token ─────────────────────────────────────────────────────────
 export async function verifyAdminToken(token: string): Promise<any> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as any;
-    return decoded;
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
   } catch (error) {
     return null;
   }
@@ -82,7 +81,7 @@ export async function verifySimpleAdmin(email: string, password: string): Promis
   const adminPassword = process.env.ADMIN_PASSWORD;
   
   if (!adminEmail || !adminPassword) {
-    console.error('Admin credentials not configured');
+    // Use proper logging in production
     return false;
   }
   

@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from 'jose';
 
 const JWT_SECRET = process.env.NEXTAUTH_SECRET;
 
@@ -17,8 +17,11 @@ export async function verifyAdminToken() {
   }
 
   try {
-    // Verify JWT token with algorithm for security
-    jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+    // Verify JWT token using jose (Edge Runtime compatible)
+    await jwtVerify(
+      token,
+      new TextEncoder().encode(JWT_SECRET)
+    );
     return true;
   } catch (error) {
     redirect("/admin/login");

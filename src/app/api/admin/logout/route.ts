@@ -16,10 +16,10 @@ export async function POST(request: NextRequest) {
   response.cookies.set('admin_token', '', {
     httpOnly: true,
     secure: isSecure,
-    sameSite: 'lax',
+    sameSite: 'strict',
     maxAge: 0,
     expires: new Date(0),
-    path: '/',
+    path: '/admin',
     // No explicit domain - matches login cookie
   })
 

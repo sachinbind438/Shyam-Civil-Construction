@@ -32,8 +32,23 @@ export default function AdminLoginClient() {
 
       if (response.ok) {
         console.log('[Client] Login successful, redirecting...');
-        router.push("/admin/dashboard");
-        router.refresh();
+        
+        // Try Next.js router first
+        try {
+          router.push("/admin/dashboard");
+          router.refresh();
+          
+          // Fallback if router doesn't work within 1 second
+          setTimeout(() => {
+            if (window.location.pathname === '/admin/login') {
+              console.log('[Client] Router redirect failed, using window.location');
+              window.location.href = "/admin/dashboard";
+            }
+          }, 1000);
+        } catch (error) {
+          console.error('[Client] Router error, using window.location:', error);
+          window.location.href = "/admin/dashboard";
+        }
       } else {
         console.log('[Client] Login failed:', data.error);
         setError(data.error || "Login failed");

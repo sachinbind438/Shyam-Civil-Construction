@@ -13,13 +13,6 @@ export async function POST(request: NextRequest) {
   const isSecure = isSecureRequest(request)
   const url = new URL(request.url)
   const domain = url.hostname.replace('www.', '')
-  
-  console.log('[Logout Debug]', {
-    url: request.url,
-    forwardedProto: request.headers.get('x-forwarded-proto'),
-    isSecure,
-    domain,
-  })
 
   // Clear cookie properly
   response.cookies.set('admin_token', '', {

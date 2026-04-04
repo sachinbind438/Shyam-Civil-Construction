@@ -34,30 +34,30 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 })
   }
 
-  // ── 2. Rate limiting ────────────────────────────────────────────────
-  const identifier = getClientIdentifier(request)
-  const rateLimit = checkRateLimit(identifier)
-
-  if (!rateLimit.allowed) {
-    const lockoutMinutes = rateLimit.lockedUntil
-      ? Math.ceil((rateLimit.lockedUntil - Date.now()) / 60000)
-      : 15
-
-    return NextResponse.json(
-      { error: `Too many failed attempts. Try again in ${lockoutMinutes} minutes.` },
-      {
-        status: 429,
-        headers: {
-          'Retry-After': String(lockoutMinutes * 60),
-          'X-RateLimit-Limit': '5',
-          'X-RateLimit-Remaining': '0',
-          'X-RateLimit-Reset': String(rateLimit.resetTime),
-        }
-      }
-    )
-  }
-
   try {
+    // ── 2. Rate limiting ────────────────────────────────────────────────
+    const identifier = getClientIdentifier(request)
+    const rateLimit = checkRateLimit(identifier)
+
+    if (!rateLimit.allowed) {
+      const lockoutMinutes = rateLimit.lockedUntil
+        ? Math.ceil((rateLimit.lockedUntil - Date.now()) / 60000)
+        : 15
+
+      return NextResponse.json(
+        { error: `Too many failed attempts. Try again in ${lockoutMinutes} minutes.` },
+        {
+          status: 429,
+          headers: {
+            'Retry-After': String(lockoutMinutes * 60),
+            'X-RateLimit-Limit': '5',
+            'X-RateLimit-Remaining': '0',
+            'X-RateLimit-Reset': String(rateLimit.resetTime),
+          }
+        }
+      )
+    }
+
     // ── 3. Parse and validate input ─────────────────────────────────
     const body = await request.json()
     const { email, password } = body
@@ -138,20 +138,6 @@ export async function POST(request: NextRequest) {
       maxAge: 2 * 60 * 60,
       path: '/',
       domain: domain, // Set to root domain without www
-    })
-
-    // Debug: Log cookie settings
-    console.log('[Cookie Debug]', {
-      isSecure,
-      domain,
-      cookieSettings: {
-        httpOnly: true,
-        secure: isSecure,
-        sameSite: 'lax',
-        maxAge: 7200000,
-        path: '/',
-        domain,
-      }
     })
 
     return response

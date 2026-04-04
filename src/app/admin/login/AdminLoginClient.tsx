@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function AdminLoginClient() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,20 +17,23 @@ export default function AdminLoginClient() {
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
-      if (response.ok) {
-        router.push("/admin/dashboard");
-        router.refresh();
+      if (response.ok && data.success) {
+        // Hard redirect — more reliable than router.push on Vercel
+        // Ensures cookie is available before middleware checks it
+        window.location.href = "/admin/dashboard";
+        // Don't setLoading(false) — keep spinner while redirecting
       } else {
         setError(data.error || "Login failed");
+        setLoading(false);
       }
     } catch (err) {
       setError("Network error. Please try again.");
-    } finally {
       setLoading(false);
     }
   };

@@ -61,41 +61,6 @@ export async function generateMetadata({
 }
 
 export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  await connectDB();
-
-  const project = await (Project as any).findOne({ slug }).lean() as any;
-
-    if (!project) {
-      notFound();
-    }
-
-    const serializedProject = serialiseProject(project);
-
-    return {
-      title: `${serializedProject.title} | Shyam Civil Construction`,
-      description: serializedProject.description,
-      openGraph: {
-        title: serializedProject.title,
-        description: serializedProject.description,
-        images: [serializedProject.thumbnail],
-        type: 'article',
-      },
-      alternates: {
-        canonical: `https://shyamcivilconstruction.in/projects/${params.slug}`,
-      },
-    };
-  } catch (error) {
-    console.error('Error generating metadata:', error);
-    return { title: "Project Not Found" };
-  }
-}
-
-export default async function ProjectPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
   try {
     const { slug } = await params;
 

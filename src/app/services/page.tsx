@@ -3,15 +3,6 @@
 import { useState, useEffect } from 'react';
 import ServiceGrid from "../../components/Service/ServiceGrid";
 import ServiceDetail from "../../components/Service/ServiceDetail";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Our Services",
-  description: "Complete renovation services including kitchen renovation, bathroom remodeling, interior design, and full home renovation.",
-  alternates: {
-    canonical: "https://shyamcivilconstruction.in/services",
-  },
-};
 
 interface ServiceData {
   index: number;

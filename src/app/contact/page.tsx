@@ -3,15 +3,6 @@
 import { useState } from "react";
 import Button from "../../components/button/button";
 import Link from "next/link";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Contact Us",
-  description: "Get in touch with Shyam Civil Construction for a free estimate on your renovation project.",
-  alternates: {
-    canonical: "https://shyamcivilconstruction.in/contact",
-  },
-};
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({

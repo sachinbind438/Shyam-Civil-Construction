@@ -2,7 +2,7 @@ import Hero from "../components/Hero/Hero";
 import AboutCard from "../components/about/About_card";
 import Gallery from "../components/Projects/Gallery";
 import ProjectImageGrid from "../components/Projects/Projectgrids";
-import ServiceGrid from "../components/Service/ServiceGrid_component";
+import ServiceGridcomponent from "../components/Service/ServiceGrid_component";
 
 export default function Home() {
   return (
@@ -31,7 +31,7 @@ export default function Home() {
       </section>
       {/*Services*/}    
       <section>
-        <ServiceGrid />
+        <ServiceGridcomponent />
       </section>
     </main>
   );

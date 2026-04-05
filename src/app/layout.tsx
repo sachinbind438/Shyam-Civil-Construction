@@ -29,20 +29,38 @@ export const metadata: Metadata = {
     process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
       : process.env.NODE_ENV === "production"
-        ? "https://shyamcivilconstruction.com"
+        ? "https://shyamcivilconstruction.in"
         : "http://localhost:3000"
   ),
   
   title: {
-    default:  "Shyam Civil Construction",
+    default: "Shyam Civil Construction — Premium Renovation Services",
     template: "%s | Shyam Civil Construction",
   },
-  description: "Premium Renovation Services Tailored to Your Vision",
-  keywords: ["civil construction", "renovation", "interior design", 
-             "residential", "commercial", "Mumbai"],
-  authors:  [{ name: "Shyam Civil Construction" }],
-  creator:  "Shyam Civil Construction",
-  
+  description: "Premium renovation services across residential, interior, and commercial spaces. Expert craftsmanship, personalized design solutions.",
+  keywords: [
+    "civil construction",
+    "renovation services", 
+    "interior design",
+    "bathroom remodeling",
+    "kitchen renovation",
+    "home renovation",
+    "commercial renovation",
+    "Shyam Civil Construction",
+  ],
+  authors: [{ name: "Shyam Civil Construction" }],
+  creator: "Shyam Civil Construction",
+  publisher: "Shyam Civil Construction",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   icons: {
     icon: [
       {
@@ -66,27 +84,30 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    type:        "website",
-    locale:      "en_IN",
-    url:         "https://shyamcivilconstruction.com",
-    siteName:    "Shyam Civil Construction",
-    title:       "Shyam Civil Construction",
-    description: "Premium Renovation Services Tailored to Your Vision",
+    type: "website",
+    locale: "en_IN",
+    url: "https://shyamcivilconstruction.in",
+    siteName: "Shyam Civil Construction",
+    title: "Shyam Civil Construction — Premium Renovation Services",
+    description: "Premium renovation services across residential, interior, and commercial spaces. Expert craftsmanship, personalized design solutions.",
     images: [
       {
-        url:    "/og-image.jpg",
-        width:  1200,
+        url: "/og-image.jpg",
+        width: 1200,
         height: 630,
-        alt:    "Shyam Civil Construction",
+        alt: "Shyam Civil Construction",
       },
     ],
   },
 
   twitter: {
-    card:        "summary_large_image",
-    title:       "Shyam Civil Construction",
-    description: "Premium Renovation Services Tailored to Your Vision",
-    images:      ["/og-image.jpg"],
+    card: "summary_large_image",
+    title: "Shyam Civil Construction",
+    description: "Premium renovation services across residential, interior, and commercial spaces. Expert craftsmanship, personalized design solutions.",
+    images: ["/og-image.jpg"],
+  },
+  alternates: {
+    canonical: "https://shyamcivilconstruction.in",
   },
 }
 

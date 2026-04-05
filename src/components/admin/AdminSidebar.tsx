@@ -82,8 +82,8 @@ export default function AdminSidebar() {
             <p className="text-white text-2xl font-bold leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">
               Shyam Civil
             </p>
-            <p className="text-white text-2xl font-bold leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">
-              Construction
+            <p className="text-white text-base leading-tight cursor-pointer hover:text-white/50 transition-colors duration-200">
+              Admin Panel
             </p>
           </div>
         </div>

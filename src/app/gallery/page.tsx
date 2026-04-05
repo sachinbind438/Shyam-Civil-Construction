@@ -1,6 +1,15 @@
 import GalleryGrid from "@/components/Gallery/GalleryGrid"
 import { connectDB } from "@/lib/mongodb"
 import { GalleryImage } from "@/backend/db/models/GalleryImage"
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Gallery",
+  description: "Browse our collection of project images and design inspiration from Shyam Civil Construction.",
+  alternates: {
+    canonical: "https://shyamcivilconstruction.in/gallery",
+  },
+};
 
 async function getGalleryImages() {
   try {

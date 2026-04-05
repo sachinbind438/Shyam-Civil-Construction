@@ -6,6 +6,15 @@ import TestimonialComponent from "../../components/Testimonial/TestimonialCompon
 import WhoWeAre from "../../components/about/Whoweare";
 import TeamSection from "../../components/about/team";
 import CTA from "../../components/about/CTA";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About Us",
+  description: "Learn about Shyam Civil Construction — our story, values, and commitment to quality renovation services.",
+  alternates: {
+    canonical: "https://shyamcivilconstruction.in/about",
+  },
+};
 
 const raleway = Raleway({
   subsets: ["latin"],

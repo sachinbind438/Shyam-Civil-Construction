@@ -4,6 +4,15 @@ import { connectDB } from "@/lib/mongodb";
 import { Project } from "@/backend/db/models/Project";
 import { serialiseProject } from "@/data/projects";
 import { AllProjects } from "@/components/Projects/AllProjects";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Our Projects",
+  description: "Browse our portfolio of completed renovation projects — kitchens, bathrooms, interiors, and full home renovations.",
+  alternates: {
+    canonical: "https://shyamcivilconstruction.in/projects",
+  },
+};
 
 export const revalidate = 60;
 

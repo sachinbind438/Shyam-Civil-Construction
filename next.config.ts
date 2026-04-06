@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
-      // ── Cloudflare R2 CDN ───────────────────────────────────────────────────
+      // ── Cloudflare R2 CDN ───────────────────────────────────────────
       {
         protocol: "https",
         hostname: "pub-166fdf4fe2e540989f5e719d254cab65.r2.dev",
@@ -65,7 +65,25 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      // ── Shyam Civil Construction domain ─────────────────────────────────────
+      {
+        protocol: "https",
+        hostname: "shyamcivilconstruction.in",
+        pathname: "/**",
+      },
     ],
+    unoptimized: true,
+  },
+
+  async redirects() {
+    return [
+      // Example: Add any slug renames here in the future
+      // {
+      //   source: '/projects/old-slug',
+      //   destination: '/projects/new-slug',
+      //   permanent: true,
+      // },
+    ];
   },
 
   async headers() {

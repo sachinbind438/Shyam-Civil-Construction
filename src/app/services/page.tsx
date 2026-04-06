@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import ServiceGrid from "../../components/Service/ServiceGrid";
 import ServiceDetail from "../../components/Service/ServiceDetail";
 
@@ -21,15 +21,15 @@ export default function ServicesSection() {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await fetch('/api/services');
+        const response = await fetch("/api/services");
         if (!response.ok) {
-          throw new Error('Failed to fetch services');
+          throw new Error("Failed to fetch services");
         }
         const data = await response.json();
         setServicesData(data.data || []);
       } catch (err) {
-        console.error('Error fetching services:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error');
+        console.error("Error fetching services:", err);
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }
@@ -37,31 +37,6 @@ export default function ServicesSection() {
 
     fetchServices();
   }, []);
-
-  if (loading) {
-    return (
-      <main>
-        <section className="w-full pb-6 pt-35 sm:pt-32 md:pt-48 px-4 sm:px-6 gap-8 sm:gap-12 flex flex-col">
-          <div className="text-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading services...</p>
-          </div>
-        </section>
-      </main>
-    );
-  }
-
-  if (error) {
-    return (
-      <main>
-        <section className="w-full pb-6 pt-35 sm:pt-32 md:pt-48 px-4 sm:px-6 gap-8 sm:gap-12 flex flex-col">
-          <div className="text-center py-20">
-            <p className="text-red-600">Error loading services: {error}</p>
-          </div>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main>

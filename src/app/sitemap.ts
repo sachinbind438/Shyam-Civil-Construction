@@ -2,10 +2,9 @@ import { MetadataRoute } from 'next'
 import { connectDB } from '@/lib/mongodb'
 import { Project } from '@/backend/db/models/Project'
 
-const BASE_URL = 'https://shyamcivilconstruction.in'
+const BASE_URL = 'https://www.shyamcivilconstruction.in' // ← added www
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // ── Static routes ─────────────────────────────────────────────────
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -45,7 +44,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // ── Dynamic project routes ────────────────────────────────────────
   let projectRoutes: MetadataRoute.Sitemap = []
 
   try {
@@ -62,6 +60,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: project.updatedAt || project.createdAt || new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.7,
+      }))
+  } catch (error) {
+    console.error('Sitemap: Failed to fetch projects:', error)
+  }
+
+  return [...staticRoutes, ...projectRoutes]
+}        priority: 0.7,
       }))
   } catch (error) {
     console.error('Sitemap: Failed to fetch projects:', error)

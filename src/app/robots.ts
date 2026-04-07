@@ -25,7 +25,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: '/',
       },
     ],
-    sitemap: 'https://shyamcivilconstruction.in/sitemap.xml',
-    host: 'https://shyamcivilconstruction.in',
+    sitemap: 'https://www.shyamcivilconstruction.in/sitemap.xml',
+    host: 'https://www.shyamcivilconstruction.in',
   }
 }

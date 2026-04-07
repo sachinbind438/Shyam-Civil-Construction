@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { connectDB } from '@/lib/mongodb'
 import { Project } from '@/backend/db/models/Project'
 
-const BASE_URL = 'https://www.shyamcivilconstruction.in' // ← added www
+const BASE_URL = 'https://www.shyamcivilconstruction.in'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -62,6 +62,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }))
   } catch (error) {
+    console.error('Sitemap: Failed to fetch projects:', error)
+  }
+
+  return [...staticRoutes, ...projectRoutes]
+}  } catch (error) {
     console.error('Sitemap: Failed to fetch projects:', error)
   }
 

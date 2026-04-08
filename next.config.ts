@@ -65,6 +65,12 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
+      // ── Shyam Civil Construction domain images ─────────────────────────────
+      {
+        protocol: "https",
+        hostname: "images.shyamcivilconstruction.in",
+        pathname: "/**",
+      },
       // ── Shyam Civil Construction domain ─────────────────────────────────────
       {
         protocol: "https",

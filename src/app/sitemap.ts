@@ -66,16 +66,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   return [...staticRoutes, ...projectRoutes]
-}  } catch (error) {
-    console.error('Sitemap: Failed to fetch projects:', error)
-  }
-
-  return [...staticRoutes, ...projectRoutes]
-}        priority: 0.7,
-      }))
-  } catch (error) {
-    console.error('Sitemap: Failed to fetch projects:', error)
-  }
-
-  return [...staticRoutes, ...projectRoutes]
 }

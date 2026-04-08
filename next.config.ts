@@ -16,7 +16,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: blob: https://pub-166fdf4fe2e540989f5e719d254cab65.r2.dev https://res.cloudinary.com`,
+      `img-src 'self' data: blob: https://pub-166fdf4fe2e540989f5e719d254cab65.r2.dev https://res.cloudinary.com https://images.shyamcivilconstruction.in`,
       "font-src 'self'",
       "connect-src 'self'",
       "frame-ancestors 'none'",
@@ -65,7 +65,7 @@ const nextConfig: NextConfig = {
         hostname: "images.unsplash.com",
         pathname: "/**",
       },
-      // ──// Shyam Civil Construction domain images - deployed for custom domain
+      // ── Shyam Civil Construction custom R2 domain ─────────────────────────
       {
         protocol: "https",
         hostname: "images.shyamcivilconstruction.in",

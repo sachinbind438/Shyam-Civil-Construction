@@ -146,13 +146,13 @@ export default function Footer() {
         {/* Bottom */}
         <div className="pt-10 md:pt-12 flex flex-col gap-6 md:flex-row md:justify-between md:items-center">
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 text-gray-400 text-sm">
-            <Link href="#cookies" className="hover:text-white transition">
+            <Link href="/cookie-policy" className="hover:text-white transition">
               Cookie Policy
             </Link>
-            <Link href="#privacy" className="hover:text-white transition">
+            <Link href="/privacy-policy" className="hover:text-white transition">
               Privacy Policy
             </Link>
-            <Link href="#terms" className="hover:text-white transition">
+            <Link href="/terms-and-conditions" className="hover:text-white transition">
               Terms & Conditions
             </Link>
           </div>

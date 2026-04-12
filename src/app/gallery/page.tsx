@@ -53,6 +53,7 @@ export default async function GalleryPage() {
           images={images}
           showTitle={true}
           columns={3}
+          itemsPerPage={18}
         />
       </section>
     </main>

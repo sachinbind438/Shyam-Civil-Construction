@@ -164,14 +164,14 @@ export default function ContactPage() {
             Find Us On:
           </h2>
           <div className="flex gap-4 mt-2 text-md text-[#4d4d4d]">
-            <Link href="#" className="hover:text-black">
+            <Link href="https://www.facebook.com/shyamcivilconstruction" className="hover:text-black">
               Facebook
             </Link>
-            <Link href="#" className="hover:text-black">
+            <Link href="https://www.instagram.com/scconstruction932?igsh=dzQ3YWpta2MwMWJl" className="hover:text-black">
               Instagram
             </Link>
-            <Link href="#" className="hover:text-black">
-              LinkedIn
+            <Link href="https://wa.me/9324455382" className="hover:text-black">
+              WhatsApp
             </Link>
           </div>
         </div>

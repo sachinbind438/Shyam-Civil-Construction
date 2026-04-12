@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, memo, useRef, ChangeEvent } from "react"
 import Image from "next/image"
+import { Pagination } from "@/components/Projects/Pagination"
 
 const PAGE_SIZE = 18
 
@@ -237,27 +238,13 @@ export default function AdminGalleryPage() {
           </div>
 
           {/* Pagination */}
-      {pagination && (
-        <div className="flex items-center justify-center gap-2 mt-6">
-          <button
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-          >
-            Prev
-          </button>
-          <span className="text-white/30 text-xs">
-            Page {page} of {pagination.pages}
-          </span>
-          <button
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
-            onClick={() => setPage(page + 1)}
-            disabled={page === pagination.pages}
-          >
-            Next
-          </button>
-        </div>
-      )}
+          {pagination && (
+            <Pagination
+              currentPage={page}
+              totalPages={pagination.pages}
+              onPageChange={(newPage) => setPage(newPage)}
+            />
+          )}
         </>
       )}
 

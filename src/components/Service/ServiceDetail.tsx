@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 
 interface ServiceDetailProps {
@@ -43,8 +41,8 @@ export default function ServiceDetail({
           {features
             .split("\n")
             .filter(Boolean)
-            .map((item, i) => (
-              <li key={i}>{item.trim()}</li>
+            .map((item) => (
+              <li key={item.trim()}>{item.trim()}</li>
             ))}
         </ul>
       </div>

@@ -9,6 +9,7 @@ import {
 } from "./../../data/projects";
 import { ProjectCard } from "./ProjectCard";
 import { FilterTabs } from "./FilterTabs";
+import { Pagination } from "./Pagination";
 
 interface AllProjectsProps {
   projects: Project[];
@@ -16,11 +17,31 @@ interface AllProjectsProps {
 
 export const AllProjects = ({ projects }: AllProjectsProps) => {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("All");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filteredProjects = useMemo(
     () => getFilteredProjects(projects, activeFilter),
     [projects, activeFilter]
   );
+
+  // Pagination logic
+  const PROJECTS_PER_PAGE = 10;
+  const totalPages = Math.ceil(filteredProjects.length / PROJECTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
+  const endIndex = startIndex + PROJECTS_PER_PAGE;
+  const currentProjects = filteredProjects.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filter changes
+  const handleFilterChange = (filter: FilterCategory) => {
+    setActiveFilter(filter);
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Scroll to top of projects grid
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -53,8 +74,16 @@ export const AllProjects = ({ projects }: AllProjectsProps) => {
         {/* FILTER */}
         <FilterTabs
           activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
+          onFilterChange={handleFilterChange}
         />
+
+        {/* PROJECTS COUNT */}
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-gray-600">
+            Showing {Math.min(startIndex + 1, filteredProjects.length)}-{Math.min(endIndex, filteredProjects.length)} of {filteredProjects.length} projects
+            {activeFilter !== "All" && ` in ${activeFilter}`}
+          </p>
+        </div>
 
         {/* GRID */}
         <motion.div
@@ -64,11 +93,20 @@ export const AllProjects = ({ projects }: AllProjectsProps) => {
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6 lg:gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {filteredProjects.map((project, index) => (
+            {currentProjects.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
           </AnimatePresence>
         </motion.div>
+
+        {/* PAGINATION */}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+          />
+        )}
 
         {/* EMPTY STATE */}
         {filteredProjects.length === 0 && (

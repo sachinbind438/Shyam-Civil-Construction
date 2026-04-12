@@ -5,7 +5,7 @@ import React from "react";
 
 import FacebookIcon from "../Icons/Facebook_Icon";
 import InstagramIcon from "../Icons/Instagram_Icon";
-import LinkedinIcon from "../Icons/Linkedin_Icon";
+import WhatsAppIcon from "../Icons/WhatsApp_Icon";
 
 type SocialItemProps = {
   label: string;
@@ -37,15 +37,15 @@ export default function Footersocial() {
         </div>
       </SocialItem>
 
-      <SocialItem label="Instagram" href="#">
+      <SocialItem label="Instagram" href="https://www.instagram.com/scconstruction932?igsh=dzQ3YWpta2MwMWJl">
         <div className="w-10 h-10 rounded-xl border border-gray-400 flex items-center justify-center transition-all duration-300 ease-out group-hover:border-white group-hover:scale-[1.06] group-hover:shadow-[0_0_0_4px_rgba(255,255,255,0.06)]">
           <InstagramIcon />
         </div>
       </SocialItem>
 
-      <SocialItem label="LinkedIn" href="#">
+      <SocialItem label="WhatsApp" href="https://wa.me/9324455382">
         <div className="w-10 h-10 rounded-xl border border-gray-400 flex items-center justify-center transition-all duration-300 ease-out group-hover:border-white group-hover:scale-[1.06] group-hover:shadow-[0_0_0_4px_rgba(255,255,255,0.06)]">
-          <LinkedinIcon />
+          <WhatsAppIcon />
         </div>
       </SocialItem>
     </div>

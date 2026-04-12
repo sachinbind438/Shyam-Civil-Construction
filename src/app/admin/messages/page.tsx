@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react"
 import DeleteMessageButton from "@/components/admin/DeleteMessageButton"
+import { Pagination } from "@/components/Projects/Pagination"
 
 interface Message {
   _id: string;
@@ -178,25 +179,11 @@ export default function AdminMessagesPage() {
 
       {/* PAGINATION */}
       {pagination && (
-        <div className="flex items-center justify-center gap-2 mt-6">
-          <button
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-          >
-            Prev
-          </button>
-          <span className="text-white/30 text-xs">
-            Page {page} of {pagination.pages}
-          </span>
-          <button
-            className="px-3 py-1.5 rounded-lg text-xs transition-colors bg-[#9f96968d] text-[#ffffff] font-medium hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/20 hover:bg-[#C9A96E] hover:text-black"
-            onClick={() => setPage(page + 1)}
-            disabled={page === pagination.pages}
-          >
-            Next
-          </button>
-        </div>
+        <Pagination
+          currentPage={page}
+          totalPages={pagination.pages}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       )}
     </div>
   );

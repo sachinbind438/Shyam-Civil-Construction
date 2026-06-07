@@ -65,6 +65,11 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      {
+        source: "/lander",
+        destination: "/",
+        permanent: true,
+      },
       // Example: Add any slug renames here in the future
       // {
       //   source: '/projects/old-slug',

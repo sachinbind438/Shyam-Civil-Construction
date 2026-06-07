@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
+import { revalidatePath } from "next/cache"
 import { connectDB } from "@/lib/mongodb"
 import { GalleryImage } from "@/backend/db/models/GalleryImage"
 
@@ -39,7 +40,10 @@ export async function DELETE(
     
     await connectDB()
     await (GalleryImage as any).findByIdAndDelete(id)
-    
+
+    revalidatePath("/")
+    revalidatePath("/gallery")
+
     return NextResponse.json({
       success: true
     })

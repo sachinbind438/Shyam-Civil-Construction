@@ -4,6 +4,8 @@ import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import { GalleryImage } from "@/backend/db/models/GalleryImage";
 
+export const revalidate = 0;
+
 async function getGalleryImages() {
   try {
     await connectDB();

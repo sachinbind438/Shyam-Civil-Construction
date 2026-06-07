@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { jwtVerify } from 'jose'
+import { revalidatePath } from "next/cache"
 import { connectDB } from "@/lib/mongodb"
 import { GalleryImage } from "@/backend/db/models/GalleryImage"
 import { Project } from "@/backend/db/models/Project"
@@ -133,6 +134,9 @@ export async function POST(request: NextRequest) {
       url: cleanedUrl, 
       key: body.key ?? "" 
     })
+
+    revalidatePath("/")
+    revalidatePath("/gallery")
 
     return NextResponse.json({
       success: true,

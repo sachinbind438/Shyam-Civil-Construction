@@ -1,90 +1,43 @@
 // src/app/api/admin/delete-file/route.ts
-// Deletes a file from Cloudflare R2 when a project is deleted
+// Deletes a file from Cloudinary when a project is deleted
 
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
+import cloudinary from "@/lib/cloudinary";
 
-// ── AWS S3 signature helpers (R2 compatible) ─────────────────────────────────
-function getSignatureKey(key: string, date: string, region: string, service: string): string {
-  const kDate = crypto.createHmac('sha256', 'AWS4' + key).update(date).digest('hex');
-  const kRegion = crypto.createHmac('sha256', kDate).update(region).digest('hex');
-  const kService = crypto.createHmac('sha256', kRegion).update(service).digest('hex');
-  const kSigning = crypto.createHmac('sha256', kService).update('aws4_request').digest('hex');
-  return kSigning;
+// ── Extract public_id from Cloudinary URL ────────────────────────────────────
+function extractPublicId(url: string): string | null {
+  try {
+    const urlObj = new URL(url);
+    const pathParts = urlObj.pathname.split('/');
+    
+    // Find the index after 'upload'
+    const uploadIndex = pathParts.findIndex(part => part === 'upload');
+    if (uploadIndex === -1 || uploadIndex + 2 >= pathParts.length) {
+      return null;
+    }
+    
+    // Skip the version number (v1234) and get everything after it
+    const pathAfterUpload = pathParts.slice(uploadIndex + 2);
+    
+    // Join the remaining parts and remove file extension
+    const publicIdWithExt = pathAfterUpload.join('/');
+    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, '');
+    
+    return publicId;
+  } catch {
+    return null;
+  }
 }
 
-function getStringToSign(date: string, credentialScope: string, canonicalRequestHash: string): string {
-  return [
-    'AWS4-HMAC-SHA256',
-    date,
-    credentialScope,
-    canonicalRequestHash
-  ].join('\n');
-}
-
-// ── Delete file from R2 ─────────────────────────────────────────────────────
-async function deleteFileFromR2(fileName: string): Promise<boolean> {
-  const accessKeyId = process.env.R2_ACCESS_KEY_ID!;
-  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY!;
-  const region = 'auto';
-  const service = 's3';
-  
-  const amzDate = new Date().toISOString().replace(/[:\-]|\.\d{3}/g, '');
-  const dateStamp = amzDate.substr(0, 8);
-  
-  const host = new URL(process.env.R2_ENDPOINT!).hostname;
-  const bucket = process.env.R2_BUCKET_NAME!;
-  const canonicalPath = `/${bucket}/${fileName}`;
-  
-  // Create payload hash (empty for DELETE)
-  const payloadHash = crypto.createHash('sha256').update('').digest('hex');
-  
-  // Create canonical request
-  const canonicalHeaders = [
-    `host:${host}`,
-    `x-amz-content-sha256:${payloadHash}`,
-    `x-amz-date:${amzDate}`,
-    ''
-  ].join('\n');
-  
-  const signedHeaders = 'host;x-amz-content-sha256;x-amz-date';
-  
-  const canonicalRequest = [
-    'DELETE',
-    canonicalPath,
-    '',
-    canonicalHeaders,
-    signedHeaders,
-    payloadHash
-  ].join('\n');
-  
-  const credentialScope = `${dateStamp}/${region}/${service}/aws4_request`;
-  const stringToSign = getStringToSign(
-    amzDate,
-    credentialScope,
-    crypto.createHash('sha256').update(canonicalRequest).digest('hex')
-  );
-  
-  // Calculate signature
-  const signingKey = getSignatureKey(secretAccessKey, dateStamp, region, service);
-  const signature = crypto.createHmac('sha256', signingKey).update(stringToSign).digest('hex');
-  
-  // Create authorization header
-  const authorization = `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
-  
-  // Delete file
-  const deleteUrl = `${process.env.R2_ENDPOINT!}/${bucket}/${fileName}`;
-  
-  const response = await fetch(deleteUrl, {
-    method: 'DELETE',
-    headers: {
-      'Authorization': authorization,
-      'x-amz-content-sha256': payloadHash,
-      'x-amz-date': amzDate,
-    },
-  });
-  
-  return response.ok;
+// ── Delete file from Cloudinary ─────────────────────────────────────────────
+async function deleteFileFromCloudinary(publicId: string): Promise<boolean> {
+  try {
+    const result = await cloudinary.uploader.destroy(publicId);
+    return result.result === 'ok';
+  } catch (error) {
+    console.error('Cloudinary delete error:', error);
+    return false;
+  }
 }
 
 // ── POST handler ───────────────────────────────────────────────────────────
@@ -99,20 +52,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Extract filename from URL
-    // URL format: https://pub-xxx.r2.dev/year/month/filename.ext
-    const urlObj = new URL(url);
-    const fileName = urlObj.pathname.slice(1); // Remove leading '/'
+    // Extract public_id from Cloudinary URL
+    // URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234/folder/filename.ext
+    const publicId = extractPublicId(url);
     
-    if (!fileName) {
+    if (!publicId) {
       return NextResponse.json(
-        { success: false, error: "Invalid file URL" },
+        { success: false, error: "Invalid Cloudinary URL" },
         { status: 400 }
       );
     }
 
-    // Delete from R2
-    const success = await deleteFileFromR2(fileName);
+    // Delete from Cloudinary
+    const success = await deleteFileFromCloudinary(publicId);
     
     if (!success) {
       return NextResponse.json(

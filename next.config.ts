@@ -16,7 +16,7 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-eval' 'unsafe-inline'",
       "style-src 'self' 'unsafe-inline'",
-      `img-src 'self' data: blob: https://pub-166fdf4fe2e540989f5e719d254cab65.r2.dev https://res.cloudinary.com https://images.shyamcivilconstruction.in`,
+      `img-src 'self' data: blob: https://res.cloudinary.com`,
       "font-src 'self'",
       "connect-src 'self'",
       "frame-ancestors 'none'",
@@ -29,18 +29,6 @@ const nextConfig: NextConfig = {
 
   images: {
     remotePatterns: [
-      // ── Cloudflare R2 CDN ───────────────────────────────────────────
-      {
-        protocol: "https",
-        hostname: "pub-166fdf4fe2e540989f5e719d254cab65.r2.dev",
-        pathname: "/**",
-      },
-      // ── Cloudflare R2 endpoint (for direct access) ─────────────────────────
-      {
-        protocol: "https",
-        hostname: "*.r2.cloudflarestorage.com",
-        pathname: "/**",
-      },
       // ── Backblaze B2 (for existing images) ───────────────────────────────
       {
         protocol: "https",
@@ -63,12 +51,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "images.unsplash.com",
-        pathname: "/**",
-      },
-      // ── Shyam Civil Construction custom R2 domain ─────────────────────────
-      {
-        protocol: "https",
-        hostname: "images.shyamcivilconstruction.in",
         pathname: "/**",
       },
       // ── Shyam Civil Construction domain ─────────────────────────────────────

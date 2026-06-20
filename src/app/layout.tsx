@@ -64,14 +64,14 @@ export const metadata: Metadata = {
   icons: {
   icon: [
     {
-      url:   "/favicon_light/favicon-32x32.png",
-      type:  "image/png",
-      media: "(prefers-color-scheme: darkmode)",
-    },
-    {
       url:   "/favicon_dark/favicon-32x32.png",
       type:  "image/png",
-      media: "(prefers-color-scheme: lightmode)",
+      media: "(prefers-color-scheme: light)",
+    },
+    {
+      url:   "/favicon_light/favicon-32x32.png",
+      type:  "image/png",
+      media: "(prefers-color-scheme: dark)",
     },
     {
       url:   "/favicon_dark/favicon-32x32.png",
@@ -80,9 +80,9 @@ export const metadata: Metadata = {
     },
   ],
   apple: [
-    { url: "/favicon_light/apple-touch-icon.png" },
+    { url: "/favicon_dark/apple-touch-icon.png" },
   ],
-  shortcut: "/favicon_light/favicon.ico",
+  shortcut: "/favicon_dark/favicon.ico",
 },
 
   openGraph: {

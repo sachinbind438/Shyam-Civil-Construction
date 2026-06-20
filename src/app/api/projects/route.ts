@@ -2,10 +2,73 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Project } from '@/backend/db/models/Project';
 import { auth } from '@/auth';
+import cloudinary from '@/lib/cloudinary';
 
 // ── Helper: strip \n \r \t from URLs ─────────────────────────────────────────
 const cleanUrl = (url: string): string =>
   (url ?? '').replace(/[\n\r\t\s]+/g, '').trim();
+
+// ── Helper: slugify title for Cloudinary folder + MongoDB slug ───────────────
+function slugify(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+// ── Helper: upload a file directly to Cloudinary (no internal fetch) ─────────
+async function uploadToCloudinary(
+  file: File,
+  folder: string,
+  type: 'cover' | 'gallery' | 'video'
+): Promise<{ url: string; publicId: string }> {
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const isVideo = file.type.startsWith('video/');
+
+  let publicId: string;
+  if (type === 'cover') {
+    publicId = 'Cover';
+  } else if (type === 'video') {
+    publicId = `video-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  } else {
+    publicId = `image-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+  }
+
+  const uploadOptions: any = {
+    folder,
+    public_id: publicId,
+    resource_type: isVideo ? 'video' : 'image',
+    overwrite: type === 'cover',
+  };
+
+  if (isVideo) {
+    uploadOptions.eager = [
+      {
+        quality: 'auto:good',
+        fetch_format: 'mp4',
+        video_codec: 'auto',
+        width: 1280,
+        crop: 'limit',
+      },
+    ];
+    uploadOptions.eager_async = false;
+  }
+
+  const result = await cloudinary.uploader.upload(
+    `data:${file.type};base64,${buffer.toString('base64')}`,
+    uploadOptions
+  );
+
+  const finalUrl =
+    isVideo && result.eager && result.eager[0]
+      ? result.eager[0].secure_url
+      : result.secure_url;
+
+  return { url: finalUrl, publicId: result.public_id };
+}
 
 // ── GET all projects ──────────────────────────────────────────────────────────
 export async function GET(request: NextRequest) {
@@ -64,37 +127,34 @@ export async function POST(request: NextRequest) {
     const title       = formData.get('title')       as string;
     const category    = formData.get('category')    as string;
     const description = formData.get('description') as string;
-    const location    = formData.get('location')    as string;
+    const location     = formData.get('location')    as string;
     const year        = parseInt(formData.get('year') as string);
-    const video       = formData.get('video')       as string;
 
-    if (!title || !category || !description || !location || !year) {
+    // Title required before any upload happens
+    if (!title || !title.trim()) {
+      return NextResponse.json(
+        { success: false, error: 'Project title is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!category || !description || !location || !year) {
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
+    const projectSlug = slugify(title);
+    const folder = `projects/${projectSlug}`;
+
     // Handle cover image upload
     const coverImageFile = formData.get('coverImage') as File | null;
     let coverImageUrl = '';
 
     if (coverImageFile && coverImageFile.size > 0) {
-      // Call B2 upload API instead of Cloudinary
-      const uploadFormData = new FormData();
-      uploadFormData.append('file', coverImageFile);
-      
-      const uploadResponse = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
-      
-      const uploadData = await uploadResponse.json();
-      if (!uploadData.success) {
-        throw new Error(uploadData.error || 'Upload failed');
-      }
-      
-      coverImageUrl = uploadData.url;
+      const { url } = await uploadToCloudinary(coverImageFile, folder, 'cover');
+      coverImageUrl = url;
     }
 
     // Handle gallery images upload
@@ -103,34 +163,33 @@ export async function POST(request: NextRequest) {
 
     for (const file of galleryFiles) {
       if (file.size > 0) {
-        // Call B2 upload API for each gallery image
-        const uploadFormData = new FormData();
-        uploadFormData.append('file', file);
-        
-        const uploadResponse = await fetch('/api/admin/upload', {
-          method: 'POST',
-          body: uploadFormData,
-        });
-        
-        const uploadData = await uploadResponse.json();
-        if (!uploadData.success) {
-          throw new Error(uploadData.error || 'Upload failed');
-        }
-        
-        galleryUrls.push(uploadData.url);
+        const { url } = await uploadToCloudinary(file, folder, 'gallery');
+        galleryUrls.push(url);
+      }
+    }
+
+    // Handle multiple video uploads
+    const videoFiles = formData.getAll('videos') as File[];
+    const videoUrls: string[] = [];
+
+    for (const file of videoFiles) {
+      if (file.size > 0) {
+        const { url } = await uploadToCloudinary(file, folder, 'video');
+        videoUrls.push(cleanUrl(url));
       }
     }
 
     // ── Create project ────────────────────────────────────────────────────────
     const project = await Project.create({
       title,
+      slug: projectSlug,
       category,
       description,
       location,
       year,
       coverImage: coverImageUrl,
       gallery:    galleryUrls,
-      video:      video ? cleanUrl(video) : undefined,
+      videos:     videoUrls, // array, replaces old singular `video` field
     });
 
     return NextResponse.json({ success: true, data: project });

@@ -1,76 +1,51 @@
 // src/app/api/admin/delete-file/route.ts
-// Deletes a file from Cloudinary when a project is deleted
 
 import { NextRequest, NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
 
-// ── Extract public_id from Cloudinary URL ────────────────────────────────────
 function extractPublicId(url: string): string | null {
   try {
-    const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split('/');
-    
-    // Find the index after 'upload'
-    const uploadIndex = pathParts.findIndex(part => part === 'upload');
-    if (uploadIndex === -1 || uploadIndex + 2 >= pathParts.length) {
-      return null;
-    }
-    
-    // Skip the version number (v1234) and get everything after it
-    const pathAfterUpload = pathParts.slice(uploadIndex + 2);
-    
-    // Join the remaining parts and remove file extension
-    const publicIdWithExt = pathAfterUpload.join('/');
-    const publicId = publicIdWithExt.replace(/\.[^/.]+$/, '');
-    
-    return publicId;
+    const pathParts = new URL(url).pathname.split('/');
+    const uploadIndex = pathParts.findIndex(p => p === 'upload');
+    if (uploadIndex === -1 || uploadIndex + 2 >= pathParts.length) return null;
+    const rawPublicId = pathParts.slice(uploadIndex + 2).join('/').replace(/\.[^/.]+$/, '');
+    return decodeURIComponent(rawPublicId); // ← fixes %20 → space
   } catch {
     return null;
   }
 }
 
-// ── Delete file from Cloudinary ─────────────────────────────────────────────
-async function deleteFileFromCloudinary(publicId: string): Promise<boolean> {
-  try {
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result.result === 'ok';
-  } catch (error) {
-    console.error('Cloudinary delete error:', error);
-    return false;
-  }
+function isVideoUrl(url: string): boolean {
+  return /\.(mp4|webm|mov|avi|mkv)(\?|$)/i.test(url) || url.includes('/video/upload/');
 }
 
-// ── POST handler ───────────────────────────────────────────────────────────
 export async function POST(request: NextRequest) {
   try {
     const { url } = await request.json();
-    
-    if (!url) {
-      return NextResponse.json(
-        { success: false, error: "No file URL provided" },
-        { status: 400 }
-      );
+
+    if (!url || typeof url !== "string") {
+      return NextResponse.json({ success: false, error: "No file URL provided" }, { status: 400 });
     }
 
-    // Extract public_id from Cloudinary URL
-    // URL format: https://res.cloudinary.com/cloud_name/image/upload/v1234/folder/filename.ext
+    if (!url.includes("res.cloudinary.com")) {
+      return NextResponse.json({ success: true, skipped: true });
+    }
+
     const publicId = extractPublicId(url);
-    
     if (!publicId) {
-      return NextResponse.json(
-        { success: false, error: "Invalid Cloudinary URL" },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: "Invalid Cloudinary URL" }, { status: 400 });
     }
 
-    // Delete from Cloudinary
-    const success = await deleteFileFromCloudinary(publicId);
-    
-    if (!success) {
-      return NextResponse.json(
-        { success: false, error: "Failed to delete file" },
-        { status: 500 }
-      );
+    const resourceType = isVideoUrl(url) ? "video" : "image";
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+    });
+
+    console.log("Cloudinary destroy:", publicId, resourceType, result.result);
+
+    if (result.result !== 'ok' && result.result !== 'not found') {
+      return NextResponse.json({ success: false, error: "Failed to delete file" }, { status: 500 });
     }
 
     return NextResponse.json({ success: true });

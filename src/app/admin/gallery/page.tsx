@@ -84,6 +84,7 @@ export default function AdminGalleryPage() {
       for (let i = 0; i < files.length; i++) {
         setProgress(`Uploading ${i + 1} of ${files.length}...`)
         const fd = new FormData()
+        fd.append("context", "gallery-page")
         fd.append("file", files[i])
         const uploadRes  = await fetch("/api/admin/upload", { method: "POST", body: fd })
         const uploadData = await uploadRes.json()

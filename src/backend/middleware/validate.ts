@@ -25,15 +25,7 @@ export function validateProjectInput(data: any): {
     errors.push("Description is too long");
   }
   
-  // Features validation
-  if (!data.features || typeof data.features !== 'string') {
-    errors.push("Features are required");
-  } else if (data.features.length < VALIDATION_RULES.FEATURES_MIN_LENGTH) {
-    errors.push("Features are too short");
-  } else if (data.features.length > VALIDATION_RULES.FEATURES_MAX_LENGTH) {
-    errors.push("Features are too long");
-  }
-  
+ 
   // Category validation
   if (!data.category || !PROJECT_CATEGORIES.includes(data.category)) {
     errors.push("Valid category is required");

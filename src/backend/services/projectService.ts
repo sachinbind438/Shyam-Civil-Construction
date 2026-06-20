@@ -21,23 +21,18 @@ export async function createProject(data: any): Promise<any> {
   await connectDB();
 
   const slug = data.slug ? data.slug : generateSlug(data.title);
-  
-  // Check for duplicate project by title or slug
+
   const existingProject = await (Project as any).findOne({
-    $or: [
-      { title: data.title },
-      { slug: slug }
-    ]
+    $or: [{ title: data.title }, { slug }],
   });
-  
+
   if (existingProject) {
     throw new Error("A project with this title or URL slug already exists");
   }
 
-  // Check for duplicate images in gallery
-  const coverImage = cleanUrl(data.coverImage ?? "");
+  const coverImage    = cleanUrl(data.coverImage ?? "");
   const galleryImages = (data.gallery ?? []).map(cleanUrl).filter(Boolean);
-  
+
   if (coverImage) {
     const existingGalleryImage = await (GalleryImage as any).findOne({ url: coverImage });
     if (existingGalleryImage) {
@@ -54,63 +49,67 @@ export async function createProject(data: any): Promise<any> {
 
   const cleanData = {
     ...data,
-    slug: slug,
-    coverImage: coverImage,
+    slug,
+    coverImage,
     gallery: galleryImages,
-    video: data.video ? cleanUrl(data.video) : undefined,
+    videos: (data.videos ?? []).map(cleanUrl).filter(Boolean), // ← array
   };
 
   const project = await Project.create(cleanData);
-
   return { ...project.toObject(), id: project._id.toString() };
 }
 
 // ── Get project by ID ───────────────────────────────────────────────────
 export async function getProjectById(id: string): Promise<any> {
   await connectDB();
-  
+
   const project = await (Project as any).findById(id);
-  
+
   if (!project) {
     throw new Error("Project not found");
   }
-  
+
   return project;
 }
 
 // ── Update project ───────────────────────────────────────────────────────
 export async function updateProject(id: string, data: any): Promise<any> {
   await connectDB();
-  
+
   const project = await (Project as any).findById(id);
-  
+
   if (!project) {
     throw new Error("Project not found");
   }
-  
-  // Update fields
-  if (data.title) project.title = data.title;
-  if (data.slug) project.slug = data.slug;
-  if (data.category) project.category = data.category;
-  if (data.description) project.description = data.description;
-  if (data.coverImage) project.coverImage = data.coverImage;
-  if (data.video) project.video = cleanUrl(data.video);
-  if (data.gallery) project.gallery = data.gallery;
-  
+
+  if (data.title       !== undefined) project.title       = data.title;
+  if (data.slug        !== undefined) project.slug        = data.slug;
+  if (data.category    !== undefined) project.category    = data.category;
+  if (data.description !== undefined) project.description = data.description;
+  if (data.location    !== undefined) project.location    = data.location;
+  if (data.year        !== undefined) project.year        = data.year;
+  if (data.coverImage  !== undefined) project.coverImage  = cleanUrl(data.coverImage);
+  if (data.gallery     !== undefined) project.gallery     = data.gallery.map(cleanUrl).filter(Boolean);
+
+  // videos — replaces entire array; use $pull route for single removal
+  if (data.videos !== undefined) {
+    project.videos = data.videos.map(cleanUrl).filter(Boolean);
+  }
+
   await project.save();
-  
+
   return { ...project.toObject(), id: project._id.toString() };
 }
 
 // ── Delete project ───────────────────────────────────────────────────────
 export async function deleteProject(id: string): Promise<void> {
   await connectDB();
-  
+
   const project = await (Project as any).findById(id);
-  
+
   if (!project) {
     throw new Error("Project not found");
   }
-  
+
   await (Project as any).findByIdAndDelete(id);
 }

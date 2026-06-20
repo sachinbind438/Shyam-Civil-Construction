@@ -7,9 +7,18 @@ import Link from "next/link";
 
 const cleanUrl = (url: string) => (url ?? "").replace(/[\n\r\t]/g, "").trim();
 
-async function uploadFile(file: File): Promise<string> {
+async function uploadFile(
+  file: File,
+  projectTitle: string,
+  projectSlug: string,
+  type: "cover" | "gallery" | "video"
+): Promise<string> {
   const fd = new FormData();
   fd.append("file", file);
+  fd.append("projectTitle", projectTitle);
+  fd.append("projectSlug", projectSlug);
+  fd.append("type", type);
+
   const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
   const data = await res.json();
   if (!data.success && !data.url)
@@ -17,25 +26,49 @@ async function uploadFile(file: File): Promise<string> {
   return cleanUrl(data.url ?? data.secure_url ?? "");
 }
 
+async function deleteFile(url: string): Promise<void> {
+  try {
+    await fetch("/api/admin/delete-file", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
+  } catch (err) {
+    console.error("Failed to delete from Cloudinary:", url, err);
+  }
+}
+
+async function removeAssetFromProject(projectId: string, payload: { videoUrl?: string; imageUrl?: string }): Promise<void> {
+  try {
+    await fetch(`/api/admin/projects/${projectId}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error("Failed to remove from MongoDB:", err);
+  }
+}
 export default function EditProjectPage() {
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
   const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState(""); // existing project slug, used for Cloudinary folder
   const [category, setCategory] = useState("Residential");
   const [description, setDescription] = useState("");
   const [location, setLocation] = useState("");
   const [year, setYear] = useState(new Date().getFullYear());
   const [coverImage, setCoverImage] = useState("");
   const [gallery, setGallery] = useState<string[]>([]);
-  const [video, setVideo] = useState("");
-  const [videoMode, setVideoMode] = useState<"url" | "upload">("url");
+  const [videos, setVideos] = useState<string[]>([]); // now an array
 
   const [coverUploading, setCoverUploading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
   const [videoUploading, setVideoUploading] = useState(false);
   const [galleryProgress, setGalleryProgress] = useState("");
+  const [videoProgress, setVideoProgress] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -51,16 +84,14 @@ export default function EditProjectPage() {
         const data = await res.json();
         const p = data.data ?? data;
         setTitle(p.title ?? "");
+        setSlug(p.slug ?? "");
         setCategory(p.category ?? "Residential");
         setDescription(p.description ?? "");
         setLocation(p.location ?? "");
         setYear(p.year ?? new Date().getFullYear());
         setCoverImage(cleanUrl(p.coverImage ?? p.thumbnail ?? ""));
         setGallery((p.gallery ?? p.images ?? []).map(cleanUrl).filter(Boolean));
-        const v = cleanUrl(p.video ?? "");
-        setVideo(v);
-        if (v && !v.includes("youtube") && !v.includes("vimeo"))
-          setVideoMode("upload");
+        setVideos((p.videos ?? []).map(cleanUrl).filter(Boolean));
       } catch (e: any) {
         setError("Failed to load: " + e.message);
       } finally {
@@ -70,13 +101,26 @@ export default function EditProjectPage() {
     if (id) load();
   }, [id]);
 
+  // Helper guard so every upload checks title is present first
+  const ensureTitle = (): boolean => {
+    if (!title.trim()) {
+      setError("Please enter a project title before uploading files.");
+      return false;
+    }
+    return true;
+  };
+
   const handleCoverUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!ensureTitle()) {
+      e.target.value = "";
+      return;
+    }
     setCoverUploading(true);
     setError("");
     try {
-      setCoverImage(await uploadFile(file));
+      setCoverImage(await uploadFile(file, title.trim(), slug, "cover"));
     } catch (e: any) {
       setError(e.message);
     } finally {
@@ -88,13 +132,17 @@ export default function EditProjectPage() {
   const handleGalleryUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     if (!files.length) return;
+    if (!ensureTitle()) {
+      e.target.value = "";
+      return;
+    }
     setGalleryUploading(true);
     setError("");
     try {
       const urls: string[] = [];
       for (let i = 0; i < files.length; i++) {
         setGalleryProgress(`Uploading ${i + 1} of ${files.length}...`);
-        urls.push(await uploadFile(files[i]));
+        urls.push(await uploadFile(files[i], title.trim(), slug, "gallery"));
       }
       setGallery((prev) => [...prev, ...urls]);
     } catch (e: any) {
@@ -107,16 +155,26 @@ export default function EditProjectPage() {
   };
 
   const handleVideoUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    if (!ensureTitle()) {
+      e.target.value = "";
+      return;
+    }
     setVideoUploading(true);
     setError("");
     try {
-      setVideo(await uploadFile(file));
+      const urls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        setVideoProgress(`Uploading video ${i + 1} of ${files.length}...`);
+        urls.push(await uploadFile(files[i], title.trim(), slug, "video"));
+      }
+      setVideos((prev) => [...prev, ...urls]);
     } catch (e: any) {
       setError(e.message);
     } finally {
       setVideoUploading(false);
+      setVideoProgress("");
       e.target.value = "";
     }
   };
@@ -141,7 +199,7 @@ export default function EditProjectPage() {
           year,
           coverImage: cleanUrl(coverImage),
           gallery: gallery.map(cleanUrl).filter(Boolean),
-          video: video ? cleanUrl(video) : undefined,
+          videos: videos.map(cleanUrl).filter(Boolean),
         }),
       });
       const data = await res.json();
@@ -183,7 +241,6 @@ export default function EditProjectPage() {
     );
 
   return (
-    // ↓ p-4 on mobile, p-8 on sm+
     <div className="p-4 sm:p-8">
 
       {/* Header */}
@@ -198,7 +255,6 @@ export default function EditProjectPage() {
           Back to Projects
         </Link>
         <h1 className="text-xl sm:text-2xl font-bold text-white">Edit Project</h1>
-        {/* truncate prevents long titles from breaking layout on mobile */}
         <p className="text-white/40 text-sm mt-1 truncate">{title}</p>
       </div>
 
@@ -250,7 +306,7 @@ export default function EditProjectPage() {
           />
         </div>
 
-        {/* ── LOCATION + YEAR — stacked on mobile, side-by-side on sm+ ── */}
+        {/* ── LOCATION + YEAR ── */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div>
             <label className={labelClass}>Location *</label>
@@ -342,17 +398,20 @@ export default function EditProjectPage() {
           </div>
           <input ref={galleryRef} type="file" accept="image/*" multiple className="hidden" onChange={handleGalleryUpload} />
 
-          {/* 2 cols on mobile, 3 on sm+ */}
           {gallery.length > 0 && (
             <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
               {gallery.map((url, i) => (
                 <div key={i} className="relative group rounded-xl overflow-hidden" style={{ height: "90px" }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={url} alt="" className="w-full h-full object-cover" />
-                  {/* Always visible on touch devices, hover-only on desktop */}
                   <button
                     type="button"
-                    onClick={() => setGallery((p) => p.filter((_, j) => j !== i))}
+                    onClick={() => {
+                      const removedUrl = gallery[i];
+                      setGallery((p) => p.filter((_, j) => j !== i));
+                      deleteFile(removedUrl);
+                      removeAssetFromProject(id, { imageUrl: removedUrl });
+                    }}
                     className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center
                                text-white text-xs font-bold
                                opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
@@ -372,71 +431,72 @@ export default function EditProjectPage() {
           )}
         </div>
 
-        {/* ── VIDEO ── */}
+        {/* ── VIDEOS — multiple upload, no URL mode ── */}
         <div>
-          <label className={labelClass}>Project Video (optional)</label>
+          <label className={labelClass}>Project Videos (optional)</label>
 
-          {/* Toggle buttons wrap on very small screens */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            {(["url", "upload"] as const).map((m) => (
-              <button
-                key={m}
-                type="button"
-                onClick={() => setVideoMode(m)}
-                className="px-4 py-2 rounded-lg text-xs font-medium transition-all"
-                style={{
-                  background: videoMode === m ? "rgba(201,169,110,0.15)" : "rgba(255,255,255,0.05)",
-                  color: videoMode === m ? "#C9A96E" : "rgba(255,255,255,0.4)",
-                  border: `1px solid ${videoMode === m ? "rgba(201,169,110,0.3)" : "rgba(255,255,255,0.08)"}`,
-                }}
-              >
-                {m === "url" ? "YouTube / Embed URL" : "Upload Video File"}
-              </button>
-            ))}
-          </div>
-
-          {videoMode === "url" ? (
-            <input
-              className={inputClass}
-              style={inputStyle}
-              type="text"
-              placeholder="https://www.youtube.com/embed/..."
-              value={video}
-              onChange={(e) => setVideo(e.target.value)}
-            />
-          ) : (
-            <div>
-              <div style={zone(videoUploading)} onClick={() => !videoUploading && videoRef.current?.click()}>
-                {videoUploading ? (
-                  <div className="flex flex-col items-center gap-2">
-                    {spinner}
-                    <p className="text-white/50 text-xs">Uploading video...</p>
-                  </div>
-                ) : video && !video.includes("youtube") && !video.includes("vimeo") ? (
-                  <div className="flex flex-col items-center gap-2">
-                    <video src={video} controls className="w-full rounded-lg max-h-48" />
-                    <p className="text-xs" style={{ color: "#C9A96E" }}>✓ Click to replace</p>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-12 h-12 rounded-full flex items-center justify-center"
-                      style={{ background: "rgba(201,169,110,0.1)" }}>
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2">
-                        <polygon points="23 7 16 12 23 17 23 7" />
-                        <rect x="1" y="5" width="15" height="14" rx="2" />
-                      </svg>
-                    </div>
-                    <p className="text-white/50 text-sm">Click to upload video</p>
-                    <p className="text-white/25 text-xs">MP4, MOV, WebM — max 50MB</p>
-                  </div>
-                )}
+          <div style={zone(videoUploading)} onClick={() => !videoUploading && videoRef.current?.click()}>
+            {videoUploading ? (
+              <div className="flex flex-col items-center gap-2">
+                {spinner}
+                <p className="text-white/50 text-xs">{videoProgress || "Uploading video..."}</p>
               </div>
-              <input ref={videoRef} type="file" accept="video/*" className="hidden" onChange={handleVideoUpload} />
+            ) : (
+              <div className="flex flex-col items-center gap-2">
+                <div className="w-12 h-12 rounded-full flex items-center justify-center"
+                  style={{ background: "rgba(201,169,110,0.1)" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A96E" strokeWidth="2">
+                    <polygon points="23 7 16 12 23 17 23 7" />
+                    <rect x="1" y="5" width="15" height="14" rx="2" />
+                  </svg>
+                </div>
+                <p className="text-white/50 text-sm">Click to add video(s)</p>
+                <p className="text-white/25 text-xs">MP4, WebM — multiple allowed</p>
+              </div>
+            )}
+          </div>
+          <input
+            ref={videoRef}
+            type="file"
+            accept="video/*"
+            multiple
+            className="hidden"
+            onChange={handleVideoUpload}
+          />
+
+          {videos.length > 0 && (
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {videos.map((url, i) => (
+                <div key={i} className="relative group rounded-xl overflow-hidden">
+                  <video src={url} controls className="w-full rounded-lg max-h-40" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const removedUrl = videos[i];
+                      setVideos((p) => p.filter((_, j) => j !== i));
+                      deleteFile(removedUrl);
+                      removeAssetFromProject(id, { videoUrl: removedUrl });
+                    }}
+                    className="absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center
+                               text-white text-xs font-bold
+                               opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                    style={{ background: "rgba(220,38,38,0.9)" }}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
             </div>
+          )}
+
+          {videos.length > 0 && (
+            <p className="mt-2 text-xs" style={{ color: "#C9A96E" }}>
+              ✓ {videos.length} video{videos.length > 1 ? "s" : ""}
+            </p>
           )}
         </div>
 
-        {/* ── SUBMIT — stacked on mobile, inline on sm+ ── */}
+        {/* ── SUBMIT ── */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-4">
           <button
             type="submit"

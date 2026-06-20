@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-06-20T17:54:40.405Z",
+  "dryRun": false,
+  "summary": [
+    {
+      "folder": "artistic-vessel-sink",
+      "project": "Artistic Vessel Sink",
+      "slug": "artistic-vessel-sink",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236266/Cover_cjpz0w.jpg",
+      "galleryCount": 3,
+      "videosCount": 0
+    },
+    {
+      "folder": "cozy-dining-lounge",
+      "project": "Cozy Dining Lounge",
+      "slug": "cozy-dining-lounge",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236269/projects/artistic-vessel-sink/Cover_acwngc.jpg",
+      "galleryCount": 3,
+      "videosCount": 0
+    },
+    {
+      "folder": "glass-shower-serenity",
+      "project": "Glass-Shower Serenity",
+      "slug": "glass-shower-serenity",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236276/projects/artistic-vessel-sink/Cover_kwpztv.jpg",
+      "galleryCount": 2,
+      "videosCount": 0
+    },
+    {
+      "folder": "luxe-marble-living-room",
+      "project": "Luxe Marble Living Room",
+      "slug": "luxe-marble-living-room",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236281/projects/artistic-vessel-sink/Cover_kems4i.jpg",
+      "galleryCount": 5,
+      "videosCount": 0
+    },
+    {
+      "folder": "marbled-modern-kitchen",
+      "project": "Marbled Modern Kitchen",
+      "slug": "marbled-modern-kitchen",
+      "coverImage": null,
+      "galleryCount": 3,
+      "videosCount": 0
+    },
+    {
+      "folder": "minimalist-bedroom",
+      "project": "Minimalist Bedroom",
+      "slug": "minimalist-bedroom",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236286/projects/artistic-vessel-sink/cover_oqfymj.jpg",
+      "galleryCount": 5,
+      "videosCount": 0
+    },
+    {
+      "folder": "modern-kitchen-with-open-shelves",
+      "project": "Modern Kitchen with Open Shelves",
+      "slug": "modern-kitchen-with-open-shelves",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236300/projects/artistic-vessel-sink/cover_epuriq.jpg",
+      "galleryCount": 2,
+      "videosCount": 0
+    },
+    {
+      "folder": "modernmint-kitchen",
+      "project": "ModernMint Kitchen",
+      "slug": "modernmint-kitchen",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236295/projects/artistic-vessel-sink/cover_xtphak.jpg",
+      "galleryCount": 5,
+      "videosCount": 0
+    },
+    {
+      "folder": "sleek-and-bright-kitchen-design",
+      "project": "Sleek and Bright Kitchen Design",
+      "slug": "sleek-and-bright-kitchen-design",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236306/projects/artistic-vessel-sink/cover_yseejb.jpg",
+      "galleryCount": 4,
+      "videosCount": 0
+    },
+    {
+      "folder": "textured-rustic-wash-basin",
+      "project": "Textured Rustic Wash Basin",
+      "slug": "textured-rustic-wash-basin",
+      "coverImage": "https://res.cloudinary.com/dkj5mg4a0/image/upload/v1780236309/projects/artistic-vessel-sink/cover_oplofh.jpg",
+      "galleryCount": 5,
+      "videosCount": 1
+    }
+  ],
+  "unmatched": []
+}

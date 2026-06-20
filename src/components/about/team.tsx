@@ -18,7 +18,7 @@ function useInView(ref, { threshold = 0.15, once = true } = {}) {
           if (once) obs.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
 
     obs.observe(el);
@@ -32,35 +32,36 @@ function useInView(ref, { threshold = 0.15, once = true } = {}) {
 const TEAM = [
   {
     id: 1,
-    name: "Ethan Walker",
-    role: "Senior Architect",
-    image: "",
-    position: "bottom",
-    tall: true,
-  },
-  {
-    id: 2,
-    name: "Sophia Carter",
-    role: "Lead Interior Designer",
+    name: "Shyamlal Bind",
+    role: "CEO & Founder",
     image: "",
     position: "top",
     tall: false,
   },
+
   {
-    id: 3,
-    name: "Liam Bennet",
+    id: 2,
+    name: "Jangbahadur Bind",
     role: "Construction Manager",
     image: "",
     position: "bottom",
     tall: true,
   },
   {
-    id: 4,
-    name: "Isabela Martinez",
-    role: "Project Manager",
+    id: 3,
+    name: "Shivkumar Bind",
+    role: "Architect",
     image: "",
     position: "top",
     tall: false,
+  },
+  {
+    id: 4,
+    name: "Shobhamani Bind",
+    role: "Site Manager",
+    image: "",
+    position: "bottom",
+    tall: true,
   },
 ];
 
@@ -119,7 +120,7 @@ function TeamCard({ member, index }) {
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
-        <TeamMemberAvatar 
+        <TeamMemberAvatar
           image={member.image}
           name={member.name}
           className="w-full h-full"

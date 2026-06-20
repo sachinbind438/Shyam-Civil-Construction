@@ -283,7 +283,7 @@ export const ProjectDetail = ({
 
             {/* View All Button */}
             <div className="flex justify-center pt-4 sm:pt-6 md:pt-8">
-              <Button text="View All Projects" href="/projects" size="lg" />
+              <Button text="View All Projects" href="/projects" variant="dark" />
             </div>
           </div>
         </section>

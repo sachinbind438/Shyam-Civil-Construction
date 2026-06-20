@@ -57,7 +57,7 @@ export default function Navbar() {
                 alt="Shyam Civil Construction Logo"
                 width={50}
                 height={50}
-                className="object-contain rounded-full w-[40px] h-[40px] md:w-[80px] md:h-[80px]"
+                className="object-contain rounded-full w-10 h-10w-[80px] md:h-20"
               />
             </Link>
 
@@ -128,21 +128,21 @@ export default function Navbar() {
           >
             {/* TOP LINE */}
             <span
-              className={`absolute h-[2px] w-6 bg-black transition-all duration-300 ${
+              className={`absolute h-0.5 w-6 bg-black transition-all duration-300 ${
                 isOpen ? "rotate-45" : "-translate-y-2"
               }`}
             />
 
             {/* MIDDLE LINE */}
             <span
-              className={`absolute h-[2px] w-6 bg-black transition-all duration-300 ${
+              className={`absolute h-0.5 w-6 bg-black transition-all duration-300 ${
                 isOpen ? "opacity-0" : "opacity-100"
               }`}
             />
 
             {/* BOTTOM LINE */}
             <span
-              className={`absolute h-[2px] w-6 bg-black transition-all duration-300 ${
+              className={`absolute h-0.5 w-6 bg-black transition-all duration-300 ${
                 isOpen ? "-rotate-45" : "translate-y-2"
               }`}
             />

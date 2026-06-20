@@ -62,26 +62,28 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: [
-      {
-        url:   "/favicon/fav_dark.avif",
-        type:  "image/avif",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url:   "/favicon/fav_light.webp",
-        type:  "image/webp",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url:   "/favicon/fav_dark.avif",
-        type:  "image/avif",
-        // fallback — no media query
-      },
-    ],
-    apple:    [{ url: "/favicon/fav_dark.avif", type: "image/avif" }],
-    shortcut: "/favicon/fav_dark.avif",
-  },
+  icon: [
+    {
+      url:   "/favicon_light/favicon-32x32.png",
+      type:  "image/png",
+      media: "(prefers-color-scheme: darkmode)",
+    },
+    {
+      url:   "/favicon_dark/favicon-32x32.png",
+      type:  "image/png",
+      media: "(prefers-color-scheme: lightmode)",
+    },
+    {
+      url:   "/favicon_dark/favicon-32x32.png",
+      type:  "image/png",
+      // fallback — no media query
+    },
+  ],
+  apple: [
+    { url: "/favicon_light/apple-touch-icon.png" },
+  ],
+  shortcut: "/favicon_light/favicon.ico",
+},
 
   openGraph: {
     type: "website",

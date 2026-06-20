@@ -21,6 +21,7 @@ export interface Project {
   heroImage?:       string;
   images?:          string[];
   video?:           string;
+  videos?:          string[];
   sections?:        Section[];
   featured?:        boolean;
 }
@@ -85,6 +86,10 @@ export function serialiseProject(doc: any): Project {
   const rawImages: string[] = doc.images ?? doc.gallery ?? [];
   const images = rawImages.map(cleanUrl).filter(Boolean);
 
+  // ✅ Clean video URLs (support both single video and videos array)
+  const rawVideos: string[] = doc.videos ?? (doc.video ? [doc.video] : []);
+  const videos = rawVideos.map(cleanUrl).filter(Boolean);
+
   return {
     id:              doc._id.toString(),
     title:           doc.title           ?? "",
@@ -95,7 +100,8 @@ export function serialiseProject(doc: any): Project {
     thumbnail,
     heroImage:       thumbnail,
     images,
-    video:           doc.video ? cleanUrl(doc.video) : undefined,
+    video:           videos.length > 0 ? videos[0] : undefined,
+    videos:          videos.length > 0 ? videos : undefined,
     sections:        doc.sections ?? [],
     featured:        doc.featured ?? false,
   };

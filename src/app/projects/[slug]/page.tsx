@@ -46,7 +46,10 @@ export async function generateMetadata({
       };
     }
 
-    const title = `${project.title} | Shyam Civil Construction`;
+    // Plain title only — layout.tsx's title template ("%s | Shyam
+    // Civil Construction") already appends the suffix. Adding it here
+    // too produced a doubled title tag in production.
+    const title = project.title;
     const description =
       project.description?.slice(0, 160) ||
       `View our ${project.title} renovation project by Shyam Civil Construction in Mumbai.`;

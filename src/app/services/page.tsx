@@ -1,8 +1,29 @@
+import type { Metadata } from "next";
 import ServicesSection from "@/app/services/ServicesSection";
 import { connectDB } from "@/lib/mongodb";
 import Service from "@/backend/db/models/Service";
 
-export const revalidate = 60;
+// Was missing entirely — /services had no title, description, canonical,
+// or OpenGraph and was silently falling back to the generic homepage
+// metadata from layout.tsx (Issue 7).
+export const metadata: Metadata = {
+  title: "Our Services — Renovation & Civil Construction Mumbai",
+  description:
+    "Complete civil construction and renovation services in Mumbai — bathroom, kitchen, interior, commercial, residential. Free estimates available.",
+  alternates: {
+    canonical: "https://www.shyamcivilconstruction.in/services",
+  },
+  openGraph: {
+    title: "Renovation Services — Shyam Civil Construction Mumbai",
+    description:
+      "Complete renovation services — bathroom, kitchen, interior, commercial. Free estimates.",
+    url: "https://www.shyamcivilconstruction.in/services",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+};
+
+// Was 60s — same crawl-budget concern as the gallery and projects pages.
+export const revalidate = 3600;
 
 async function getServices() {
   try {

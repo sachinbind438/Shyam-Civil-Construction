@@ -21,7 +21,12 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       `img-src 'self' data: blob: https://res.cloudinary.com`,
       "font-src 'self'",
-      "connect-src 'self'",
+      // Fix: 'self' alone can block the fetch/XHR calls Next.js uses
+      // for React Server Component payloads on the live domain, which
+      // makes Googlebot see blank/thin content. Explicitly allow both
+      // host variants (www is canonical, but allow bare domain too
+      // since it still resolves until DNS/redirect fully propagates).
+      "connect-src 'self' https://www.shyamcivilconstruction.in https://shyamcivilconstruction.in",
       "media-src 'self' https://res.cloudinary.com",
       "frame-ancestors 'none'",
     ].join("; "),
@@ -74,6 +79,17 @@ const nextConfig: NextConfig = {
 
   async redirects() {
     return [
+      // Fix: force non-www → www, single hop, permanent. This was the
+      // root cause of the canonical split — Google was indexing
+      // shyamcivilconstruction.in and www.shyamcivilconstruction.in
+      // as two separate sites, splitting link equity and crawl budget.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "shyamcivilconstruction.in" }],
+        destination: "https://www.shyamcivilconstruction.in/:path*",
+        permanent: true,
+      },
+
       // Example: Add any slug renames here in the future
       // {
       //   source: '/projects/old-slug',

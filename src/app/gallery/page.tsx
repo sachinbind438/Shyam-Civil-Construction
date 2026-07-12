@@ -4,10 +4,17 @@ import { GalleryImage } from "@/backend/db/models/GalleryImage"
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Gallery",
-  description: "Browse our collection of project images and design inspiration from Shyam Civil Construction.",
+  title: "Gallery — Renovation Work Photos Mumbai",
+  description:
+    "Browse photos of our completed renovation projects — kitchens, bathrooms, living rooms, and commercial spaces across Mumbai.",
   alternates: {
-    canonical: "https://shyamcivilconstruction.in/gallery",
+    canonical: "https://www.shyamcivilconstruction.in/gallery",
+  },
+  openGraph: {
+    title: "Gallery — Shyam Civil Construction Work",
+    description: "Photos of completed renovation projects across Mumbai.",
+    url: "https://www.shyamcivilconstruction.in/gallery",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };
 
@@ -30,7 +37,8 @@ async function getGalleryImages() {
   }
 }
 
-export const revalidate = 60;
+
+export const revalidate = 300;
 
 export default async function GalleryPage() {
   const images = await getGalleryImages();

@@ -10,9 +10,17 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About Us",
-  description: "Learn about Shyam Civil Construction — our story, values, and commitment to quality renovation services.",
+  description:
+    "Learn about Shyam Civil Construction — Mumbai's trusted civil contractor since [year]. Expert team delivering premium residential, commercial, and interior renovations.",
   alternates: {
-    canonical: "https://shyamcivilconstruction.in/about",
+    canonical: "https://www.shyamcivilconstruction.in/about",
+  },
+  openGraph: {
+    title: "About Shyam Civil Construction",
+    description:
+      "Mumbai's trusted civil contractor. Expert team delivering premium renovations.",
+    url: "https://www.shyamcivilconstruction.in/about",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };
 
